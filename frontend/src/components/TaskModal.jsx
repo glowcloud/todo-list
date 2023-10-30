@@ -1,8 +1,23 @@
-import { Close, Edit } from "@mui/icons-material";
+import {
+  CheckCircle,
+  CheckCircleOutline,
+  Close,
+  Edit,
+} from "@mui/icons-material";
 import { Box, IconButton, Modal, Typography } from "@mui/material";
 
 /* eslint-disable react/prop-types */
-const TaskModal = ({ task, isOpen, handleModalClose, priorities }) => {
+const TaskModal = ({
+  task,
+  isOpen,
+  handleModalClose,
+  handleCheckTask,
+  priorities,
+}) => {
+  const handleCheck = () => {
+    handleCheckTask(task.id, !task.finished);
+  };
+
   return (
     <Modal open={isOpen} onClose={handleModalClose}>
       <Box
@@ -18,6 +33,9 @@ const TaskModal = ({ task, isOpen, handleModalClose, priorities }) => {
         }}
       >
         <Box textAlign="right" pt={3}>
+          <IconButton onClick={handleCheck}>
+            {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
+          </IconButton>
           <IconButton onClick={() => {}}>
             <Edit />
           </IconButton>
@@ -47,10 +65,23 @@ const TaskModal = ({ task, isOpen, handleModalClose, priorities }) => {
               .text}{" "}
           priority
         </Typography>
-        <Typography variant="h5" gutterBottom>
+        <Typography
+          variant="h5"
+          sx={{
+            overflowWrap: "break-word",
+          }}
+          gutterBottom
+        >
           {task?.title}
         </Typography>
-        <Typography gutterBottom>{task?.description}</Typography>
+        <Typography
+          sx={{
+            overflowWrap: "break-word",
+          }}
+          gutterBottom
+        >
+          {task?.description}
+        </Typography>
       </Box>
     </Modal>
   );
