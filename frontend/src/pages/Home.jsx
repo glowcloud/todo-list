@@ -12,6 +12,7 @@ const dummyTasks = [
     description: "some description",
     date: "today",
     finished: false,
+    priority: 1,
   },
   {
     id: 1,
@@ -19,6 +20,7 @@ const dummyTasks = [
     description: "some description",
     date: "today",
     finished: false,
+    priority: 2,
   },
   {
     id: 2,
@@ -26,6 +28,7 @@ const dummyTasks = [
     description: "some description",
     date: "today",
     finished: false,
+    priority: 3,
   },
   {
     id: 3,
@@ -33,6 +36,7 @@ const dummyTasks = [
     description: "some description",
     date: "today",
     finished: false,
+    priority: 0,
   },
   {
     id: 4,
@@ -40,7 +44,16 @@ const dummyTasks = [
     description: "some description",
     date: "today",
     finished: false,
+    priority: 4,
   },
+];
+
+const priorities = [
+  { id: 4, text: "Highest", color: "rgba(255, 0, 0, 0.5)" },
+  { id: 3, text: "High", color: "rgba(255, 165, 0, 0.5)" },
+  { id: 2, text: "Moderate", color: "rgba(255, 243, 51, 0.55)" },
+  { id: 1, text: "Low", color: "rgba(202, 255, 51, 0.65)" },
+  { id: 0, text: "Lowest", color: "rgba(60, 179, 113, 0.5)"},
 ];
 
 const Home = () => {
@@ -72,7 +85,7 @@ const Home = () => {
   };
 
   const handleCheckTask = (id, isChecked) => {
-    const curTask = tasks.filter((task) => task.id === id)[0];
+    const curTask = tasks.find((task) => task.id === id);
     curTask.finished = isChecked;
     setTasks((prevTasks) => {
       return [...prevTasks.filter((task) => task.id !== id), curTask];
@@ -82,7 +95,8 @@ const Home = () => {
   return (
     <>
       <Box sx={{ my: 3, mx: { md: 15, lg: 25 } }}>
-        {tasks
+        {[...tasks]
+          // .sort((x, y) => y.priority - x.priority)
           .sort((x, y) => x.finished - y.finished)
           .map((task) => (
             <TaskCard
@@ -90,6 +104,7 @@ const Home = () => {
               task={task}
               handleClick={() => setTaskOpen(task.id)}
               handleCheckTask={handleCheckTask}
+              priorities={priorities}
             />
           ))}
         <Box
@@ -106,7 +121,7 @@ const Home = () => {
         </Box>
       </Box>
       <TaskModal
-        task={tasks[taskOpen]}
+        task={tasks.find((task) => task.id === taskOpen)}
         isOpen={taskOpen >= 0}
         handleModalClose={handleTaskClose}
       />
@@ -114,6 +129,7 @@ const Home = () => {
         isOpen={isAddOpen}
         handleModalClose={handleAddClose}
         handleAddTask={handleAddTask}
+        priorities={priorities}
       />
     </>
   );

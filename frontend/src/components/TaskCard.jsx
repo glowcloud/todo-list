@@ -7,18 +7,21 @@ import {
   Checkbox,
 } from "@mui/material";
 
-const TaskCard = ({ task, handleClick, handleCheckTask }) => {
-  // const [isChecked, setIsChecked] = useState(false);
-
+const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
   const handleCheck = (e) => {
-    // setIsChecked(e.target.checked);
     handleCheckTask(task.id, e.target.checked);
   };
 
   return (
     <Card
       variant="outlined"
-      sx={{ display: "flex", m: 2, backgroundColor: task.color }}
+      sx={{
+        display: "flex",
+        m: 2,
+        borderColor: priorities.find(
+          (priority) => priority.id === task.priority
+        ).color,
+      }}
     >
       <Checkbox checked={task.finished} onChange={handleCheck} sx={{ px: 2 }} />
       <CardActionArea onClick={handleClick}>

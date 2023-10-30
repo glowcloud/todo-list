@@ -2,8 +2,12 @@ import { Close } from "@mui/icons-material";
 import {
   Box,
   Button,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
   Modal,
+  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -13,23 +17,32 @@ const defaultState = {
   title: "",
   description: "",
   date: "",
-  priority: "",
+  priority: 2,
 };
 
 /* eslint-disable react/prop-types */
-const AddModal = ({ isOpen, handleModalClose, handleAddTask }) => {
+const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
   const [formState, setFormState] = useState(defaultState);
 
   const handleAdd = () => {
     if (formState.title !== "") {
-      handleAddTask(formState);
+      if (formState.priority < 0) {
+        handleAddTask({ ...formState, priority: 2 });
+      } else {
+        handleAddTask(formState);
+      }
       setFormState(defaultState);
       handleModalClose();
     }
   };
 
+  const handleClose = () => {
+    setFormState(defaultState);
+    handleModalClose();
+  };
+
   return (
-    <Modal open={isOpen} onClose={handleModalClose}>
+    <Modal open={isOpen} onClose={handleClose}>
       <Box
         sx={{
           position: "absolute",
@@ -44,7 +57,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask }) => {
         }}
       >
         <Box textAlign="right" pt={3}>
-          <IconButton onClick={handleModalClose}>
+          <IconButton onClick={handleClose}>
             <Close />
           </IconButton>
         </Box>
@@ -62,6 +75,25 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask }) => {
             fullWidth
             required
           />
+          <FormControl fullWidth sx={{mt: 1}}>
+            <InputLabel>Priority</InputLabel>
+            <Select
+              value={formState.priority}
+              defaultValue={2}
+              label="Priority"
+              onChange={(e) =>
+                setFormState((prevState) => {
+                  return { ...prevState, priority: e.target.value };
+                })
+              }
+            >
+              {priorities.map((priority) => (
+                <MenuItem key={priority.id} value={priority.id}>
+                  {priority.text}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             label="Description"
             value={formState.description}
