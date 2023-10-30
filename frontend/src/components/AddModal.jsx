@@ -21,9 +21,11 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask }) => {
   const [formState, setFormState] = useState(defaultState);
 
   const handleAdd = () => {
-    handleAddTask(formState);
-    setFormState(defaultState);
-    handleModalClose();
+    if (formState.title !== "") {
+      handleAddTask(formState);
+      setFormState(defaultState);
+      handleModalClose();
+    }
   };
 
   return (

@@ -1,32 +1,45 @@
 /* eslint-disable react/prop-types */
-import { MoreVert } from "@mui/icons-material";
 import {
-  Box,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
-  IconButton,
   Typography,
+  Checkbox,
 } from "@mui/material";
 
-const TaskCard = ({ task, handleClick }) => {
+const TaskCard = ({ task, handleClick, handleCheckTask }) => {
+  // const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheck = (e) => {
+    // setIsChecked(e.target.checked);
+    handleCheckTask(task.id, e.target.checked);
+  };
+
   return (
     <Card
       variant="outlined"
-      sx={{ m: 2, backgroundColor: task.color }}
+      sx={{ display: "flex", m: 2, backgroundColor: task.color }}
     >
+      <Checkbox checked={task.finished} onChange={handleCheck} sx={{ px: 2 }} />
       <CardActionArea onClick={handleClick}>
         <CardContent>
-          <Typography variant="h5">{task.title}</Typography>
-          <Typography>{task.description}</Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              textDecoration: task.finished ? "line-through" : "none",
+            }}
+          >
+            {task.title}
+          </Typography>
+          <Typography
+            sx={{
+              textDecoration: task.finished ? "line-through" : "none",
+            }}
+          >
+            {task.description}
+          </Typography>
         </CardContent>
       </CardActionArea>
-      {/* <CardActions>
-            <IconButton>
-              <MoreVert />
-            </IconButton>
-          </CardActions> */}
     </Card>
   );
 };

@@ -61,21 +61,39 @@ const Home = () => {
   };
 
   const handleAddTask = (task) => {
-    setTasks((prevTasks) => [...prevTasks, { id: prevTasks.length, ...task }]);
+    setTasks((prevTasks) => [
+      ...prevTasks,
+      {
+        id: prevTasks.length > 0 ? prevTasks[prevTasks.length - 1].id + 1 : 1,
+        ...task,
+        finished: false,
+      },
+    ]);
+  };
+
+  const handleCheckTask = (id, isChecked) => {
+    const curTask = tasks.filter((task) => task.id === id)[0];
+    curTask.finished = isChecked;
+    setTasks((prevTasks) => {
+      return [...prevTasks.filter((task) => task.id !== id), curTask];
+    });
   };
 
   return (
     <>
       <Box sx={{ my: 3, mx: { md: 15, lg: 25 } }}>
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            handleClick={() => setTaskOpen(task.id)}
-          />
-        ))}
+        {tasks
+          .sort((x, y) => x.finished - y.finished)
+          .map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              handleClick={() => setTaskOpen(task.id)}
+              handleCheckTask={handleCheckTask}
+            />
+          ))}
         <Box
-          position="absolute"
+          position="fixed"
           bottom={15}
           right={0}
           textAlign="right"
