@@ -36,6 +36,8 @@ const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
             variant="h5"
             sx={{
               textDecoration: task.finished ? "line-through" : "none",
+              overflowWrap: "break-word",
+              width: 425,
             }}
           >
             {task.title}
@@ -43,6 +45,8 @@ const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
           <Typography
             sx={{
               textDecoration: task.finished ? "line-through" : "none",
+              overflowWrap: "break-word",
+              width: 425,
             }}
           >
             {task.description}
