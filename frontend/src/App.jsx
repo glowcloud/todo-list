@@ -1,5 +1,6 @@
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import Home from "./pages/Home";
+import Layout from "./components/Layout";
 
 function App() {
   const theme = createTheme({
@@ -11,7 +12,9 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Home />
+      <Layout>
+        <Home />
+      </Layout>
     </ThemeProvider>
   );
 }
