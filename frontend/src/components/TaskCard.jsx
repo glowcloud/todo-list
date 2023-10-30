@@ -5,6 +5,7 @@ import {
   CardContent,
   Typography,
   Checkbox,
+  Box,
 } from "@mui/material";
 
 const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
@@ -17,14 +18,19 @@ const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
       variant="outlined"
       sx={{
         display: "flex",
+        alignItems: "center",
         m: 2,
-        borderColor: priorities.find(
-          (priority) => priority.id === task.priority
-        ).color,
       }}
     >
       <Checkbox checked={task.finished} onChange={handleCheck} sx={{ px: 2 }} />
-      <CardActionArea onClick={handleClick}>
+      <CardActionArea
+        onClick={handleClick}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <CardContent>
           <Typography
             variant="h5"
@@ -42,6 +48,18 @@ const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
             {task.description}
           </Typography>
         </CardContent>
+        <Box
+          sx={{
+            mr: 2,
+            backgroundColor: task.finished
+              ? "primary.main"
+              : priorities.find((priority) => priority.id === task.priority)
+                  .color,
+            width: 20,
+            height: 20,
+            borderRadius: "50%",
+          }}
+        />
       </CardActionArea>
     </Card>
   );

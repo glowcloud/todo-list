@@ -49,17 +49,18 @@ const dummyTasks = [
 ];
 
 const priorities = [
-  { id: 4, text: "Highest", color: "rgba(255, 0, 0, 0.5)" },
-  { id: 3, text: "High", color: "rgba(255, 165, 0, 0.5)" },
-  { id: 2, text: "Moderate", color: "rgba(255, 243, 51, 0.55)" },
-  { id: 1, text: "Low", color: "rgba(202, 255, 51, 0.65)" },
-  { id: 0, text: "Lowest", color: "rgba(60, 179, 113, 0.5)"},
+  { id: 4, text: "Highest", color: "rgba(255, 0, 0, 0.65)" },
+  { id: 3, text: "High", color: "rgba(255, 165, 0, 0.65)" },
+  { id: 2, text: "Moderate", color: "rgba(255, 243, 51, 0.75)" },
+  { id: 1, text: "Low", color: "rgba(202, 255, 51, 0.75)" },
+  { id: 0, text: "Lowest", color: "rgba(60, 179, 113, 0.75)" },
 ];
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [tasks, setTasks] = useState(dummyTasks);
+  const [idCounter, setIdCounter] = useState(dummyTasks.length);
 
   const handleTaskClose = () => {
     setTaskOpen(-1);
@@ -77,11 +78,12 @@ const Home = () => {
     setTasks((prevTasks) => [
       ...prevTasks,
       {
-        id: prevTasks.length > 0 ? prevTasks[prevTasks.length - 1].id + 1 : 1,
+        id: idCounter,
         ...task,
         finished: false,
       },
     ]);
+    setIdCounter((prevIdCounter) => ++prevIdCounter);
   };
 
   const handleCheckTask = (id, isChecked) => {
@@ -124,6 +126,7 @@ const Home = () => {
         task={tasks.find((task) => task.id === taskOpen)}
         isOpen={taskOpen >= 0}
         handleModalClose={handleTaskClose}
+        priorities={priorities}
       />
       <AddModal
         isOpen={isAddOpen}

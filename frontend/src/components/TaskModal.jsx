@@ -2,7 +2,7 @@ import { Close, Edit } from "@mui/icons-material";
 import { Box, IconButton, Modal, Typography } from "@mui/material";
 
 /* eslint-disable react/prop-types */
-const TaskModal = ({ task, isOpen, handleModalClose }) => {
+const TaskModal = ({ task, isOpen, handleModalClose, priorities }) => {
   return (
     <Modal open={isOpen} onClose={handleModalClose}>
       <Box
@@ -30,6 +30,22 @@ const TaskModal = ({ task, isOpen, handleModalClose }) => {
           gutterBottom
         >
           {task?.finished ? "Finished" : "To Do"}
+        </Typography>
+        <Typography
+          color={
+            task
+              ? task.finished
+                ? "primary.main"
+                : priorities.find((priority) => priority.id === task.priority)
+                    .color
+              : ""
+          }
+          gutterBottom
+        >
+          {task &&
+            priorities.find((priority) => priority.id === task.priority)
+              .text}{" "}
+          priority
         </Typography>
         <Typography variant="h5" gutterBottom>
           {task?.title}
