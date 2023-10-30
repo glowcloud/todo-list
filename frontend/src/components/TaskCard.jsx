@@ -10,13 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 
-const TaskCard = ({ task }) => {
+const TaskCard = ({ task, handleClick }) => {
   return (
     <Card
       variant="outlined"
       sx={{ m: 2, backgroundColor: task.color }}
     >
-      <CardActionArea>
+      <CardActionArea onClick={handleClick}>
         <CardContent>
           <Typography variant="h5">{task.title}</Typography>
           <Typography>{task.description}</Typography>
