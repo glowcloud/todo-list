@@ -14,7 +14,6 @@ import {
 import { useEffect, useState } from "react";
 import CustomModal from "./CustomModal";
 import { DatePicker } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 
 const EditModal = ({
   task,
@@ -54,14 +53,14 @@ const EditModal = ({
           label="Date"
           orientation="portrait"
           value={formState.date}
-          
+          format="YYYY-MM-DD"          
           disablePast
           sx={{
             my: 1,
           }}
           onChange={(value) => {
             setFormState((prevState) => {
-              return { ...prevState, date: dayjs(value).format("YYYY-MM-DD") };
+              return { ...prevState, date: value };
             });
           }}
         />

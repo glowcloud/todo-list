@@ -13,11 +13,12 @@ import {
 import { useState } from "react";
 import CustomModal from "./CustomModal";
 import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 const defaultState = {
   title: "",
   description: "",
-  date: "",
+  date: dayjs(),
   priority: 2,
 };
 
@@ -67,6 +68,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           label="Date"
           orientation="portrait"
           value={formState.date}
+          format="YYYY-MM-DD"
           disablePast
           sx={{
             my: 1,
