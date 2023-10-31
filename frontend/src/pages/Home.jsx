@@ -1,20 +1,9 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Fab,
-  FormControlLabel,
-  FormGroup,
-  IconButton,
-  MenuItem,
-  MenuList,
-  Popover,
-} from "@mui/material";
-import TaskCard from "../components/TaskCard";
-import { Add, FilterAlt } from "@mui/icons-material";
 import AddModal from "../components/AddModal";
 import { useState } from "react";
 import TaskModal from "../components/TaskModal";
+import FiltersPopover from "../components/FiltersPopover";
+import TasksList from "../components/TasksList";
+import AddFab from "../components/AddFab";
 
 const dummyTasks = [
   {
@@ -70,7 +59,6 @@ const priorities = [
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
   const [tasks, setTasks] = useState(dummyTasks);
   const [idCounter, setIdCounter] = useState(dummyTasks.length);
   const [priorityFilters, setPriorityFilters] = useState([]);
@@ -107,14 +95,6 @@ const Home = () => {
     });
   };
 
-  const handlePopoverOpen = (e) => {
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
   const handleFilterClick = (id) => {
     setPriorityFilters((prevFilters) => {
       if (prevFilters.includes(id))
@@ -127,72 +107,20 @@ const Home = () => {
 
   return (
     <>
-      <Box sx={{ mt: 3, mx: { xs: 2, md: 15, lg: 25 } }}>
-        <IconButton onClick={handlePopoverOpen}>
-          <FilterAlt />
-        </IconButton>
-        <Popover
-          open={Boolean(anchorEl)}
-          anchorEl={anchorEl}
-          onClose={handlePopoverClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "center",
-          }}
-        >
-          <FormGroup>
-            {priorities.map((priority) => (
-              <FormControlLabel
-                key={priority.id}
-                control={
-                  <Checkbox checked={priorityFilters.includes(priority.id)} />
-                }
-                label={priority.text}
-                sx={{ mx: 2, my: 1, color: priority.color }}
-                onClick={() => handleFilterClick(priority.id)}
-              />
-            ))}
-          </FormGroup>
-          <Button
-
-            variant="outlined"
-            onClick={() => setPriorityFilters([])}
-          >
-            Clear
-          </Button>
-        </Popover>
-      </Box>
-      <Box sx={{ mx: { md: 15, lg: 25 } }}>
-        {[...tasks]
-          // .sort((x, y) => y.priority - x.priority)
-          .filter(
-            (task) =>
-              priorityFilters.length === 0 ||
-              priorityFilters.includes(task.priority)
-          )
-          .sort((x, y) => x.finished - y.finished)
-          .map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              handleClick={() => setTaskOpen(task.id)}
-              handleCheckTask={handleCheckTask}
-              priorities={priorities}
-            />
-          ))}
-        <Box
-          position="fixed"
-          bottom={15}
-          right={0}
-          textAlign="right"
-          mr={5}
-          mb={2}
-        >
-          <Fab color="primary" onClick={handleAddOpen}>
-            <Add />
-          </Fab>
-        </Box>
-      </Box>
+      <FiltersPopover
+        handleFilterClick={handleFilterClick}
+        priorities={priorities}
+        priorityFilters={priorityFilters}
+        setPriorityFilters={setPriorityFilters}
+      />
+      <TasksList
+        tasks={[...tasks]}
+        priorityFilters={priorityFilters}
+        setTaskOpen={setTaskOpen}
+        handleCheckTask={handleCheckTask}
+        priorities={priorities}
+      />
+      <AddFab handleAddOpen={handleAddOpen} />
       <TaskModal
         task={tasks.find((task) => task.id === taskOpen)}
         isOpen={taskOpen >= 0}
