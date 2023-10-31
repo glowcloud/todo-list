@@ -94,9 +94,11 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           rows={4}
           fullWidth
         />
-        <Button sx={{ mt: 1 }} variant="outlined" onClick={handleAdd}>
-          Add
-        </Button>
+        <Box sx={{mt: 3, textAlign: "center"}}>
+          <Button variant="outlined" onClick={handleAdd}>
+            Add
+          </Button>
+        </Box>
       </Box>
     </CustomModal>
   );

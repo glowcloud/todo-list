@@ -80,7 +80,7 @@ const EditModal = ({
           rows={4}
           fullWidth
         />
-        <Box sx={{ textAlign: "center", mt: 2 }}>
+        <Box sx={{ textAlign: "center", mt: 3 }}>
           <Button variant="outlined" onClick={() => handleEditTask(formState)}>
             Save changes
           </Button>

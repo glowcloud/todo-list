@@ -10,7 +10,7 @@ const TasksList = ({
   priorities,
 }) => {
   return (
-    <Box sx={{ mx: { md: 15, lg: 25 } }}>
+    <Box sx={{ mx: { md: 15, lg: 25, xl: 45 } }}>
       {tasks
         // .sort((x, y) => y.priority - x.priority)
         .filter(

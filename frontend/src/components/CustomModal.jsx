@@ -12,7 +12,7 @@ const CustomModal = ({ children, isOpen, handleClose }) => {
           transform: "translate(-50%, -50%)",
           bgcolor: "background.paper",
           border: "2px solid #000",
-          width: 500,
+          width: { xs: 450, sm: 550, md: 700, lg: 800 },
           px: 5,
           pb: 5,
         }}

@@ -28,7 +28,7 @@ const FiltersPopover = ({
   };
 
   return (
-    <Box sx={{ mt: 3, mx: { xs: 2, md: 15, lg: 25 } }}>
+    <Box sx={{ mt: 3, mx: { xs: 2, md: 17, lg: 27, xl: 47 } }}>
       <IconButton onClick={handlePopoverOpen}>
         <FilterAlt />
       </IconButton>
@@ -57,7 +57,11 @@ const FiltersPopover = ({
             />
           ))}
         </FormGroup>
-        <Button variant="outlined" sx={{mx: 1, mb: 1}} onClick={() => setPriorityFilters([])}>
+        <Button
+          variant="outlined"
+          sx={{ mx: 1, mb: 1 }}
+          onClick={() => setPriorityFilters([])}
+        >
           Clear filters
         </Button>
       </Popover>
