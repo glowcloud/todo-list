@@ -14,6 +14,7 @@ const TaskModal = ({
   handleModalClose,
   handleCheckTask,
   priorities,
+  handleEditOpen,
 }) => {
   const handleCheck = () => {
     handleCheckTask(task.id, !task.finished);
@@ -25,9 +26,11 @@ const TaskModal = ({
         <IconButton onClick={handleCheck}>
           {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
         </IconButton>
-        <IconButton onClick={() => {}}>
-          <Edit />
-        </IconButton>
+        {!task?.finished && (
+          <IconButton onClick={handleEditOpen}>
+            <Edit />
+          </IconButton>
+        )}
         <IconButton onClick={handleModalClose}>
           <Close />
         </IconButton>
@@ -35,22 +38,24 @@ const TaskModal = ({
       <Typography color={task?.finished ? "primary" : "secondary"} gutterBottom>
         {task?.finished ? "Finished" : "To Do"}
       </Typography>
-      <Typography
-        color={
-          task
-            ? task.finished
-              ? "primary.main"
-              : priorities.find((priority) => priority.id === task.priority)
-                  .color
-            : ""
-        }
-        gutterBottom
-      >
-        {task &&
-          priorities.find((priority) => priority.id === task.priority)
-            .text}{" "}
-        priority
-      </Typography>
+      {!task?.finished && (
+        <Typography
+          color={
+            task
+              ? task.finished
+                ? "primary.main"
+                : priorities.find((priority) => priority.id === task.priority)
+                    .color
+              : ""
+          }
+          gutterBottom
+        >
+          {task &&
+            priorities.find((priority) => priority.id === task.priority)
+              .text}{" "}
+          priority
+        </Typography>
+      )}
       <Typography
         variant="h5"
         sx={{

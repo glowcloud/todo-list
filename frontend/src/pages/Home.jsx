@@ -4,6 +4,7 @@ import TaskModal from "../components/TaskModal";
 import FiltersPopover from "../components/FiltersPopover";
 import TasksList from "../components/TasksList";
 import AddFab from "../components/AddFab";
+import EditModal from "../components/EditModal";
 
 const dummyTasks = [
   {
@@ -59,6 +60,7 @@ const priorities = [
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [tasks, setTasks] = useState(dummyTasks);
   const [idCounter, setIdCounter] = useState(dummyTasks.length);
   const [priorityFilters, setPriorityFilters] = useState([]);
@@ -75,6 +77,14 @@ const Home = () => {
     setIsAddOpen(false);
   };
 
+  const handleEditClose = () => {
+    setIsEditOpen(false);
+  };
+
+  const handleEditOpen = () => {
+    setIsEditOpen(true);
+  };
+
   const handleAddTask = (task) => {
     setTasks((prevTasks) => [
       ...prevTasks,
@@ -85,6 +95,14 @@ const Home = () => {
       },
     ]);
     setIdCounter((prevIdCounter) => ++prevIdCounter);
+  };
+
+  const handleEditTask = (task) => {
+    setTasks((prevTasks) => {
+      const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
+      return [...filteredTasks, task];
+    });
+    setIsEditOpen(false);
   };
 
   const handleCheckTask = (id, isChecked) => {
@@ -127,11 +145,19 @@ const Home = () => {
         handleModalClose={handleTaskClose}
         handleCheckTask={handleCheckTask}
         priorities={priorities}
+        handleEditOpen={handleEditOpen}
       />
       <AddModal
         isOpen={isAddOpen}
         handleModalClose={handleAddClose}
         handleAddTask={handleAddTask}
+        priorities={priorities}
+      />
+      <EditModal
+        task={tasks.find((task) => task.id === taskOpen)}
+        isOpen={isEditOpen}
+        handleModalClose={handleEditClose}
+        handleEditTask={handleEditTask}
         priorities={priorities}
       />
     </>
