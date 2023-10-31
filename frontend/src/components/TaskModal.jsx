@@ -6,6 +6,7 @@ import {
 } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
 import CustomModal from "./CustomModal";
+import dayjs from "dayjs";
 
 /* eslint-disable react/prop-types */
 const TaskModal = ({
@@ -56,6 +57,9 @@ const TaskModal = ({
           priority
         </Typography>
       )}
+      <Typography gutterBottom>
+        {dayjs(task?.date).format("YYYY-MM-DD")}
+      </Typography>
       <Typography
         variant="h5"
         sx={{

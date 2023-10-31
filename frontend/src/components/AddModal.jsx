@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import CustomModal from "./CustomModal";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const defaultState = {
   title: "",
@@ -62,6 +63,20 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           fullWidth
           required
         />
+        <DatePicker
+          label="Date"
+          orientation="portrait"
+          value={formState.date}
+          disablePast
+          sx={{
+            my: 1,
+          }}
+          onChange={(value) => {
+            setFormState((prevState) => {
+              return { ...prevState, date: value };
+            });
+          }}
+        />
         <FormControl fullWidth sx={{ mt: 1 }}>
           <InputLabel>Priority</InputLabel>
           <Select
@@ -94,7 +109,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           rows={4}
           fullWidth
         />
-        <Box sx={{mt: 3, textAlign: "center"}}>
+        <Box sx={{ mt: 3, textAlign: "center" }}>
           <Button variant="outlined" onClick={handleAdd}>
             Add
           </Button>
