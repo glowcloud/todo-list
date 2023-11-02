@@ -51,7 +51,7 @@ const FiltersPopover = ({
               control={
                 <Checkbox checked={priorityFilters.includes(priority.id)} />
               }
-              label={priority.text}
+              label={priority.name}
               sx={{ mx: 2, my: 1, color: priority.color }}
               onClick={() => handleFilterClick(priority.id)}
             />

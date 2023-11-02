@@ -53,7 +53,7 @@ const TaskModal = ({
         >
           {task &&
             priorities.find((priority) => priority.id === task.priority)
-              .text}{" "}
+              .name}{" "}
           priority
         </Typography>
       )}

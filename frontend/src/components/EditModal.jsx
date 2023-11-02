@@ -68,7 +68,6 @@ const EditModal = ({
           <InputLabel>Priority</InputLabel>
           <Select
             value={formState.priority}
-            defaultValue={2}
             label="Priority"
             onChange={(e) =>
               setFormState((prevState) => {
@@ -78,7 +77,7 @@ const EditModal = ({
           >
             {priorities.map((priority) => (
               <MenuItem key={priority.id} value={priority.id}>
-                {priority.text}
+                {priority.name}
               </MenuItem>
             ))}
           </Select>

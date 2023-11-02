@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Controller
 //@RequestMapping(path="/")
+@CrossOrigin(origins = "http://localhost:5173")
 public class MainController {
     @Autowired
     private PriorityRepository priorityRepository;

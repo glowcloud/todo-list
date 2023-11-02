@@ -83,7 +83,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           <InputLabel>Priority</InputLabel>
           <Select
             value={formState.priority}
-            defaultValue={2}
+            defaultValue={3}
             label="Priority"
             onChange={(e) =>
               setFormState((prevState) => {
@@ -93,7 +93,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           >
             {priorities.map((priority) => (
               <MenuItem key={priority.id} value={priority.id}>
-                {priority.text}
+                {priority.name}
               </MenuItem>
             ))}
           </Select>

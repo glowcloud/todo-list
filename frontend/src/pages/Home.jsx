@@ -1,5 +1,5 @@
 import AddModal from "../components/AddModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskModal from "../components/TaskModal";
 import FiltersPopover from "../components/FiltersPopover";
 import TasksList from "../components/TasksList";
@@ -37,7 +37,7 @@ const dummyTasks = [
     description: "some description",
     date: "today",
     finished: false,
-    priority: 0,
+    priority: 5,
   },
   {
     id: 4,
@@ -49,14 +49,6 @@ const dummyTasks = [
   },
 ];
 
-const priorities = [
-  { id: 4, text: "Highest", color: "rgba(255, 0, 0, 0.65)" },
-  { id: 3, text: "High", color: "rgba(255, 165, 0, 0.65)" },
-  { id: 2, text: "Moderate", color: "rgba(255, 243, 51, 0.75)" },
-  { id: 1, text: "Low", color: "rgba(202, 255, 51, 0.75)" },
-  { id: 0, text: "Lowest", color: "rgba(60, 179, 113, 0.75)" },
-];
-
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -64,6 +56,17 @@ const Home = () => {
   const [tasks, setTasks] = useState(dummyTasks);
   const [idCounter, setIdCounter] = useState(dummyTasks.length);
   const [priorityFilters, setPriorityFilters] = useState([]);
+  const [priorities, setPriorities] = useState([]);
+
+  useEffect(() => {
+    const getPriorities = async () => {
+      const res = await fetch("http://localhost:8080/priorities");
+      const json = await res.json();
+      console.log(json);
+      setPriorities(json);
+    };
+    getPriorities();
+  }, []);
 
   const handleTaskClose = () => {
     setTaskOpen(-1);
@@ -123,7 +126,7 @@ const Home = () => {
     });
   };
 
-  return (
+  return priorities.length > 0 ? (
     <>
       <FiltersPopover
         handleFilterClick={handleFilterClick}
@@ -161,6 +164,8 @@ const Home = () => {
         priorities={priorities}
       />
     </>
+  ) : (
+    "Loading..."
   );
 };
 
