@@ -8,7 +8,7 @@ import {
   Box,
 } from "@mui/material";
 
-const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
+const TaskCard = ({ task, handleClick, handleCheckTask }) => {
   const handleCheck = (e) => {
     handleCheckTask(task.id, e.target.checked);
   };
@@ -58,8 +58,7 @@ const TaskCard = ({ task, handleClick, handleCheckTask, priorities }) => {
             mr: 2,
             backgroundColor: task.finished
               ? "primary.main"
-              : priorities.find((priority) => priority.id === task.priority)
-                  .color,
+              : task.priority.color,
             width: 20,
             height: 20,
             borderRadius: "50%",

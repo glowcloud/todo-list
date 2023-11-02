@@ -14,7 +14,7 @@ public class Task {
     private String title;
     private String description;
     private LocalDate date;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Priority priority;
     private Boolean finished;

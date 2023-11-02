@@ -12,7 +12,6 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 @Controller
-//@RequestMapping(path="/")
 @CrossOrigin(origins = "http://localhost:5173")
 public class MainController {
     @Autowired
@@ -31,17 +30,24 @@ public class MainController {
     }
 
     @PostMapping(path="/tasks")
-    public @ResponseBody String addTask (@RequestParam String title, @RequestParam String description,
-                                         @RequestParam LocalDate date, @RequestParam Priority priority,
-                                         @RequestParam Boolean finished) {
-        Task t = new Task();
-        t.setTitle(title);
-        t.setDescription(description);
-        t.setDate(date);
-        t.setPriority(priority);
-        t.setFinished(finished);
-        taskRepository.save(t);
-        return "Saved";
+    public @ResponseBody Task addTask(@RequestBody Task task) {
+        return taskRepository.save(task);
+    }
+
+    @PutMapping(path="/tasks/{id}")
+    public @ResponseBody Task editTask(@RequestBody Task newTask, @PathVariable("id") Integer id) {
+        return taskRepository.findById(id)
+                .map(task -> {
+                    task.setTitle(newTask.getTitle());
+                    task.setDescription(newTask.getDescription());
+                    task.setDate(newTask.getDate());
+                    task.setPriority(newTask.getPriority());
+                    task.setFinished(newTask.getFinished());
+                    return task;
+        }).orElseGet(() -> {
+            newTask.setId(id);
+            return taskRepository.save(newTask);
+        });
     }
 
     @GetMapping(path="/priorities")

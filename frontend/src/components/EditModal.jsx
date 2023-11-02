@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import CustomModal from "./CustomModal";
 import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
 
 const EditModal = ({
   task,
@@ -52,8 +53,8 @@ const EditModal = ({
         <DatePicker
           label="Date"
           orientation="portrait"
-          value={formState.date}
-          format="YYYY-MM-DD"          
+          value={dayjs(formState.date)}
+          format="YYYY-MM-DD"
           disablePast
           sx={{
             my: 1,
@@ -67,7 +68,7 @@ const EditModal = ({
         <FormControl fullWidth sx={{ mt: 1 }}>
           <InputLabel>Priority</InputLabel>
           <Select
-            value={formState.priority}
+            value={formState?.priority ? formState.priority.id : 3}
             label="Priority"
             onChange={(e) =>
               setFormState((prevState) => {

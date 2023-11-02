@@ -14,7 +14,6 @@ const TaskModal = ({
   isOpen,
   handleModalClose,
   handleCheckTask,
-  priorities,
   handleEditOpen,
 }) => {
   const handleCheck = () => {
@@ -42,19 +41,11 @@ const TaskModal = ({
       {!task?.finished && (
         <Typography
           color={
-            task
-              ? task.finished
-                ? "primary.main"
-                : priorities.find((priority) => priority.id === task.priority)
-                    .color
-              : ""
+            task ? (task.finished ? "primary.main" : task.priority.color) : ""
           }
           gutterBottom
         >
-          {task &&
-            priorities.find((priority) => priority.id === task.priority)
-              .name}{" "}
-          priority
+          {task && task.priority.name} priority
         </Typography>
       )}
       <Typography gutterBottom>

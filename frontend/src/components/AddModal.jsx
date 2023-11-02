@@ -26,13 +26,13 @@ const defaultState = {
 const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
   const [formState, setFormState] = useState(defaultState);
 
-  const handleAdd = () => {
-    if (formState.title !== "") {
-      if (formState.priority < 0) {
-        handleAddTask({ ...formState, priority: 2 });
-      } else {
-        handleAddTask(formState);
-      }
+  const handleAdd = async () => {
+    if (
+      formState.title !== "" &&
+      formState.date !== null &&
+      formState.priority > 0
+    ) {
+      await handleAddTask(formState);
       setFormState(defaultState);
       handleModalClose();
     }
