@@ -42,7 +42,8 @@ public class MainController {
             Task task = taskData.get();
             task.setTitle(newTask.getTitle());
             task.setDescription(newTask.getDescription());
-            task.setDate(newTask.getDate());
+            task.setStartDate(newTask.getStartDate());
+            task.setEndDate(newTask.getEndDate());
             task.setPriority(newTask.getPriority());
             task.setFinished(newTask.getFinished());
             return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
