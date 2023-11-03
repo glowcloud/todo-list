@@ -12,11 +12,10 @@ const TasksList = ({
   return (
     <Box sx={{ mx: { md: 15, lg: 25, xl: 45 } }}>
       {tasks
-        // .sort((x, y) => y.priority - x.priority)
         .filter(
           (task) =>
             priorityFilters.length === 0 ||
-            priorityFilters.includes(task.priority)
+            priorityFilters.includes(task.priority.id)
         )
         .sort((x, y) => x.finished - y.finished)
         .map((task) => (

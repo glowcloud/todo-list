@@ -82,7 +82,6 @@ const Home = () => {
 
     if (res.ok) {
       const json = await res.json();
-      console.log(json);
 
       setTasks((prevTasks) => {
         const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
