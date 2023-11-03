@@ -35,19 +35,21 @@ public class MainController {
     }
 
     @PutMapping(path="/tasks/{id}")
-    public @ResponseBody Task editTask(@RequestBody Task newTask, @PathVariable("id") Integer id) {
-        return taskRepository.findById(id)
-                .map(task -> {
-                    task.setTitle(newTask.getTitle());
-                    task.setDescription(newTask.getDescription());
-                    task.setDate(newTask.getDate());
-                    task.setPriority(newTask.getPriority());
-                    task.setFinished(newTask.getFinished());
-                    return task;
-        }).orElseGet(() -> {
-            newTask.setId(id);
-            return taskRepository.save(newTask);
-        });
+    public ResponseEntity<Task> editTask(@RequestBody Task newTask, @PathVariable("id") Integer id) {
+        Optional<Task> taskData = taskRepository.findById(id);
+
+        if (taskData.isPresent()) {
+            Task task = taskData.get();
+            task.setTitle(newTask.getTitle());
+            task.setDescription(newTask.getDescription());
+            task.setDate(newTask.getDate());
+            task.setPriority(newTask.getPriority());
+            task.setFinished(newTask.getFinished());
+            return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping(path="/tasks/{id}")

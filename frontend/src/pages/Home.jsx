@@ -82,6 +82,7 @@ const Home = () => {
 
     if (res.ok) {
       const json = await res.json();
+      console.log(json);
 
       setTasks((prevTasks) => {
         const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
@@ -106,12 +107,10 @@ const Home = () => {
     }
   };
 
-  const handleCheckTask = (id, isChecked) => {
+  const handleCheckTask = async (id, isChecked) => {
     const curTask = tasks.find((task) => task.id === id);
     curTask.finished = isChecked;
-    setTasks((prevTasks) => {
-      return [...prevTasks.filter((task) => task.id !== id), curTask];
-    });
+    await handleEditTask(curTask);
   };
 
   const handleFilterClick = (id) => {
