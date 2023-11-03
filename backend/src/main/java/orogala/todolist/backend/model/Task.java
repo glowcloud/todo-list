@@ -14,7 +14,8 @@ public class Task {
     private Integer id;
     private String title;
     private String description;
-    private Date date;
+    private Date start;
+    private Date end;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Priority priority;
@@ -44,12 +45,20 @@ public class Task {
         this.description = description;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getStart() {
+        return start;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStart(Date start) {
+        this.start = start;
+    }
+
+    public Date getEnd() {
+        return end;
+    }
+
+    public void setEnd(Date end) {
+        this.end = end;
     }
 
     public Priority getPriority() {
