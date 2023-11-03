@@ -48,9 +48,7 @@ const TaskModal = ({
           {task && task.priority.name} priority
         </Typography>
       )}
-      <Typography gutterBottom>
-        {dayjs(task?.date).format("YYYY-MM-DD")}
-      </Typography>
+      <Typography gutterBottom>{task ? dayjs(task.date).toDate().toLocaleString() : ""}</Typography>
       <Typography
         variant="h5"
         sx={{

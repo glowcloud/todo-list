@@ -1,6 +1,7 @@
 package orogala.todolist.backend.model;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
@@ -13,7 +14,7 @@ public class Task {
     private Integer id;
     private String title;
     private String description;
-    private LocalDate date;
+    private Date date;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Priority priority;
@@ -43,11 +44,11 @@ public class Task {
         this.description = description;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

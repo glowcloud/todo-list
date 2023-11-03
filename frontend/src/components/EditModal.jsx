@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import CustomModal from "./CustomModal";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
 const EditModal = ({
@@ -26,7 +26,9 @@ const EditModal = ({
   const [formState, setFormState] = useState({ ...task });
 
   useEffect(() => {
-    setFormState({ ...task });
+    if (task) {
+      setFormState({ ...task, date: dayjs(task.date) });
+    }
   }, [task]);
 
   return (
@@ -50,11 +52,12 @@ const EditModal = ({
           fullWidth
           required
         />
-        <DatePicker
+        <DateTimePicker
           label="Date"
           orientation="portrait"
-          value={dayjs(formState.date)}
-          format="YYYY-MM-DD"
+          value={formState.date}
+          ampm={false}
+          timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
           disablePast
           sx={{
             my: 1,

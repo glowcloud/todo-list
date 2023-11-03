@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import CustomModal from "./CustomModal";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
 const defaultState = {
@@ -64,11 +64,12 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           fullWidth
           required
         />
-        <DatePicker
+        <DateTimePicker
           label="Date"
           orientation="portrait"
           value={formState.date}
-          format="YYYY-MM-DD"
+          ampm={false}
+          timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
           disablePast
           sx={{
             my: 1,
