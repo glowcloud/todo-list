@@ -29,7 +29,8 @@ const EditModal = ({
     if (task) {
       setFormState({
         ...task,
-        date: dayjs(task.date),
+        startDate: dayjs(task.startDate),
+        endDate: dayjs(task.endDate),
         priority: task.priority.id,
       });
     }
@@ -57,18 +58,38 @@ const EditModal = ({
           required
         />
         <DateTimePicker
-          label="Date"
+          label="Start"
           orientation="portrait"
-          value={formState.date}
+          value={formState.startDate}
           ampm={false}
           timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
+          disablePast
+          sx={{
+            my: 1,
+            mr: 1,
+          }}
+          onChange={(value) => {
+            setFormState((prevState) => {
+              return { ...prevState, startDate: value };
+            });
+          }}
+        />
+        <DateTimePicker
+          label="End"
+          orientation="portrait"
+          value={formState.endDate}
+          ampm={false}
+          timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
+          minDateTime={
+            formState.startDate ? formState.startDate.add(5, "minutes") : ""
+          }
           disablePast
           sx={{
             my: 1,
           }}
           onChange={(value) => {
             setFormState((prevState) => {
-              return { ...prevState, date: value };
+              return { ...prevState, endDate: value };
             });
           }}
         />
