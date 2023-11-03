@@ -5,6 +5,8 @@ import FiltersPopover from "../components/FiltersPopover";
 import TasksList from "../components/TasksList";
 import AddFab from "../components/AddFab";
 import EditModal from "../components/EditModal";
+import Search from "../components/Search";
+import { Box } from "@mui/material";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -13,6 +15,7 @@ const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [priorityFilters, setPriorityFilters] = useState([]);
   const [priorities, setPriorities] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const getTasks = async () => {
@@ -124,18 +127,22 @@ const Home = () => {
 
   return priorities.length > 0 ? (
     <>
-      <FiltersPopover
-        handleFilterClick={handleFilterClick}
-        priorities={priorities}
-        priorityFilters={priorityFilters}
-        setPriorityFilters={setPriorityFilters}
-      />
+      <Box display="flex" alignItems="center" justifyContent="left">
+        <FiltersPopover
+          handleFilterClick={handleFilterClick}
+          priorities={priorities}
+          priorityFilters={priorityFilters}
+          setPriorityFilters={setPriorityFilters}
+        />
+        <Search search={search} setSearch={setSearch} />
+      </Box>
       <TasksList
         tasks={[...tasks]}
         priorityFilters={priorityFilters}
         setTaskOpen={setTaskOpen}
         handleCheckTask={handleCheckTask}
         priorities={priorities}
+        search={search}
       />
       <AddFab handleAddOpen={handleAddOpen} />
       <TaskModal

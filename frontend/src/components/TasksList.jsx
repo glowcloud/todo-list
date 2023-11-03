@@ -8,14 +8,17 @@ const TasksList = ({
   setTaskOpen,
   handleCheckTask,
   priorities,
+  search,
 }) => {
   return (
     <Box sx={{ mx: { md: 15, lg: 25, xl: 45 } }}>
       {tasks
         .filter(
           (task) =>
-            priorityFilters.length === 0 ||
-            priorityFilters.includes(task.priority.id)
+            (task.title.includes(search) ||
+              task.description.includes(search)) &&
+            (priorityFilters.length === 0 ||
+              priorityFilters.includes(task.priority.id))
         )
         .sort((x, y) => x.finished - y.finished)
         .map((task) => (
