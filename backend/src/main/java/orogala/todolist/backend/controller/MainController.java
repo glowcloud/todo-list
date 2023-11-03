@@ -1,14 +1,14 @@
 package orogala.todolist.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
-
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Controller
@@ -48,6 +48,16 @@ public class MainController {
             newTask.setId(id);
             return taskRepository.save(newTask);
         });
+    }
+
+    @DeleteMapping(path="/tasks/{id}")
+    public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Integer id) {
+        try {
+            taskRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping(path="/priorities")

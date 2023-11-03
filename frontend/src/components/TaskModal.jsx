@@ -3,6 +3,7 @@ import {
   CheckCircleOutline,
   Close,
   Edit,
+  Delete,
 } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
 import CustomModal from "./CustomModal";
@@ -15,6 +16,7 @@ const TaskModal = ({
   handleModalClose,
   handleCheckTask,
   handleEditOpen,
+  handleDeleteTask,
 }) => {
   const handleCheck = () => {
     handleCheckTask(task.id, !task.finished);
@@ -31,6 +33,9 @@ const TaskModal = ({
             <Edit />
           </IconButton>
         )}
+        <IconButton onClick={() => handleDeleteTask(task.id)}>
+          <Delete />
+        </IconButton>
         <IconButton onClick={handleModalClose}>
           <Close />
         </IconButton>
@@ -48,7 +53,9 @@ const TaskModal = ({
           {task && task.priority.name} priority
         </Typography>
       )}
-      <Typography gutterBottom>{task ? dayjs(task.date).toDate().toLocaleString() : ""}</Typography>
+      <Typography gutterBottom>
+        {task ? dayjs(task.date).toDate().toLocaleString() : ""}
+      </Typography>
       <Typography
         variant="h5"
         sx={{

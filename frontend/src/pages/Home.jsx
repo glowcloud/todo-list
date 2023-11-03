@@ -74,19 +74,36 @@ const Home = () => {
       );
     }
 
-    const res = await fetch("http://localhost:8080/tasks", {
+    const res = await fetch(`http://localhost:8080/tasks/${task.id}`, {
       method: "PUT",
       body: JSON.stringify(task),
       headers: { "Content-Type": "application/json" },
     });
-    const json = await res.json();
-    console.log(json);
 
-    setTasks((prevTasks) => {
-      const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
-      return [...filteredTasks, task];
+    if (res.ok) {
+      const json = await res.json();
+
+      setTasks((prevTasks) => {
+        const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
+        return [...filteredTasks, json];
+      });
+      setIsEditOpen(false);
+    }
+  };
+
+  const handleDeleteTask = async (id) => {
+    const res = await fetch(`http://localhost:8080/tasks/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
     });
-    setIsEditOpen(false);
+
+    if (res.ok) {
+      setTasks((prevTasks) => {
+        const filteredTasks = prevTasks.filter((t) => t.id !== id);
+        return [...filteredTasks];
+      });
+      setTaskOpen(-1);
+    }
   };
 
   const handleCheckTask = (id, isChecked) => {
@@ -130,6 +147,7 @@ const Home = () => {
         handleCheckTask={handleCheckTask}
         priorities={priorities}
         handleEditOpen={handleEditOpen}
+        handleDeleteTask={handleDeleteTask}
       />
       <AddModal
         isOpen={isAddOpen}
