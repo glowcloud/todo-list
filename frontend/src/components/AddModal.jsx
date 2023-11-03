@@ -19,7 +19,7 @@ const defaultState = {
   title: "",
   description: "",
   date: dayjs(),
-  priority: 2,
+  priority: 3,
 };
 
 /* eslint-disable react/prop-types */
@@ -84,7 +84,6 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           <InputLabel>Priority</InputLabel>
           <Select
             value={formState.priority}
-            defaultValue={3}
             label="Priority"
             onChange={(e) =>
               setFormState((prevState) => {

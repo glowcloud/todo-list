@@ -27,7 +27,11 @@ const EditModal = ({
 
   useEffect(() => {
     if (task) {
-      setFormState({ ...task, date: dayjs(task.date) });
+      setFormState({
+        ...task,
+        date: dayjs(task.date),
+        priority: task.priority.id,
+      });
     }
   }, [task]);
 
@@ -71,13 +75,13 @@ const EditModal = ({
         <FormControl fullWidth sx={{ mt: 1 }}>
           <InputLabel>Priority</InputLabel>
           <Select
-            value={formState?.priority ? formState.priority.id : 3}
+            value={formState.priority}
             label="Priority"
-            onChange={(e) =>
+            onChange={(e) => {
               setFormState((prevState) => {
                 return { ...prevState, priority: e.target.value };
-              })
-            }
+              });
+            }}
           >
             {priorities.map((priority) => (
               <MenuItem key={priority.id} value={priority.id}>
