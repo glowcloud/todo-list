@@ -54,10 +54,22 @@ const TaskModal = ({
         </Typography>
       )}
       <Typography gutterBottom>
-        {task ? `Start: ${dayjs(task.startDate).toDate().toLocaleString()}` : ""}
+        {task
+          ? `Start: ${
+              task.allDay
+                ? dayjs(task.startDate).format("DD/MM/YYYY")
+                : dayjs(task.startDate).toDate().toLocaleString()
+            }`
+          : ""}
       </Typography>
       <Typography gutterBottom>
-        {task ? `End: ${dayjs(task.endDate).toDate().toLocaleString()}` : ""}
+        {task
+          ? `End: ${
+              task.allDay
+                ? dayjs(task.endDate).format("DD/MM/YYYY")
+                : dayjs(task.endDate).toDate().toLocaleString()
+            }`
+          : ""}
       </Typography>
       <Typography
         variant="h5"
