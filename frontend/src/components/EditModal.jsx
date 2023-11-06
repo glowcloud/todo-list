@@ -3,7 +3,9 @@ import { Close } from "@mui/icons-material";
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   MenuItem,
@@ -13,7 +15,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import CustomModal from "./CustomModal";
-import { DateTimePicker } from "@mui/x-date-pickers";
+import { DateTimePicker, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 
 const EditModal = ({
@@ -24,6 +26,7 @@ const EditModal = ({
   priorities,
 }) => {
   const [formState, setFormState] = useState({ ...task });
+  const [isAllDay, setIsAllDay] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -33,6 +36,7 @@ const EditModal = ({
         endDate: dayjs(task.endDate),
         priority: task.priority.id,
       });
+      setIsAllDay(task.allDay !== null ? task.allDay : false);
     }
   }, [task]);
 
@@ -57,42 +61,96 @@ const EditModal = ({
           fullWidth
           required
         />
-        <DateTimePicker
-          label="Start"
-          orientation="portrait"
-          value={formState.startDate}
-          ampm={false}
-          timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
-          disablePast
-          sx={{
-            my: 1,
-            mr: 1,
-          }}
-          onChange={(value) => {
-            setFormState((prevState) => {
-              return { ...prevState, startDate: value };
-            });
-          }}
-        />
-        <DateTimePicker
-          label="End"
-          orientation="portrait"
-          value={formState.endDate}
-          ampm={false}
-          timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
-          minDateTime={
-            formState.startDate ? formState.startDate.add(5, "minutes") : ""
-          }
-          disablePast
-          sx={{
-            my: 1,
-          }}
-          onChange={(value) => {
-            setFormState((prevState) => {
-              return { ...prevState, endDate: value };
-            });
-          }}
-        />
+        <Box>
+          <FormControlLabel
+            label="No time"
+            checked={isAllDay}
+            control={
+              <Checkbox
+                value={isAllDay}
+                onChange={(e) => setIsAllDay(e.target.checked)}
+              />
+            }
+          />
+        </Box>
+        {isAllDay && (
+          <>
+            <DatePicker
+              label="Start"
+              orientation="portrait"
+              value={formState.startDate}
+              disablePast
+              sx={{
+                my: 1,
+                mr: 1,
+              }}
+              onChange={(value) => {
+                setFormState((prevState) => {
+                  return { ...prevState, startDate: value, endDate: value };
+                });
+              }}
+            />
+            <DatePicker
+              label="End"
+              orientation="portrait"
+              value={formState.endDate}
+              disablePast
+              sx={{
+                my: 1,
+                mr: 1,
+              }}
+              onChange={(value) => {
+                setFormState((prevState) => {
+                  return { ...prevState, endDate: value };
+                });
+              }}
+            />
+          </>
+        )}
+        {!isAllDay && (
+          <>
+            <DateTimePicker
+              label="Start"
+              orientation="portrait"
+              value={formState.startDate}
+              ampm={false}
+              timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
+              disablePast
+              sx={{
+                my: 1,
+                mr: 1,
+              }}
+              onChange={(value) => {
+                setFormState((prevState) => {
+                  return {
+                    ...prevState,
+                    startDate: value,
+                    endDate: value.add(5, "minutes"),
+                  };
+                });
+              }}
+            />
+            <DateTimePicker
+              label="End"
+              orientation="portrait"
+              value={formState.endDate}
+              ampm={false}
+              timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
+              minDateTime={
+                formState.startDate ? formState.startDate.add(5, "minutes") : ""
+              }
+              disablePast
+              sx={{
+                my: 1,
+              }}
+              onChange={(value) => {
+                setFormState((prevState) => {
+                  return { ...prevState, endDate: value };
+                });
+              }}
+            />
+          </>
+        )}
         <FormControl fullWidth sx={{ mt: 1 }}>
           <InputLabel>Priority</InputLabel>
           <Select
@@ -125,7 +183,10 @@ const EditModal = ({
           fullWidth
         />
         <Box sx={{ textAlign: "center", mt: 3 }}>
-          <Button variant="outlined" onClick={() => handleEditTask(formState)}>
+          <Button
+            variant="outlined"
+            onClick={() => handleEditTask({ ...formState, allDay: isAllDay })}
+          >
             Save changes
           </Button>
         </Box>
