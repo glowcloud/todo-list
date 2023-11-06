@@ -23,7 +23,7 @@ const createEvents = (tasks) => {
   return events;
 };
 
-const CalendarView = ({ tasks, handleEditTask }) => {
+const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
   const [events, setEvents] = useState(createEvents(tasks));
 
   useEffect(() => {
@@ -38,6 +38,10 @@ const CalendarView = ({ tasks, handleEditTask }) => {
     await handleEditTask(currentTask);
   };
 
+  const onEventClick = (event) => {
+    setTaskOpen(event.id);
+  };
+
   return (
     <Box
       component={DnDCalendar}
@@ -47,6 +51,7 @@ const CalendarView = ({ tasks, handleEditTask }) => {
       endAccessor="end"
       onEventDrop={onEventChange}
       onEventResize={onEventChange}
+      onSelectEvent={onEventClick}
       style={{
         height: 500,
       }}

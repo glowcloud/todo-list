@@ -128,7 +128,11 @@ const Home = () => {
 
   return priorities.length > 0 ? (
     <>
-      <CalendarView tasks={tasks} handleEditTask={handleEditTask} />
+      <CalendarView
+        tasks={tasks}
+        handleEditTask={handleEditTask}
+        setTaskOpen={setTaskOpen}
+      />
       <Box display="flex" alignItems="center" justifyContent="left">
         <FiltersPopover
           handleFilterClick={handleFilterClick}
