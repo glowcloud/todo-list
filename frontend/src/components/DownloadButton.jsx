@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import dayjs from "dayjs";
 import { createEvents } from "ics";
 
@@ -20,7 +20,6 @@ const getEvents = (tasks) => {
       end,
     });
   });
-  console.log(events);
   return events;
 };
 
@@ -48,7 +47,11 @@ const DownloadButton = ({ tasks }) => {
     URL.revokeObjectURL(url);
   };
 
-  return <Button onClick={handleDownload}>Download calendar</Button>;
+  return (
+    <Box textAlign="center" mt={4}>
+      <Button onClick={handleDownload}>Download calendar</Button>
+    </Box>
+  );
 };
 
 export default DownloadButton;
