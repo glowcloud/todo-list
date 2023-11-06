@@ -18,6 +18,7 @@ const createEvents = (tasks) => {
       title: task.title,
       start: dayjs(task.startDate).toDate(),
       end: dayjs(task.endDate).toDate(),
+      allDay: task.allDay,
     });
   });
   return events;
