@@ -40,10 +40,13 @@ const TaskModal = ({
           <Close />
         </IconButton>
       </Box>
-      <Typography color={task?.finished ? "primary" : "secondary"} gutterBottom>
+      <Typography
+        color={task?.finished ? "primary.main" : "secondary"}
+        gutterBottom
+      >
         {task?.finished ? "Finished" : "To Do"}
       </Typography>
-      {!task?.finished && (
+      {
         <Typography
           color={
             task ? (task.finished ? "primary.main" : task.priority.color) : ""
@@ -52,7 +55,7 @@ const TaskModal = ({
         >
           {task && task.priority.name} priority
         </Typography>
-      )}
+      }
       <Typography gutterBottom>
         {task
           ? `Start: ${

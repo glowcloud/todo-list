@@ -9,6 +9,7 @@ import Search from "../components/Search";
 import { Box } from "@mui/material";
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
+import DownloadButton from "../components/DownloadButton";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -140,6 +141,7 @@ const Home = () => {
         handleEditTask={handleEditTask}
         setTaskOpen={setTaskOpen}
       />
+      <DownloadButton tasks={tasks} />
       <Summary tasks={tasks} priorities={priorities} />
       <Box display="flex" alignItems="center" justifyContent="left">
         <FiltersPopover
