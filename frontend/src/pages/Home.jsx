@@ -7,6 +7,7 @@ import AddFab from "../components/AddFab";
 import EditModal from "../components/EditModal";
 import Search from "../components/Search";
 import { Box } from "@mui/material";
+import CalendarView from "../components/CalendarView";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -127,6 +128,7 @@ const Home = () => {
 
   return priorities.length > 0 ? (
     <>
+      <CalendarView tasks={tasks} handleEditTask={handleEditTask} />
       <Box display="flex" alignItems="center" justifyContent="left">
         <FiltersPopover
           handleFilterClick={handleFilterClick}
