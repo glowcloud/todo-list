@@ -19,7 +19,7 @@ const createEvents = (tasks) => {
       start: dayjs(task.startDate).toDate(),
       end: dayjs(task.endDate).toDate(),
       allDay: task.allDay,
-      color: task.priority.color,
+      color: task.finished ? "lightblue" : task.priority.color,
     });
   });
   return events;
@@ -60,7 +60,7 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
     (date) => ({
       ...(dayjs().isSame(dayjs(date), "day") && {
         style: {
-        //   backgroundColor: "rgba(255, 255, 255, 0.5)",
+          //   backgroundColor: "rgba(255, 255, 255, 0.5)",
         },
       }),
     }),
