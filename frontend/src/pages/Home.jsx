@@ -8,6 +8,7 @@ import EditModal from "../components/EditModal";
 import Search from "../components/Search";
 import { Box } from "@mui/material";
 import CalendarView from "../components/CalendarView";
+import Summary from "../components/Summary";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -129,10 +130,17 @@ const Home = () => {
   return priorities.length > 0 ? (
     <>
       <CalendarView
-        tasks={tasks}
+        tasks={tasks.filter(
+          (task) =>
+            (task.title.includes(search) ||
+              task.description.includes(search)) &&
+            (priorityFilters.length === 0 ||
+              priorityFilters.includes(task.priority.id))
+        )}
         handleEditTask={handleEditTask}
         setTaskOpen={setTaskOpen}
       />
+      <Summary tasks={tasks} priorities={priorities} />
       <Box display="flex" alignItems="center" justifyContent="left">
         <FiltersPopover
           handleFilterClick={handleFilterClick}
