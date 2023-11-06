@@ -46,6 +46,7 @@ public class MainController {
             task.setEndDate(newTask.getEndDate());
             task.setPriority(newTask.getPriority());
             task.setFinished(newTask.getFinished());
+            task.setAllDay(newTask.getAllDay());
             return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
         }
         else {

@@ -7,7 +7,7 @@ import Layout from "./components/Layout";
 function App() {
   const theme = createTheme({
     palette: {
-      mode: "dark",
+      // mode: "dark",
     },
   });
 

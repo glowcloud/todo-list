@@ -20,6 +20,7 @@ public class Task {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Priority priority;
     private Boolean finished;
+    private Boolean allDay;
 
     public Integer getId() {
         return id;
@@ -75,5 +76,13 @@ public class Task {
 
     public void setFinished(Boolean finished) {
         this.finished = finished;
+    }
+
+    public Boolean getAllDay() {
+        return allDay;
+    }
+
+    public void setAllDay(Boolean allDay) {
+        this.allDay = allDay;
     }
 }
