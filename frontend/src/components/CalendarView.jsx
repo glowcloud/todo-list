@@ -19,7 +19,12 @@ const createEvents = (tasks) => {
       start: dayjs(task.startDate).toDate(),
       end: dayjs(task.endDate).toDate(),
       allDay: task.allDay,
-      color: task.finished ? "lightblue" : task.priority.color,
+      color: task.finished
+        ? "lightblue"
+        : dayjs(task.endDate).isBefore(dayjs()) ||
+          (dayjs().isSame(task.endDate, "d") && !task.allDay)
+        ? "rgb(244, 67, 54)"
+        : task.priority.color,
     });
   });
   return events;

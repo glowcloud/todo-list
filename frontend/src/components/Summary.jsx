@@ -3,16 +3,25 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useState } from "react";
 import dayjs from "dayjs";
 
-const getData = (tasks, priorities, timeFrame) => {
+const getStatusData = (tasks, timeFrame) => {
   if (timeFrame !== "overall") {
     tasks = tasks.filter((task) =>
       dayjs().isSame(dayjs(task.startDate), timeFrame)
     );
   }
+
   let done = 0;
   let todo = 0;
+  let overdue = 0;
+
   tasks.forEach((task) => {
-    task.finished ? done++ : todo++;
+    if (task.finished) done++;
+    else if (
+      dayjs(task.endDate).isBefore(dayjs()) ||
+      (dayjs().isSame(task.endDate, "d") && !task.allDay)
+    )
+      overdue++;
+    else todo++;
   });
 
   return [
@@ -25,6 +34,12 @@ const getData = (tasks, priorities, timeFrame) => {
       id: 1,
       value: todo,
       label: "To do",
+    },
+    {
+      id: 2,
+      value: overdue,
+      label: "Overdue",
+      color: "rgb(244, 67, 54)",
     },
   ];
 };
@@ -86,7 +101,7 @@ const Summary = ({ tasks, priorities }) => {
         <PieChart
           series={[
             {
-              data: getData(tasks, priorities, timeFrame),
+              data: getStatusData(tasks, timeFrame),
               innerRadius: 0,
               outerRadius: 170,
               paddingAngle: 0,
