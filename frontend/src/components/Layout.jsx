@@ -15,16 +15,16 @@ const Layout = ({ children }) => {
     <Box display="flex">
       <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          <IconButton onClick={handleMenuClick} sx={{ mr: 2 }}>
+          {/* <IconButton onClick={handleMenuClick} sx={{ mr: 2 }}>
             <Menu />
-          </IconButton>
+          </IconButton> */}
           <Typography variant="h6">To Do List</Typography>
         </Toolbar>
       </AppBar>
-      <Sidebar
+      {/* <Sidebar
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
-      />
+      /> */}
       <Box component="main" width="100%">
         <Toolbar />
         {children}
