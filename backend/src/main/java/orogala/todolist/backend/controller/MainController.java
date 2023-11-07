@@ -39,9 +39,7 @@ public class MainController {
         if (taskData.isPresent()) {
             return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
         }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping(path="/tasks")
@@ -85,13 +83,21 @@ public class MainController {
     }
 
     @GetMapping(path="/priorities")
-    public @ResponseBody Iterable<Priority> getAllPriorities() {
-        return priorityRepository.findAll();
+    public ResponseEntity<List<Priority>> getAllPriorities() {
+        List<Priority> priorities = new ArrayList<Priority>();
+        priorityRepository.findAll().forEach(priorities::add);
+        if (priorities.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(priorities, HttpStatus.OK);
     }
 
     @GetMapping(path="/priorities/{id}")
-    public @ResponseBody Optional<Priority> getPriorityById(@PathVariable("id") Integer id) {
-        return priorityRepository.findById(id);
+    public ResponseEntity<Priority> getPriorityById(@PathVariable("id") Integer id) {
+        Optional<Priority> priorityData = priorityRepository.findById(id);
+        if (priorityData.isPresent()) {
+            return new ResponseEntity<>(priorityData.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
 }
