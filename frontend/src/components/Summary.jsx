@@ -2,11 +2,12 @@ import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useState } from "react";
 import dayjs from "dayjs";
+import { DatePicker } from "@mui/x-date-pickers";
 
-const getStatusData = (tasks, timeFrame) => {
+const getStatusData = (tasks, timeFrame, chosenTime) => {
   if (timeFrame !== "overall") {
     tasks = tasks.filter((task) =>
-      dayjs().isSame(dayjs(task.startDate), timeFrame)
+      dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame)
     );
   }
 
@@ -44,12 +45,12 @@ const getStatusData = (tasks, timeFrame) => {
   ];
 };
 
-const getPrioritiesData = (tasks, priorities, timeFrame) => {
+const getPrioritiesData = (tasks, priorities, timeFrame, chosenTime) => {
   const data = [];
 
   if (timeFrame !== "overall") {
     tasks = tasks.filter((task) =>
-      dayjs().isSame(dayjs(task.startDate), timeFrame)
+      dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame)
     );
   }
 
@@ -78,6 +79,7 @@ const getPrioritiesData = (tasks, priorities, timeFrame) => {
 
 const Summary = ({ tasks, priorities }) => {
   const [timeFrame, setTimeFrame] = useState("day");
+  const [chosenTime, setChosenTime] = useState(dayjs());
 
   const handleTimeFrameChange = (e) => {
     setTimeFrame(e.target.value);
@@ -86,22 +88,37 @@ const Summary = ({ tasks, priorities }) => {
   return (
     <>
       <Box textAlign="center" mt={5}>
-        <FormControl sx={{ width: 500 }}>
+        <FormControl sx={{ width: 150, mx: 2, my: { xs: 1, md: 0 } }}>
           <InputLabel>Timeframe</InputLabel>
           <Select value={timeFrame} onChange={handleTimeFrameChange}>
             <MenuItem value="overall">Overall</MenuItem>
-            <MenuItem value="year">This year</MenuItem>
-            <MenuItem value="month">This month</MenuItem>
-            <MenuItem value="week">This week</MenuItem>
-            <MenuItem value="day">This day</MenuItem>
+            <MenuItem value="year">Year</MenuItem>
+            <MenuItem value="month">Month</MenuItem>
+            <MenuItem value="week">Week</MenuItem>
+            <MenuItem value="day">Day</MenuItem>
           </Select>
         </FormControl>
+        {timeFrame !== "overall" && (
+          <DatePicker
+            label="Time"
+            views={
+              timeFrame === "year"
+                ? ["year"]
+                : timeFrame === "month"
+                ? ["month", "year"]
+                : ["day", "month", "year"]
+            }
+            value={chosenTime}
+            onChange={(value) => setChosenTime(value)}
+            sx={{ my: { xs: 1, md: 0 } }}
+          />
+        )}
       </Box>
       <Box display="flex">
         <PieChart
           series={[
             {
-              data: getStatusData(tasks, timeFrame),
+              data: getStatusData(tasks, timeFrame, chosenTime),
               innerRadius: 0,
               outerRadius: 170,
               paddingAngle: 0,
@@ -116,7 +133,7 @@ const Summary = ({ tasks, priorities }) => {
         <PieChart
           series={[
             {
-              data: getPrioritiesData(tasks, priorities, timeFrame),
+              data: getPrioritiesData(tasks, priorities, timeFrame, chosenTime),
               innerRadius: 0,
               outerRadius: 170,
               paddingAngle: 0,
