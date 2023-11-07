@@ -10,7 +10,8 @@ import { Box } from "@mui/material";
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
-import SwitchViewButton from "../components/SwitchViewButton";
+import SwitchViewButtons from "../components/SwitchViewButtons";
+import dayjs from "dayjs";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -140,9 +141,16 @@ const Home = () => {
           setPriorityFilters={setPriorityFilters}
         />
         <Search search={search} setSearch={setSearch} />
-        <SwitchViewButton
-          currentView={currentView}
+        <SwitchViewButtons
           setCurrentView={setCurrentView}
+          badgeContent={
+            tasks.filter(
+              (task) =>
+                !task.finished &&
+                (dayjs(task.endDate).isBefore(dayjs()) ||
+                  (dayjs().isSame(task.endDate, "d") && !task.allDay))
+            ).length
+          }
         />
       </Box>
       {currentView === "calendar" && (
@@ -167,6 +175,21 @@ const Home = () => {
       {currentView === "list" && (
         <TasksList
           tasks={[...tasks]}
+          priorityFilters={priorityFilters}
+          setTaskOpen={setTaskOpen}
+          handleCheckTask={handleCheckTask}
+          priorities={priorities}
+          search={search}
+        />
+      )}
+      {currentView === "overdue" && (
+        <TasksList
+          tasks={tasks.filter(
+            (task) =>
+              !task.finished &&
+              (dayjs(task.endDate).isBefore(dayjs()) ||
+                (dayjs().isSame(task.endDate, "d") && !task.allDay))
+          )}
           priorityFilters={priorityFilters}
           setTaskOpen={setTaskOpen}
           handleCheckTask={handleCheckTask}
