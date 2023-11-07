@@ -9,6 +9,9 @@ import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -20,18 +23,33 @@ public class MainController {
     private TaskRepository taskRepository;
 
     @GetMapping(path="/tasks")
-    public @ResponseBody Iterable<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public ResponseEntity<List<Task>> getAllTasks() {
+        List<Task> tasks = new ArrayList<Task>();
+        taskRepository.findAll().forEach(tasks::add);
+        if (tasks.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
     @GetMapping(path="/tasks/{id}")
-    public @ResponseBody Optional<Task> getTaskById(@PathVariable("id") Integer id) {
-        return taskRepository.findById(id);
+    public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
+        Optional<Task> taskData = taskRepository.findById(id);
+
+        if (taskData.isPresent()) {
+            return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping(path="/tasks")
-    public @ResponseBody Task addTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+    public ResponseEntity<Task> addTask(@RequestBody Task task) {
+        try {
+            Task newTask = taskRepository.save(task);
+            return new ResponseEntity<>(newTask, HttpStatus.CREATED);
+        } catch(Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping(path="/tasks/{id}")
@@ -65,13 +83,21 @@ public class MainController {
     }
 
     @GetMapping(path="/priorities")
-    public @ResponseBody Iterable<Priority> getAllPriorities() {
-        return priorityRepository.findAll();
+    public ResponseEntity<List<Priority>> getAllPriorities() {
+        List<Priority> priorities = new ArrayList<Priority>();
+        priorityRepository.findAll().forEach(priorities::add);
+        if (priorities.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(priorities, HttpStatus.OK);
     }
 
     @GetMapping(path="/priorities/{id}")
-    public @ResponseBody Optional<Priority> getPriorityById(@PathVariable("id") Integer id) {
-        return priorityRepository.findById(id);
+    public ResponseEntity<Priority> getPriorityById(@PathVariable("id") Integer id) {
+        Optional<Priority> priorityData = priorityRepository.findById(id);
+        if (priorityData.isPresent()) {
+            return new ResponseEntity<>(priorityData.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
 }
