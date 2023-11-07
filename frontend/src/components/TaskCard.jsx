@@ -7,6 +7,7 @@ import {
   Checkbox,
   Box,
 } from "@mui/material";
+import dayjs from "dayjs";
 
 const TaskCard = ({ task, handleClick, handleCheckTask }) => {
   const handleCheck = (e) => {
@@ -57,7 +58,10 @@ const TaskCard = ({ task, handleClick, handleCheckTask }) => {
           sx={{
             mr: 2,
             backgroundColor: task.finished
-              ? "primary.main"
+              ? "lightblue"
+              : dayjs(task.endDate).isBefore(dayjs()) ||
+                (dayjs().isSame(task.endDate, "d") && !task.allDay)
+              ? "rgb(244, 67, 54)"
               : task.priority.color,
             width: 20,
             height: 20,
