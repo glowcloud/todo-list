@@ -9,6 +9,8 @@ import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
+import orogala.todolist.backend.service.MailService;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ public class MainController {
     private PriorityRepository priorityRepository;
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private MailService mailService;
 
     @GetMapping(path="/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
@@ -35,6 +39,8 @@ public class MainController {
     @GetMapping(path="/tasks/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
         Optional<Task> taskData = taskRepository.findById(id);
+
+        mailService.sendEmail("oliwia.rogala97@gmail.com", "Testing mails", "Some test message.");
 
         if (taskData.isPresent()) {
             return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
@@ -99,5 +105,11 @@ public class MainController {
             return new ResponseEntity<>(priorityData.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping(path="/sendmail")
+    public String sendTestMail() {
+        mailService.sendEmail("oliwia.rogala97@gmail.com", "Hello", "Testing messaging");
+        return "Mail sent";
     }
 }

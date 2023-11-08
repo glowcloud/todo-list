@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 import jakarta.persistence.*;
+import org.apache.catalina.User;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -21,6 +22,9 @@ public class Task {
     private Priority priority;
     private Boolean finished;
     private Boolean allDay;
+//    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private TodoUser user;
 
     public Integer getId() {
         return id;
@@ -85,4 +89,12 @@ public class Task {
     public void setAllDay(Boolean allDay) {
         this.allDay = allDay;
     }
+
+//    public TodoUser getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(TodoUser user) {
+//        this.user = user;
+//    }
 }
