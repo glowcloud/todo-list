@@ -8,6 +8,8 @@ import {
 import { Box, IconButton, Typography } from "@mui/material";
 import CustomModal from "./CustomModal";
 import dayjs from "dayjs";
+import { useState } from "react";
+import DeleteConfirm from "./DeleteConfirm";
 
 /* eslint-disable react/prop-types */
 const TaskModal = ({
@@ -18,8 +20,23 @@ const TaskModal = ({
   handleEditOpen,
   handleDeleteTask,
 }) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
   const handleCheck = () => {
     handleCheckTask(task.id, !task.finished);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  const handleOpenDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    handleCloseDialog();
+    await handleDeleteTask(task.id);
   };
 
   return (
@@ -33,7 +50,7 @@ const TaskModal = ({
             <Edit />
           </IconButton>
         )}
-        <IconButton onClick={() => handleDeleteTask(task.id)}>
+        <IconButton onClick={handleOpenDialog}>
           <Delete />
         </IconButton>
         <IconButton onClick={handleModalClose}>
@@ -91,6 +108,11 @@ const TaskModal = ({
       >
         {task?.description}
       </Typography>
+      <DeleteConfirm
+        open={isDeleteDialogOpen}
+        handleClose={handleCloseDialog}
+        handleDelete={handleDeleteConfirm}
+      />
     </CustomModal>
   );
 };
