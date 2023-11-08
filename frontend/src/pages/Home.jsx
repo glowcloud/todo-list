@@ -133,7 +133,7 @@ const Home = () => {
 
   return priorities.length > 0 ? (
     <>
-      <Box display="flex" alignItems="center" justifyContent="left">
+      <Box display="flex" alignItems="center" justifyContent="left" sx={{mb: 5}}>
         <FiltersPopover
           handleFilterClick={handleFilterClick}
           priorities={priorities}
