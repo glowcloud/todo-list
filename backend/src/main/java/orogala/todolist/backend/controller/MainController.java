@@ -40,8 +40,6 @@ public class MainController {
     public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
         Optional<Task> taskData = taskRepository.findById(id);
 
-        mailService.sendEmail("oliwia.rogala97@gmail.com", "Testing mails", "Some test message.");
-
         if (taskData.isPresent()) {
             return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
         }
@@ -52,6 +50,9 @@ public class MainController {
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
         try {
             Task newTask = taskRepository.save(task);
+            mailService.sendEmail("oliwia.rogala97@gmail.com",
+                    "New task"  + newTask.getTitle(),
+                    "You have a new task to do.");
             return new ResponseEntity<>(newTask, HttpStatus.CREATED);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
