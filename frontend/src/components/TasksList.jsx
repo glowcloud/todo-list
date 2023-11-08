@@ -1,10 +1,43 @@
 /* eslint-disable react/prop-types */
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import TaskCard from "./TaskCard";
 import SortPopover from "./SortPopover";
 import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
+
+const getFilteredTasks = (
+  tasks,
+  timeFrame,
+  chosenTime,
+  priorityFilters,
+  sortType,
+  search
+) => {
+  return tasks
+    .filter(
+      (task) =>
+        (timeFrame === "overall" ||
+          dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame) ||
+          dayjs(chosenTime).isSame(dayjs(task.endDate), timeFrame) ||
+          (dayjs(task.startDate).isBefore(dayjs(chosenTime), timeFrame) &&
+            dayjs(task.endDate).isAfter(dayjs(chosenTime), timeFrame))) &&
+        (task.title.includes(search) || task.description.includes(search)) &&
+        (priorityFilters.length === 0 ||
+          priorityFilters.includes(task.priority.id))
+    )
+    .sort((x, y) => {
+      if (sortType === "none") {
+        return x.finished - y.finished;
+      }
+      if (sortType === "priority") {
+        return x.priority.id - y.priority.id;
+      }
+      if (sortType === "date") {
+        return dayjs(x.endDate).toDate() - dayjs(y.endDate).toDate();
+      }
+    });
+};
 
 const TasksList = ({
   tasks,
@@ -15,7 +48,7 @@ const TasksList = ({
   search,
 }) => {
   const [sortType, setSortType] = useState("none");
-  const [timeFrame, setTimeFrame] = useState("overall");
+  const [timeFrame, setTimeFrame] = useState("day");
   const [chosenTime, setChosenTime] = useState(dayjs());
 
   return (
@@ -35,39 +68,36 @@ const TasksList = ({
           setChosenTime={setChosenTime}
         />
       </Box>
-      {tasks
-        .filter(
-          (task) =>
-            (timeFrame === "overall" ||
-              dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame) ||
-              dayjs(chosenTime).isSame(dayjs(task.endDate), timeFrame) ||
-              (dayjs(task.startDate).isBefore(dayjs(chosenTime), timeFrame) &&
-                dayjs(task.endDate).isAfter(dayjs(chosenTime), timeFrame))) &&
-            (task.title.includes(search) ||
-              task.description.includes(search)) &&
-            (priorityFilters.length === 0 ||
-              priorityFilters.includes(task.priority.id))
-        )
-        .sort((x, y) => {
-          if (sortType === "none") {
-            return x.finished - y.finished;
-          }
-          if (sortType === "priority") {
-            return x.priority.id - y.priority.id;
-          }
-          if (sortType === "date") {
-            return dayjs(x.endDate).toDate() - dayjs(y.endDate).toDate();
-          }
-        })
-        .map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            handleClick={() => setTaskOpen(task.id)}
-            handleCheckTask={handleCheckTask}
-            priorities={priorities}
-          />
-        ))}
+      {getFilteredTasks(
+        tasks,
+        timeFrame,
+        chosenTime,
+        priorityFilters,
+        sortType,
+        search
+      ).map((task) => (
+        <TaskCard
+          key={task.id}
+          task={task}
+          handleClick={() => setTaskOpen(task.id)}
+          handleCheckTask={handleCheckTask}
+          priorities={priorities}
+        />
+      ))}
+      {(!tasks ||
+        tasks.length === 0 ||
+        getFilteredTasks(
+          tasks,
+          timeFrame,
+          chosenTime,
+          priorityFilters,
+          sortType,
+          search
+        ).length === 0) && (
+        <Box textAlign="center" mt={5}>
+          <Typography variant="h5">No tasks found.</Typography>
+        </Box>
+      )}
     </Box>
   );
 };
