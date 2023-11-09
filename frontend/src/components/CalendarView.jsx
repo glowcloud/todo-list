@@ -7,6 +7,8 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Box } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
 import { isOverdue } from "../utils/generalUtils";
+import ConfirmDialog from "./ConfirmDialog";
+import ResendingBackdrop from "./ResendingBackdrop";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -32,17 +34,35 @@ const createEvents = (tasks) => {
 
 const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
   const [events, setEvents] = useState(createEvents(tasks));
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [changedTaskData, setChangedTaskData] = useState(null);
 
   useEffect(() => {
     setEvents(createEvents(tasks));
   }, [tasks]);
 
+  const handleConfirmEdit = async () => {
+    const currentTask = tasks.find(
+      (task) => task.id === changedTaskData.event.id
+    );
+    currentTask.startDate = dayjs(changedTaskData.start);
+    currentTask.endDate = dayjs(changedTaskData.end);
+    handleConfirmClose();
+
+    setIsResending(true);
+    await handleEditTask(currentTask);
+    setIsResending(false);
+  };
+
+  const handleConfirmClose = () => {
+    setIsConfirmOpen(false);
+  };
+
   const onEventChange = async (data) => {
     // confirm prompt
-    const currentTask = tasks.find((task) => task.id === data.event.id);
-    currentTask.startDate = dayjs(data.start);
-    currentTask.endDate = dayjs(data.end);
-    await handleEditTask(currentTask);
+    setChangedTaskData(data);
+    setIsConfirmOpen(true);
   };
 
   const onEventClick = (event) => {
@@ -73,26 +93,36 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
   );
 
   return (
-    <Box
-      component={DnDCalendar}
-      localizer={localizer}
-      events={events}
-      startAccessor="start"
-      endAccessor="end"
-      onEventDrop={onEventChange}
-      onEventResize={onEventChange}
-      onSelectEvent={onEventClick}
-      dayPropGetter={dayPropGetter}
-      eventPropGetter={eventPropGetter}
-      defaultView="day"
-      style={{
-        height: 500,
-      }}
-      sx={{
-        mx: { xs: 1, md: 15, lg: 25, xl: 45 },
-        my: 2,
-      }}
-    />
+    <>
+      <Box
+        component={DnDCalendar}
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        onEventDrop={onEventChange}
+        onEventResize={onEventChange}
+        onSelectEvent={onEventClick}
+        dayPropGetter={dayPropGetter}
+        eventPropGetter={eventPropGetter}
+        defaultView="day"
+        style={{
+          height: 500,
+        }}
+        sx={{
+          mx: { xs: 1, md: 15, lg: 25, xl: 45 },
+          my: 2,
+        }}
+      />
+      <ConfirmDialog
+        open={isConfirmOpen}
+        handleClose={handleConfirmClose}
+        handleConfirm={handleConfirmEdit}
+        title="Confirm edit"
+        content="Are you sure you want to reschedule this task?"
+      />
+      <ResendingBackdrop isResending={isResending} />
+    </>
   );
 };
 
