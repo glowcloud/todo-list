@@ -54,32 +54,7 @@ public class MainController {
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
         try {
             Task newTask = taskRepository.save(task);
-            ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(1);
-
-            String mailBody = "";
-            if (task.getAllDay()) {
-                mailBody = "All day task\n";
-            }
-            mailBody += "Start: "
-                    + task.getStartDate().toString()
-                    + "\nEnd: "
-                    + task.getEndDate().toString()
-                    + "\n\n"
-                    + task.getDescription();
-
-
-//            String jobUUID = UUID.randomUUID().toString();
-            JobDetail jobDetail = buildJobDetail("oliwia.rogala97@gmail.com",
-                    "Upcoming task: " + task.getTitle(),
-                    mailBody,
-                    task.getId().toString()
-            );
-            Trigger trigger = buildJobTrigger(jobDetail, dateTime);
-            scheduler.scheduleJob(jobDetail, trigger);
-
-//            ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(true,
-//                    jobDetail.getKey().getName(), jobDetail.getKey().getGroup(), "Email Scheduled Successfully!");
-
+            scheduleTask(newTask);
             return new ResponseEntity<>(newTask, HttpStatus.CREATED);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,15 +66,25 @@ public class MainController {
         Optional<Task> taskData = taskRepository.findById(id);
 
         if (taskData.isPresent()) {
-            Task task = taskData.get();
-            task.setTitle(newTask.getTitle());
-            task.setDescription(newTask.getDescription());
-            task.setStartDate(newTask.getStartDate());
-            task.setEndDate(newTask.getEndDate());
-            task.setPriority(newTask.getPriority());
-            task.setFinished(newTask.getFinished());
-            task.setAllDay(newTask.getAllDay());
-            return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
+            try {
+                Task task = taskData.get();
+                task.setTitle(newTask.getTitle());
+                task.setDescription(newTask.getDescription());
+                task.setStartDate(newTask.getStartDate());
+                task.setEndDate(newTask.getEndDate());
+                task.setPriority(newTask.getPriority());
+                task.setFinished(newTask.getFinished());
+                task.setAllDay(newTask.getAllDay());
+
+                scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
+                scheduleTask(task);
+
+                return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
+
+            }
+            catch(Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
         else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -169,5 +154,29 @@ public class MainController {
                 .startAt(Date.from(startAt.toInstant()))
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
                 .build();
+    }
+
+    private void scheduleTask(Task task) throws SchedulerException {
+        ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(1);
+
+        String mailBody = "";
+        if (task.getAllDay()) {
+            mailBody = "All day task\n";
+        }
+        mailBody += "Start: "
+                + task.getStartDate().toString()
+                + "\nEnd: "
+                + task.getEndDate().toString()
+                + "\n\n"
+                + task.getDescription();
+
+//            String jobUUID = UUID.randomUUID().toString();
+        JobDetail jobDetail = buildJobDetail("oliwia.rogala97@gmail.com",
+                "Upcoming task: " + task.getTitle(),
+                mailBody,
+                task.getId().toString()
+        );
+        Trigger trigger = buildJobTrigger(jobDetail, dateTime);
+        scheduler.scheduleJob(jobDetail, trigger);
     }
 }
