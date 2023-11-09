@@ -67,9 +67,12 @@ public class MainController {
                     + "\n\n"
                     + task.getDescription();
 
+
+//            String jobUUID = UUID.randomUUID().toString();
             JobDetail jobDetail = buildJobDetail("oliwia.rogala97@gmail.com",
                     "Upcoming task: " + task.getTitle(),
-                    mailBody
+                    mailBody,
+                    task.getId().toString()
             );
             Trigger trigger = buildJobTrigger(jobDetail, dateTime);
             scheduler.scheduleJob(jobDetail, trigger);
@@ -107,6 +110,7 @@ public class MainController {
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Integer id) {
         try {
             taskRepository.deleteById(id);
+            scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -142,7 +146,7 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private JobDetail buildJobDetail(String email, String subject, String body) {
+    private JobDetail buildJobDetail(String email, String subject, String body, String id) {
         JobDataMap jobDataMap = new JobDataMap();
 
         jobDataMap.put("email", email);
@@ -150,7 +154,7 @@ public class MainController {
         jobDataMap.put("body", body);
 
         return JobBuilder.newJob(EmailJob.class)
-                .withIdentity(UUID.randomUUID().toString(), "email-jobs")
+                .withIdentity(id, "email-jobs")
                 .withDescription("Send Email Job")
                 .usingJobData(jobDataMap)
                 .storeDurably()
