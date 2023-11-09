@@ -10,8 +10,6 @@ import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
 import orogala.todolist.backend.service.MailService;
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +48,6 @@ public class MainController {
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
         try {
             Task newTask = taskRepository.save(task);
-            mailService.sendEmail("oliwia.rogala97@gmail.com",
-                    "New task"  + newTask.getTitle(),
-                    "You have a new task to do.");
             return new ResponseEntity<>(newTask, HttpStatus.CREATED);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -109,8 +104,13 @@ public class MainController {
     }
 
     @PostMapping(path="/sendmail")
-    public String sendTestMail() {
-        mailService.sendEmail("oliwia.rogala97@gmail.com", "Hello", "Testing messaging");
-        return "Mail sent";
+    public ResponseEntity<HttpStatus> sendAttachmentMail(@RequestBody String file) {
+        System.err.println(file);
+        mailService.sendEmailWithAttachment(
+                "oliwia.rogala97@gmail.com",
+                "Task test",
+                "Testing file sending",
+                file);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
