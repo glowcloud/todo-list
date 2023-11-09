@@ -1,18 +1,22 @@
 package orogala.todolist.backend.controller;
 
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import orogala.todolist.backend.job.EmailJob;
 import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
 import orogala.todolist.backend.service.MailService;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import orogala.todolist.backend.payload.ScheduleEmailResponse;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:5173")
@@ -23,6 +27,8 @@ public class MainController {
     private TaskRepository taskRepository;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private Scheduler scheduler;
 
     @GetMapping(path="/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
@@ -48,6 +54,29 @@ public class MainController {
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
         try {
             Task newTask = taskRepository.save(task);
+            ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(1);
+
+            String mailBody = "";
+            if (task.getAllDay()) {
+                mailBody = "All day task\n";
+            }
+            mailBody += "Start: "
+                    + task.getStartDate().toString()
+                    + "\nEnd: "
+                    + task.getEndDate().toString()
+                    + "\n\n"
+                    + task.getDescription();
+
+            JobDetail jobDetail = buildJobDetail("oliwia.rogala97@gmail.com",
+                    "Upcoming task: " + task.getTitle(),
+                    mailBody
+            );
+            Trigger trigger = buildJobTrigger(jobDetail, dateTime);
+            scheduler.scheduleJob(jobDetail, trigger);
+
+//            ScheduleEmailResponse scheduleEmailResponse = new ScheduleEmailResponse(true,
+//                    jobDetail.getKey().getName(), jobDetail.getKey().getGroup(), "Email Scheduled Successfully!");
+
             return new ResponseEntity<>(newTask, HttpStatus.CREATED);
         } catch(Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,5 +140,30 @@ public class MainController {
                 "You have a new task.",
                 file);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private JobDetail buildJobDetail(String email, String subject, String body) {
+        JobDataMap jobDataMap = new JobDataMap();
+
+        jobDataMap.put("email", email);
+        jobDataMap.put("subject", subject);
+        jobDataMap.put("body", body);
+
+        return JobBuilder.newJob(EmailJob.class)
+                .withIdentity(UUID.randomUUID().toString(), "email-jobs")
+                .withDescription("Send Email Job")
+                .usingJobData(jobDataMap)
+                .storeDurably()
+                .build();
+    }
+
+    private Trigger buildJobTrigger(JobDetail jobDetail, ZonedDateTime startAt) {
+        return TriggerBuilder.newTrigger()
+                .forJob(jobDetail)
+                .withIdentity(jobDetail.getKey().getName(), "email-triggers")
+                .withDescription("Send Email Trigger")
+                .startAt(Date.from(startAt.toInstant()))
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
+                .build();
     }
 }
