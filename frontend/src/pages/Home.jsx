@@ -13,6 +13,7 @@ import DownloadButton from "../components/DownloadButton";
 import SwitchViewButtons from "../components/SwitchViewButtons";
 import dayjs from "dayjs";
 import { sendTask } from "../utils/calendarIntegrationUtils";
+import { isOverdue } from "../utils/generalUtils";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -217,12 +218,7 @@ const Home = () => {
       )}
       {currentView === "overdue" && (
         <TasksList
-          tasks={tasks.filter(
-            (task) =>
-              !task.finished &&
-              (dayjs(task.endDate).isBefore(dayjs()) ||
-                (dayjs().isSame(task.endDate, "d") && !task.allDay))
-          )}
+          tasks={tasks.filter((task) => !task.finished && isOverdue(task))}
           priorityFilters={priorityFilters}
           setTaskOpen={setTaskOpen}
           handleCheckTask={handleCheckTask}
