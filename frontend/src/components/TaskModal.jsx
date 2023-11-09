@@ -21,6 +21,7 @@ const TaskModal = ({
   handleCheckTask,
   handleEditOpen,
   handleDeleteTask,
+  setAlertMsg,
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isResendDialogOpen, setIsResendDialogOpen] = useState(false);
@@ -41,6 +42,7 @@ const TaskModal = ({
   const handleDeleteConfirm = async () => {
     handleCloseDelete();
     await handleDeleteTask(task.id);
+    setAlertMsg("Task deleted.");
   };
 
   const handleCloseResend = () => {
@@ -60,6 +62,7 @@ const TaskModal = ({
     setIsResending(true);
     await sendTask(task);
     setIsResending(false);
+    setAlertMsg("Task resent.");
   };
 
   return (

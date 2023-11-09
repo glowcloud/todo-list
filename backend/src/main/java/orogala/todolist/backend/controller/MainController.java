@@ -105,11 +105,10 @@ public class MainController {
 
     @PostMapping(path="/sendmail")
     public ResponseEntity<HttpStatus> sendAttachmentMail(@RequestBody String file) {
-        System.err.println(file);
         mailService.sendEmailWithAttachment(
                 "oliwia.rogala97@gmail.com",
-                "Task test",
-                "Testing file sending",
+                "New task",
+                "You have a new task.",
                 file);
         return new ResponseEntity<>(HttpStatus.OK);
     }

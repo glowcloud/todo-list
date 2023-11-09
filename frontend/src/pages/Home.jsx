@@ -6,7 +6,7 @@ import TasksList from "../components/TasksList";
 import AddFab from "../components/AddFab";
 import EditModal from "../components/EditModal";
 import Search from "../components/Search";
-import { Box } from "@mui/material";
+import { Alert, Box, Snackbar } from "@mui/material";
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
@@ -24,6 +24,8 @@ const Home = () => {
   const [search, setSearch] = useState("");
   const [currentView, setCurrentView] = useState("calendar");
   const [addingTask, setAddingTask] = useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
 
   useEffect(() => {
     const getTasks = async () => {
@@ -41,6 +43,17 @@ const Home = () => {
     getPriorities();
     getTasks();
   }, []);
+
+  useEffect(() => {
+    if (alertMsg) {
+      setIsSnackbarOpen(true);
+    }
+  }, [alertMsg]);
+
+  const handleSnackbarClose = () => {
+    setIsSnackbarOpen(false);
+    setAlertMsg("");
+  };
 
   const handleTaskClose = () => {
     setTaskOpen(-1);
@@ -80,6 +93,7 @@ const Home = () => {
     await sendTask(json);
 
     setAddingTask(false);
+    setAlertMsg("Task added and sent to your email.");
     setTasks((prevTasks) => [...prevTasks, json]);
   };
 
@@ -100,15 +114,18 @@ const Home = () => {
 
     if (res.ok) {
       const json = await res.json();
-      await sendTask(json);
-      setTasks((prevTasks) => {
-        const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
-        return [...filteredTasks, json];
-      });
+      if (!task.finished) {
+        await sendTask(json);
+        setTasks((prevTasks) => {
+          const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
+          return [...filteredTasks, json];
+        });
+      }
       setIsEditOpen(false);
     }
 
     setAddingTask(false);
+    setAlertMsg(task.finished ? "" : "Edited task was sent to your email.");
   };
 
   const handleDeleteTask = async (id) => {
@@ -222,6 +239,7 @@ const Home = () => {
         priorities={priorities}
         handleEditOpen={handleEditOpen}
         handleDeleteTask={handleDeleteTask}
+        setAlertMsg={setAlertMsg}
       />
       <AddModal
         isOpen={isAddOpen}
@@ -229,6 +247,7 @@ const Home = () => {
         handleAddTask={handleAddTask}
         priorities={priorities}
         addingTask={addingTask}
+        setAlertMsg={setAlertMsg}
       />
       <EditModal
         task={tasks.find((task) => task.id === taskOpen)}
@@ -237,7 +256,17 @@ const Home = () => {
         handleEditTask={handleEditTask}
         priorities={priorities}
         addingTask={addingTask}
+        setAlertMsg={setAlertMsg}
       />
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          {alertMsg}
+        </Alert>
+      </Snackbar>
     </>
   ) : (
     "Loading..."
