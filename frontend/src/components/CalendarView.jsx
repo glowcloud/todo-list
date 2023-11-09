@@ -6,6 +6,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Box } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
+import { isOverdue } from "../utils/generalUtils";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -21,8 +22,7 @@ const createEvents = (tasks) => {
       allDay: task.allDay,
       color: task.finished
         ? "lightblue"
-        : dayjs(task.endDate).isBefore(dayjs()) ||
-          (dayjs().isSame(task.endDate, "d") && !task.allDay)
+        : isOverdue(task)
         ? "rgb(244, 67, 54)"
         : task.priority.color,
     });

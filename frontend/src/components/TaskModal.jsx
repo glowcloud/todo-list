@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { useState } from "react";
 import { sendTask } from "../utils/calendarIntegrationUtils";
 import ConfirmDialog from "./ConfirmDialog";
+import { isOverdue } from "../utils/generalUtils";
 
 /* eslint-disable react/prop-types */
 const TaskModal = ({
@@ -94,10 +95,16 @@ const TaskModal = ({
         </IconButton>
       </Box>
       <Typography
-        color={task?.finished ? "primary.main" : "secondary"}
+        color={
+          task?.finished
+            ? "primary.main"
+            : isOverdue(task)
+            ? "rgb(244, 67, 54)"
+            : "secondary"
+        }
         gutterBottom
       >
-        {task?.finished ? "Finished" : "To Do"}
+        {task?.finished ? "Finished" : isOverdue(task) ? "Overdue" : "To Do"}
       </Typography>
       {
         <Typography

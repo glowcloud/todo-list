@@ -59,8 +59,11 @@ const TaskCard = ({ task, handleClick, handleCheckTask }) => {
             mr: 2,
             backgroundColor: task.finished
               ? "lightblue"
-              : dayjs(task.endDate).isBefore(dayjs()) ||
-                (dayjs().isSame(task.endDate, "d") && !task.allDay)
+              : (dayjs(task.endDate).isBefore(dayjs()) &&
+                  !dayjs().isSame(task.endDate, "d")) ||
+                (dayjs(task.endDate).isBefore(dayjs()) &&
+                  dayjs().isSame(task.endDate, "d") &&
+                  !task.allDay)
               ? "rgb(244, 67, 54)"
               : task.priority.color,
             width: 20,
