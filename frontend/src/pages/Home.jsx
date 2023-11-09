@@ -24,7 +24,7 @@ const getCalendarEvent = (task) => {
     .split("-")
     .map((end) => +end);
   if (task.allDay) {
-    start[3] = 0; 
+    start[3] = 0;
     start[4] = 0;
     end[3] = 23;
     end[4] = 59;
@@ -46,6 +46,7 @@ const Home = () => {
   const [priorities, setPriorities] = useState([]);
   const [search, setSearch] = useState("");
   const [currentView, setCurrentView] = useState("calendar");
+  const [addingTask, setAddingTask] = useState(false);
 
   useEffect(() => {
     const getTasks = async () => {
@@ -90,6 +91,7 @@ const Home = () => {
     );
     task.finished = false;
 
+    setAddingTask(true);
     const res = await fetch("http://localhost:8080/tasks", {
       method: "POST",
       body: JSON.stringify(task),
@@ -109,18 +111,13 @@ const Home = () => {
       });
     });
 
-    // const formData = new FormData();
-    // formData.append("event", file);
-
-    const mailRes = await fetch("http://localhost:8080/sendmail", {
+    await fetch("http://localhost:8080/sendmail", {
       method: "POST",
       body: file,
       headers: { "Content-Type": "text/calendar" },
-      // headers: { "Content-Type": "multipart/form-data" },
     });
 
-    console.log(mailRes);
-
+    setAddingTask(false);
     setTasks((prevTasks) => [...prevTasks, json]);
   };
 
@@ -265,6 +262,7 @@ const Home = () => {
         handleModalClose={handleAddClose}
         handleAddTask={handleAddTask}
         priorities={priorities}
+        addingTask={addingTask}
       />
       <EditModal
         task={tasks.find((task) => task.id === taskOpen)}

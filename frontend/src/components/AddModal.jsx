@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   IconButton,
@@ -26,7 +27,13 @@ const defaultState = {
 };
 
 /* eslint-disable react/prop-types */
-const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
+const AddModal = ({
+  isOpen,
+  handleModalClose,
+  handleAddTask,
+  priorities,
+  addingTask,
+}) => {
   const [formState, setFormState] = useState(defaultState);
   const [isAllDay, setIsAllDay] = useState(true);
 
@@ -46,8 +53,10 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
   };
 
   const handleClose = () => {
-    setFormState(defaultState);
-    handleModalClose();
+    if (!addingTask) {
+      setFormState(defaultState);
+      handleModalClose();
+    }
   };
 
   return (
@@ -70,11 +79,13 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           margin="normal"
           fullWidth
           required
+          disabled={addingTask}
         />
         <Box>
           <FormControlLabel
             label="No time"
             checked={isAllDay}
+            disabled={addingTask}
             control={
               <Checkbox
                 value={isAllDay}
@@ -90,6 +101,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
               orientation="portrait"
               value={formState.startDate}
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
                 mr: 1,
@@ -105,6 +117,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
               orientation="portrait"
               value={formState.endDate}
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
                 mr: 1,
@@ -126,6 +139,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
                 mr: 1,
@@ -148,6 +162,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
               minDateTime={formState.startDate.add(5, "minutes")}
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
               }}
@@ -164,6 +179,7 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           <Select
             value={formState.priority}
             label="Priority"
+            disabled={addingTask}
             onChange={(e) =>
               setFormState((prevState) => {
                 return { ...prevState, priority: e.target.value };
@@ -189,11 +205,25 @@ const AddModal = ({ isOpen, handleModalClose, handleAddTask, priorities }) => {
           multiline
           rows={4}
           fullWidth
+          disabled={addingTask}
         />
-        <Box sx={{ mt: 3, textAlign: "center" }}>
-          <Button variant="outlined" onClick={handleAdd}>
+        <Box sx={{ mt: 3, textAlign: "center", position: "relative" }}>
+          <Button variant="outlined" disabled={addingTask} onClick={handleAdd}>
             Add
           </Button>
+          {addingTask && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: "primary",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                marginTop: "-12px",
+                marginLeft: "-12px",
+              }}
+            />
+          )}
         </Box>
       </Box>
     </CustomModal>
