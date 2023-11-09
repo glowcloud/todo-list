@@ -10,8 +10,8 @@ import {
 import dayjs from "dayjs";
 
 const TaskCard = ({ task, handleClick, handleCheckTask }) => {
-  const handleCheck = (e) => {
-    handleCheckTask(task.id, e.target.checked);
+  const handleCheck = async (e) => {
+    await handleCheckTask(task.id, e.target.checked);
   };
 
   return (
