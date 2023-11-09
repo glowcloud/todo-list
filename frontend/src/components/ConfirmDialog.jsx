@@ -7,21 +7,25 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-const DeleteConfirm = ({ open, handleClose, handleDelete }) => {
+const ConfirmDialog = ({
+  open,
+  handleClose,
+  handleConfirm,
+  title,
+  content,
+}) => {
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Confirm delete</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          Are you sure you want to delete this task?
-        </DialogContentText>
+        <DialogContentText>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleDelete}>Confirm</Button>
+        <Button onClick={handleConfirm}>Confirm</Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default DeleteConfirm;
+export default ConfirmDialog;

@@ -4,12 +4,14 @@ import {
   Close,
   Edit,
   Delete,
+  Email,
 } from "@mui/icons-material";
 import { Box, IconButton, Typography } from "@mui/material";
 import CustomModal from "./CustomModal";
 import dayjs from "dayjs";
 import { useState } from "react";
-import DeleteConfirm from "./DeleteConfirm";
+import { sendTask } from "../utils/calendarIntegrationUtils";
+import ConfirmDialog from "./ConfirmDialog";
 
 /* eslint-disable react/prop-types */
 const TaskModal = ({
@@ -21,39 +23,70 @@ const TaskModal = ({
   handleDeleteTask,
 }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isResendDialogOpen, setIsResendDialogOpen] = useState(false);
+  const [isResending, setIsResending] = useState(false);
 
   const handleCheck = () => {
     handleCheckTask(task.id, !task.finished);
   };
 
-  const handleCloseDialog = () => {
+  const handleCloseDelete = () => {
     setIsDeleteDialogOpen(false);
   };
 
-  const handleOpenDialog = () => {
+  const handleOpenDelete = () => {
     setIsDeleteDialogOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
-    handleCloseDialog();
+    handleCloseDelete();
     await handleDeleteTask(task.id);
   };
 
+  const handleCloseResend = () => {
+    setIsResendDialogOpen(false);
+  };
+
+  const handleOpenResend = () => {
+    setIsResendDialogOpen(true);
+  };
+
+  const handleResendConfirm = async () => {
+    handleCloseResend();
+    await handleResend();
+  };
+
+  const handleResend = async () => {
+    setIsResending(true);
+    await sendTask(task);
+    setIsResending(false);
+  };
+
   return (
-    <CustomModal isOpen={isOpen} handleClose={handleModalClose}>
+    <CustomModal
+      isOpen={isOpen}
+      handleClose={() => {
+        if (!isResending) handleModalClose();
+      }}
+    >
       <Box textAlign="right" pt={3}>
-        <IconButton onClick={handleCheck}>
+        <IconButton disabled={isResending} onClick={handleCheck}>
           {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
         </IconButton>
         {!task?.finished && (
-          <IconButton onClick={handleEditOpen}>
+          <IconButton disabled={isResending} onClick={handleOpenResend}>
+            <Email />
+          </IconButton>
+        )}
+        {!task?.finished && (
+          <IconButton disabled={isResending} onClick={handleEditOpen}>
             <Edit />
           </IconButton>
         )}
-        <IconButton onClick={handleOpenDialog}>
+        <IconButton disabled={isResending} onClick={handleOpenDelete}>
           <Delete />
         </IconButton>
-        <IconButton onClick={handleModalClose}>
+        <IconButton disabled={isResending} onClick={handleModalClose}>
           <Close />
         </IconButton>
       </Box>
@@ -108,10 +141,19 @@ const TaskModal = ({
       >
         {task?.description}
       </Typography>
-      <DeleteConfirm
+      <ConfirmDialog
         open={isDeleteDialogOpen}
-        handleClose={handleCloseDialog}
-        handleDelete={handleDeleteConfirm}
+        handleClose={handleCloseDelete}
+        handleConfirm={handleDeleteConfirm}
+        title="Confirm delete"
+        content="Are you sure you want to delete this task?"
+      />
+      <ConfirmDialog
+        open={isResendDialogOpen}
+        handleClose={handleCloseResend}
+        handleConfirm={handleResendConfirm}
+        title="Confirm resend"
+        content="Do you want to resend this task?"
       />
     </CustomModal>
   );

@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   IconButton,
@@ -24,6 +25,7 @@ const EditModal = ({
   handleModalClose,
   handleEditTask,
   priorities,
+  addingTask,
 }) => {
   const [formState, setFormState] = useState({ ...task });
   const [isAllDay, setIsAllDay] = useState(false);
@@ -60,11 +62,13 @@ const EditModal = ({
           margin="normal"
           fullWidth
           required
+          disabled={addingTask}
         />
         <Box>
           <FormControlLabel
             label="No time"
             checked={isAllDay}
+            disabled={addingTask}
             control={
               <Checkbox
                 value={isAllDay}
@@ -80,6 +84,7 @@ const EditModal = ({
               orientation="portrait"
               value={formState.startDate}
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
                 mr: 1,
@@ -95,6 +100,7 @@ const EditModal = ({
               orientation="portrait"
               value={formState.endDate}
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
                 mr: 1,
@@ -116,6 +122,7 @@ const EditModal = ({
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
                 mr: 1,
@@ -140,6 +147,7 @@ const EditModal = ({
                 formState.startDate ? formState.startDate.add(5, "minutes") : ""
               }
               disablePast
+              disabled={addingTask}
               sx={{
                 my: 1,
               }}
@@ -156,6 +164,7 @@ const EditModal = ({
           <Select
             value={formState.priority}
             label="Priority"
+            disabled={addingTask}
             onChange={(e) => {
               setFormState((prevState) => {
                 return { ...prevState, priority: e.target.value };
@@ -172,6 +181,7 @@ const EditModal = ({
         <TextField
           label="Description"
           value={formState.description}
+          disabled={addingTask}
           onChange={(e) =>
             setFormState((prevState) => {
               return { ...prevState, description: e.target.value };
@@ -185,10 +195,24 @@ const EditModal = ({
         <Box sx={{ textAlign: "center", mt: 3 }}>
           <Button
             variant="outlined"
+            disabled={addingTask}
             onClick={() => handleEditTask({ ...formState, allDay: isAllDay })}
           >
             Save changes
           </Button>
+          {addingTask && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: "primary",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                marginTop: "-12px",
+                marginLeft: "-12px",
+              }}
+            />
+          )}
         </Box>
       </Box>
     </CustomModal>

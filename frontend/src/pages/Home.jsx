@@ -12,30 +12,7 @@ import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
 import SwitchViewButtons from "../components/SwitchViewButtons";
 import dayjs from "dayjs";
-import { createEvent } from "ics";
-
-const getCalendarEvent = (task) => {
-  const start = dayjs(task.startDate)
-    .format("YYYY-M-D-H-m")
-    .split("-")
-    .map((start) => +start);
-  const end = dayjs(task.endDate)
-    .format("YYYY-M-D-H-m")
-    .split("-")
-    .map((end) => +end);
-  if (task.allDay) {
-    start[3] = 0;
-    start[4] = 0;
-    end[3] = 23;
-    end[4] = 59;
-  }
-  return {
-    title: task.title,
-    description: task.description,
-    start,
-    end,
-  };
-};
+import { sendTask } from "../utils/calendarIntegrationUtils";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -100,22 +77,7 @@ const Home = () => {
 
     const json = await res.json();
 
-    const filename = "tasks.ics";
-    const file = await new Promise((resolve, reject) => {
-      createEvent(getCalendarEvent(json), (error, value) => {
-        if (error) {
-          reject(error);
-        }
-
-        resolve(new File([value], filename, { type: "text/calendar" }));
-      });
-    });
-
-    await fetch("http://localhost:8080/sendmail", {
-      method: "POST",
-      body: file,
-      headers: { "Content-Type": "text/calendar" },
-    });
+    await sendTask(json);
 
     setAddingTask(false);
     setTasks((prevTasks) => [...prevTasks, json]);
@@ -128,6 +90,8 @@ const Home = () => {
       );
     }
 
+    setAddingTask(true);
+
     const res = await fetch(`http://localhost:8080/tasks/${task.id}`, {
       method: "PUT",
       body: JSON.stringify(task),
@@ -136,13 +100,15 @@ const Home = () => {
 
     if (res.ok) {
       const json = await res.json();
-
+      await sendTask(json);
       setTasks((prevTasks) => {
         const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
         return [...filteredTasks, json];
       });
       setIsEditOpen(false);
     }
+
+    setAddingTask(false);
   };
 
   const handleDeleteTask = async (id) => {
@@ -270,6 +236,7 @@ const Home = () => {
         handleModalClose={handleEditClose}
         handleEditTask={handleEditTask}
         priorities={priorities}
+        addingTask={addingTask}
       />
     </>
   ) : (
