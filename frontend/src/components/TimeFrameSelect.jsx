@@ -17,7 +17,7 @@ const TimeFrameSelect = ({
 
   return (
     <Box textAlign="center">
-      <FormControl sx={{ width: 150, mx: 2, my: { xs: 2, sm: 0 } }}>
+      <FormControl sx={{ width: 150, mx: 2 }}>
         <InputLabel>Timeframe</InputLabel>
         <Select value={timeFrame} onChange={handleTimeFrameChange}>
           <MenuItem value="overall">Overall</MenuItem>

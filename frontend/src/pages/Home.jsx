@@ -182,13 +182,13 @@ const Home = () => {
         alignItems="center"
         justifyContent="center"
         sx={{ mb: 2 }}
-        flexDirection={{ xs: "column-reverse", sm: "row" }}
+        flexDirection={{ xs: "column-reverse", md: "row" }}
       >
         <Box
           display="flex"
           alignItems="center"
           justifyContent="center"
-          mt={{ xs: 0, sm: 3 }}
+          mt={{ xs: 0, md: 3 }}
         >
           <FiltersPopover
             handleFilterClick={handleFilterClick}

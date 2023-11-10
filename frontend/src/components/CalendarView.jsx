@@ -111,7 +111,7 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
         //   height: 675,
         // }}
         sx={{
-          height: { xs: 625, md: 675 },
+          height: { xs: 600, sm: 625, md: 675 },
           mx: { xs: 1, sm: 2, md: 10, lg: 15, xl: 35 },
           my: 2,
         }}

@@ -97,6 +97,7 @@ const Summary = ({ tasks, priorities }) => {
           display="flex"
           flexDirection={{ xs: "column", md: "row" }}
           alignItems="center"
+          mx={{xs: 1, md: 2, lg: 5, xl: 40}}
         >
           <PieChart
             series={[
