@@ -10,7 +10,7 @@ const Login = () => {
   const { handleSignIn } = useAuth();
 
   const handleClick = () => {
-    if (email && password) {
+    if (email && password && isEmail()) {
       if (isLogin) {
         // logic for login here
       } else {
@@ -24,6 +24,11 @@ const Login = () => {
     } else {
       setError(true);
     }
+  };
+
+  const isEmail = () => {
+    const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return pattern.test(email);
   };
 
   return (
@@ -46,8 +51,14 @@ const Login = () => {
         margin="normal"
         fullWidth
         required
-        error={error && !email}
-        helperText={error && !email ? "Email is required." : ""}
+        error={error && (!email || !isEmail())}
+        helperText={
+          error && !email
+            ? "Email is required."
+            : !isEmail()
+            ? "Incorrect email."
+            : ""
+        }
       />
       <TextField
         label="Password"
