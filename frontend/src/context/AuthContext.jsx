@@ -15,7 +15,6 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   const handleSignIn = (newUser) => {
-    console.log(newUser);
     localStorage.setItem("todo-user", newUser.id);
     setUser(newUser);
   };

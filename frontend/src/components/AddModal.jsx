@@ -36,19 +36,27 @@ const AddModal = ({
 }) => {
   const [formState, setFormState] = useState(defaultState);
   const [isAllDay, setIsAllDay] = useState(true);
+  const [error, setError] = useState(false);
 
   const handleAdd = async () => {
     if (
       formState.title !== "" &&
       formState.startDate !== null &&
-      (isAllDay ||
-        (formState.endDate !== null &&
+      formState.endDate !== null &&
+      ((isAllDay &&
+        (dayjs(formState.startDate).isAfter(dayjs()) ||
+          dayjs().isSame(dayjs(formState.startDate), "d")) &&
+        (dayjs(formState.endDate).isAfter(dayjs()) ||
+          dayjs().isSame(dayjs(formState.endDate), "d"))) ||
+        (dayjs(formState.startDate).isAfter(dayjs()) &&
           formState.endDate.isAfter(formState.startDate))) &&
       formState.priority > 0
     ) {
       await handleAddTask({ ...formState, allDay: isAllDay });
       setFormState(defaultState);
       handleModalClose();
+    } else {
+      setError(true);
     }
   };
 
@@ -80,10 +88,11 @@ const AddModal = ({
           fullWidth
           required
           disabled={addingTask}
+          error={error && !formState.title}
         />
         <Box>
           <FormControlLabel
-            label="No time"
+            label="Only date"
             checked={isAllDay}
             disabled={addingTask}
             control={
@@ -111,6 +120,11 @@ const AddModal = ({
                   return { ...prevState, startDate: value, endDate: value };
                 });
               }}
+              error={
+                error &&
+                dayjs(formState.startDate).isBefore(dayjs()) &&
+                !dayjs().isSame(dayjs(formState.startDate), "d")
+              }
             />
             <DatePicker
               label="End"
@@ -127,6 +141,11 @@ const AddModal = ({
                   return { ...prevState, endDate: value };
                 });
               }}
+              error={
+                error &&
+                dayjs(formState.endDate).isBefore(dayjs()) &&
+                !dayjs().isSame(dayjs(formState.endDate), "d")
+              }
             />
           </>
         )}
@@ -153,6 +172,7 @@ const AddModal = ({
                   };
                 });
               }}
+              error={error && dayjs(formState.startDate).isAfter(dayjs())}
             />
             <DateTimePicker
               label="End"
@@ -171,6 +191,11 @@ const AddModal = ({
                   return { ...prevState, endDate: value };
                 });
               }}
+              error={
+                error &&
+                dayjs(formState.endDate).isAfter(dayjs()) &&
+                dayjs(formState.endDate).isAfter(dayjs(formState.startDate))
+              }
             />
           </>
         )}

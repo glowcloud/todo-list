@@ -5,17 +5,25 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const { handleSignIn } = useAuth();
 
   const handleClick = () => {
-    if (isLogin) {
-      // logic for login here
+    if (email && password) {
+      if (isLogin) {
+        // logic for login here
+      } else {
+        // logic for sign up here
+      }
+      const newUser = { email, password, id: "test" };
+      handleSignIn(newUser);
+      setEmail("");
+      setPassword("");
+      setError(false);
     } else {
-      // logic for sign up here
+      setError(true);
     }
-    const newUser = { email, password, id: "test" };
-    handleSignIn(newUser);
   };
 
   return (
@@ -33,10 +41,13 @@ const Login = () => {
       <TextField
         label="Email"
         value={email}
+        type="email"
         onChange={(e) => setEmail(e.target.value)}
         margin="normal"
         fullWidth
         required
+        error={error && !email}
+        helperText={error && !email ? "Email is required." : ""}
       />
       <TextField
         label="Password"
@@ -46,6 +57,8 @@ const Login = () => {
         margin="normal"
         fullWidth
         required
+        error={error && !password}
+        helperText={error && !password ? "Password is required." : ""}
       />
 
       <Button

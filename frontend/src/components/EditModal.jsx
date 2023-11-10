@@ -29,6 +29,7 @@ const EditModal = ({
 }) => {
   const [formState, setFormState] = useState({ ...task });
   const [isAllDay, setIsAllDay] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (task) {
@@ -41,6 +42,27 @@ const EditModal = ({
       setIsAllDay(task.allDay !== null ? task.allDay : false);
     }
   }, [task]);
+
+  const handleEdit = async () => {
+    if (
+      formState.title !== "" &&
+      formState.startDate !== null &&
+      formState.endDate !== null &&
+      ((isAllDay &&
+        (dayjs(formState.startDate).isAfter(dayjs()) ||
+          dayjs().isSame(dayjs(formState.startDate), "d")) &&
+        (dayjs(formState.endDate).isAfter(dayjs()) ||
+          dayjs().isSame(dayjs(formState.endDate), "d"))) ||
+        (dayjs(formState.startDate).isAfter(dayjs()) &&
+          formState.endDate.isAfter(formState.startDate))) &&
+      formState.priority > 0
+    ) {
+      await handleEditTask({ ...formState, allDay: isAllDay });
+      handleModalClose();
+    } else {
+      setError(true);
+    }
+  };
 
   return (
     <CustomModal isOpen={isOpen} handleClose={handleModalClose}>
@@ -63,6 +85,7 @@ const EditModal = ({
           fullWidth
           required
           disabled={addingTask}
+          error={error && !formState.title}
         />
         <Box>
           <FormControlLabel
@@ -94,6 +117,11 @@ const EditModal = ({
                   return { ...prevState, startDate: value, endDate: value };
                 });
               }}
+              error={
+                error &&
+                dayjs(formState.startDate).isBefore(dayjs()) &&
+                !dayjs().isSame(dayjs(formState.startDate), "d")
+              }
             />
             <DatePicker
               label="End"
@@ -110,6 +138,11 @@ const EditModal = ({
                   return { ...prevState, endDate: value };
                 });
               }}
+              error={
+                error &&
+                dayjs(formState.endDate).isBefore(dayjs()) &&
+                !dayjs().isSame(dayjs(formState.endDate), "d")
+              }
             />
           </>
         )}
@@ -136,6 +169,7 @@ const EditModal = ({
                   };
                 });
               }}
+              error={error && dayjs(formState.startDate).isAfter(dayjs())}
             />
             <DateTimePicker
               label="End"
@@ -156,6 +190,11 @@ const EditModal = ({
                   return { ...prevState, endDate: value };
                 });
               }}
+              error={
+                error &&
+                dayjs(formState.endDate).isAfter(dayjs()) &&
+                dayjs(formState.endDate).isAfter(dayjs(formState.startDate))
+              }
             />
           </>
         )}
@@ -193,11 +232,7 @@ const EditModal = ({
           fullWidth
         />
         <Box sx={{ textAlign: "center", mt: 3 }}>
-          <Button
-            variant="outlined"
-            disabled={addingTask}
-            onClick={() => handleEditTask({ ...formState, allDay: isAllDay })}
-          >
+          <Button variant="outlined" disabled={addingTask} onClick={handleEdit}>
             Save changes
           </Button>
           {addingTask && (
