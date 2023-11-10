@@ -2,21 +2,24 @@ package orogala.todolist.backend.controller;
 
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import orogala.todolist.backend.job.EmailJob;
+import orogala.todolist.backend.job.ReminderJob;
 import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
 import orogala.todolist.backend.service.MailService;
-import orogala.todolist.backend.payload.ScheduleEmailResponse;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
+
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:5173")
@@ -152,12 +155,12 @@ public class MainController {
                 .withIdentity(jobDetail.getKey().getName(), "email-triggers")
                 .withDescription("Send Email Trigger")
                 .startAt(Date.from(startAt.toInstant()))
-                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
+                .withSchedule(simpleSchedule().withMisfireHandlingInstructionFireNow())
                 .build();
     }
 
     private void scheduleTask(Task task) throws SchedulerException {
-        ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(1);
+        ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(15);
 
         String mailBody = "";
         if (task.getAllDay()) {
@@ -177,6 +180,23 @@ public class MainController {
                 task.getId().toString()
         );
         Trigger trigger = buildJobTrigger(jobDetail, dateTime);
+        scheduler.scheduleJob(jobDetail, trigger);
+    }
+
+    @Bean
+    private void scheduleReminders() throws SchedulerException {
+        scheduler.deleteJob(new JobKey("reminders", "reminder-jobs"));
+
+        JobDetail jobDetail = JobBuilder.newJob(ReminderJob.class)
+                .withIdentity("reminders", "reminder-jobs")
+                .storeDurably()
+                .build();
+        Trigger trigger = TriggerBuilder
+                .newTrigger()
+                .withIdentity("reminders", "reminder-triggers")
+                .withSchedule(
+                        CronScheduleBuilder.cronSchedule("0 0 20 ? * * *"))
+                .build();
         scheduler.scheduleJob(jobDetail, trigger);
     }
 }
