@@ -1,30 +1,29 @@
 /* eslint-disable react/prop-types */
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
-import Sidebar from "./Sidebar";
-import { useState } from "react";
-import { Menu } from "@mui/icons-material";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { useAuth } from "../context/AuthContext";
 
 const Layout = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  const handleMenuClick = () => {
-    setIsSidebarOpen((prevIsOpen) => !prevIsOpen);
-  };
+  const { user, handleSignOut } = useAuth();
 
   return (
     <Box display="flex">
       <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         <Toolbar>
-          {/* <IconButton onClick={handleMenuClick} sx={{ mr: 2 }}>
-            <Menu />
-          </IconButton> */}
-          <Typography variant="h6">To Do List</Typography>
+          <Typography variant="h6" flexGrow={1}>
+            To Do List
+          </Typography>
+          {user && (
+            <Button
+              variant="text"
+              size="large"
+              sx={{ color: "white" }}
+              onClick={handleSignOut}
+            >
+              Logout
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
-      {/* <Sidebar
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-      /> */}
       <Box component="main" width="100%">
         <Toolbar />
         {children}

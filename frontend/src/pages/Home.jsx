@@ -14,6 +14,8 @@ import SwitchViewButtons from "../components/SwitchViewButtons";
 import dayjs from "dayjs";
 import { sendTask } from "../utils/calendarIntegrationUtils";
 import { isOverdue } from "../utils/generalUtils";
+import { useAuth } from "../context/AuthContext";
+import Login from "../components/Login";
 
 const Home = () => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -27,6 +29,7 @@ const Home = () => {
   const [addingTask, setAddingTask] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
     const getTasks = async () => {
@@ -160,7 +163,9 @@ const Home = () => {
     });
   };
 
-  return priorities.length > 0 ? (
+  return !user ? (
+    <Login />
+  ) : priorities.length > 0 ? (
     <>
       <Box
         display="flex"
