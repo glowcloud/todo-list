@@ -6,7 +6,13 @@ import TasksList from "../components/TasksList";
 import AddFab from "../components/AddFab";
 import EditModal from "../components/EditModal";
 import Search from "../components/Search";
-import { Alert, Box, Snackbar } from "@mui/material";
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
@@ -34,14 +40,18 @@ const Home = () => {
   useEffect(() => {
     const getTasks = async () => {
       const res = await fetch("http://localhost:8080/tasks");
-      const json = await res.json();
-      setTasks(json);
+      if (res.ok) {
+        const json = await res.json();
+        setTasks(json);
+      }
     };
 
     const getPriorities = async () => {
       const res = await fetch("http://localhost:8080/priorities");
-      const json = await res.json();
-      setPriorities(json);
+      if (res.ok) {
+        const json = await res.json();
+        setPriorities(json);
+      }
     };
 
     getPriorities();
@@ -270,7 +280,17 @@ const Home = () => {
       </Snackbar>
     </>
   ) : (
-    "Loading..."
+    <Box
+      sx={{
+        textAlign: "center",
+        my: 45,
+      }}
+    >
+      <Typography variant="h6" sx={{ mb: 3 }} gutterBottom>
+        Loading...
+      </Typography>
+      <CircularProgress color="inherit" />
+    </Box>
   );
 };
 

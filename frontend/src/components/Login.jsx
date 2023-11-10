@@ -55,7 +55,7 @@ const Login = () => {
         helperText={
           error && !email
             ? "Email is required."
-            : !isEmail()
+            : error && !isEmail()
             ? "Incorrect email."
             : ""
         }
