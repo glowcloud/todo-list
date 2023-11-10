@@ -107,13 +107,16 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
         eventPropGetter={eventPropGetter}
         defaultView="day"
         views={["month", "week", "day"]}
-        // style={{
-        //   height: 675,
-        // }}
         sx={{
           height: { xs: 600, sm: 625, md: 675 },
           mx: { xs: 1, sm: 2, md: 10, lg: 15, xl: 35 },
           my: 2,
+          ".rbc-toolbar": {
+            flexDirection: { xs: "column-reverse", md: "row" },
+          },
+          ".rbc-toolbar-label": {
+            my: { xs: 1, md: 0 },
+          },
         }}
       />
       <ConfirmDialog
