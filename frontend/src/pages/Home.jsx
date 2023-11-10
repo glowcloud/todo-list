@@ -181,15 +181,23 @@ const Home = () => {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        sx={{ mb: 5 }}
+        sx={{ mb: 2 }}
+        flexDirection={{ xs: "column-reverse", sm: "row" }}
       >
-        <FiltersPopover
-          handleFilterClick={handleFilterClick}
-          priorities={priorities}
-          priorityFilters={priorityFilters}
-          setPriorityFilters={setPriorityFilters}
-        />
-        <Search search={search} setSearch={setSearch} />
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          mt={{ xs: 0, sm: 3 }}
+        >
+          <FiltersPopover
+            handleFilterClick={handleFilterClick}
+            priorities={priorities}
+            priorityFilters={priorityFilters}
+            setPriorityFilters={setPriorityFilters}
+          />
+          <Search search={search} setSearch={setSearch} />
+        </Box>
         <SwitchViewButtons
           setCurrentView={setCurrentView}
           badgeContent={

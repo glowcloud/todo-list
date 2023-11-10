@@ -3,7 +3,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 const Search = ({ search, setSearch }) => {
   return (
-    <Box mt={3}>
+    <Box>
       <TextField
         label="Search"
         value={search}

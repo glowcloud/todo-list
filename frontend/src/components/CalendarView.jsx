@@ -106,11 +106,13 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
         dayPropGetter={dayPropGetter}
         eventPropGetter={eventPropGetter}
         defaultView="day"
-        style={{
-          height: 500,
-        }}
+        views={["month", "week", "day"]}
+        // style={{
+        //   height: 675,
+        // }}
         sx={{
-          mx: { xs: 1, md: 15, lg: 25, xl: 45 },
+          height: { xs: 625, md: 675 },
+          mx: { xs: 1, sm: 2, md: 10, lg: 15, xl: 35 },
           my: 2,
         }}
       />

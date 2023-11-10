@@ -28,7 +28,7 @@ const FiltersPopover = ({
   };
 
   return (
-    <Box sx={{ mt: 3, mx: { xs: 2, md: 17, lg: 27, xl: 47 } }}>
+    <Box sx={{ mx: 2 }}>
       <IconButton onClick={handlePopoverOpen}>
         <FilterAlt />
       </IconButton>

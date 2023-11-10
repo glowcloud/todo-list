@@ -8,7 +8,7 @@ import { Badge, Box, IconButton } from "@mui/material";
 
 const SwitchViewButtons = ({ setCurrentView, badgeContent }) => {
   return (
-    <Box textAlign="center" mt={4}>
+    <Box textAlign="center" mt={4} mx={1}>
       <IconButton onClick={() => setCurrentView("calendar")}>
         <CalendarMonth />
       </IconButton>
