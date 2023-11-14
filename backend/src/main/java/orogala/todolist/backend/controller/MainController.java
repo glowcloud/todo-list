@@ -9,10 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import orogala.todolist.backend.job.EmailJob;
 import orogala.todolist.backend.job.ReminderJob;
+import orogala.todolist.backend.model.LoginResponse;
 import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
+import orogala.todolist.backend.model.TodoUser;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
+import orogala.todolist.backend.service.AuthenticationService;
 import orogala.todolist.backend.service.MailService;
 
 import java.time.ZoneId;
@@ -32,6 +35,18 @@ public class MainController {
     private MailService mailService;
     @Autowired
     private Scheduler scheduler;
+    @Autowired
+    private AuthenticationService authService;
+
+    @PostMapping("/register")
+    public TodoUser registerUser(@RequestBody TodoUser todoUser) {
+        return authService.registerUser(todoUser.getEmail(), todoUser.getPassword());
+    }
+
+    @PostMapping("/login")
+    public LoginResponse loginUser(@RequestBody TodoUser todoUser) {
+        return authService.loginUser(todoUser.getEmail(), todoUser.getPassword());
+    }
 
     @GetMapping(path="/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
