@@ -34,7 +34,7 @@ public class AuthenticationService {
 
     public TodoUser registerUser(String email, String password) {
         String encodedPassword = passwordEncoder.encode(password);
-        return userRepository.save(new TodoUser(0, email, password));
+        return userRepository.save(new TodoUser(0, email, encodedPassword));
     }
 
     public LoginResponse loginUser(String email, String password) {

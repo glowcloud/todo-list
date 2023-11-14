@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import orogala.todolist.backend.job.EmailJob;
@@ -24,7 +25,7 @@ import java.util.*;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class MainController {
     @Autowired
