@@ -1,6 +1,5 @@
 import { Modal, Box } from "@mui/material";
 
-// eslint-disable-next-line react/prop-types
 const CustomModal = ({ children, isOpen, handleClose }) => {
   return (
     <Modal open={isOpen} onClose={handleClose}>

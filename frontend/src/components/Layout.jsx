@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { DarkMode, LightMode } from "@mui/icons-material";

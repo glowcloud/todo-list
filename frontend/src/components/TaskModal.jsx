@@ -15,7 +15,6 @@ import ConfirmDialog from "./ConfirmDialog";
 import { isOverdue } from "../utils/generalUtils";
 import { useAuth } from "../context/AuthContext";
 
-/* eslint-disable react/prop-types */
 const TaskModal = ({
   task,
   isOpen,

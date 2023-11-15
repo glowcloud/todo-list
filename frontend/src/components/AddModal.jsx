@@ -26,7 +26,6 @@ const defaultState = {
   priority: 3,
 };
 
-/* eslint-disable react/prop-types */
 const AddModal = ({
   isOpen,
   handleModalClose,

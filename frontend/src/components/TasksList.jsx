@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Box, Typography } from "@mui/material";
 import TaskCard from "./TaskCard";
 import SortPopover from "./SortPopover";

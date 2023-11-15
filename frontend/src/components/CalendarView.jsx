@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
 import dayjs from "dayjs";
@@ -9,6 +8,7 @@ import { useEffect, useState, useCallback } from "react";
 import { isOverdue } from "../utils/generalUtils";
 import ConfirmDialog from "./ConfirmDialog";
 import ResendingBackdrop from "./ResendingBackdrop";
+import { useTheme } from "../context/ThemeContext";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -37,6 +37,7 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [changedTaskData, setChangedTaskData] = useState(null);
+  const { mode } = useTheme();
 
   useEffect(() => {
     setEvents(createEvents(tasks));
@@ -83,13 +84,20 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
 
   const dayPropGetter = useCallback(
     (date) => ({
-      ...(dayjs().isSame(dayjs(date), "day") && {
-        style: {
-            // backgroundColor: "#829CBC",
-        },
-      }),
+      ...(dayjs().isSame(dayjs(date), "day") &&
+        mode === "dark" && {
+          style: {
+            backgroundColor: "#282828",
+          },
+        }),
+      ...(!dayjs().isSame(dayjs(date), "month") &&
+        mode === "dark" && {
+          style: {
+            backgroundColor: "#282828",
+          },
+        }),
     }),
-    []
+    [mode]
   );
 
   return (
@@ -117,6 +125,12 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
           ".rbc-toolbar-label": {
             my: { xs: 1, md: 0 },
           },
+          ".rbc-toolbar button": {
+            color: mode === "dark" ? "white" : "black",
+          },
+          ".rbc-active": {
+            color: "black !important" 
+          }
         }}
       />
       <ConfirmDialog
