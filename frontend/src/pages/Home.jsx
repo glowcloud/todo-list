@@ -50,6 +50,9 @@ const Home = () => {
         const json = await res.json();
         setTasks(json);
       }
+      else {
+        setTasks([]);
+      }
     };
 
     const getPriorities = async () => {

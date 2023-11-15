@@ -12,7 +12,6 @@ const Login = () => {
   const handleClick = async () => {
     if (email && password && isEmail()) {
       if (isLogin) {
-        // logic for login here
         const res = await fetch("http://localhost:8080/login", {
           method: "POST",
           body: JSON.stringify({ email, password }),
@@ -23,7 +22,15 @@ const Login = () => {
           handleSignIn(json.jwt);
         }
       } else {
-        // logic for sign up here
+        const res = await fetch("http://localhost:8080/register", {
+          method: "POST",
+          body: JSON.stringify({ email, password }),
+          headers: { "Content-Type": "application/json" },
+        });
+        const json = await res.json();
+        if (json.user && json.jwt) {
+          handleSignIn(json.jwt);
+        }
       }
       setEmail("");
       setPassword("");

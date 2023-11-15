@@ -32,9 +32,10 @@ public class AuthenticationService {
     @Autowired
     private TokenService tokenService;
 
-    public TodoUser registerUser(String email, String password) {
+    public LoginResponse registerUser(String email, String password) {
         String encodedPassword = passwordEncoder.encode(password);
-        return userRepository.save(new TodoUser(0, email, encodedPassword));
+        userRepository.save(new TodoUser(0, email, encodedPassword));
+        return loginUser(email, password);
     }
 
     public LoginResponse loginUser(String email, String password) {

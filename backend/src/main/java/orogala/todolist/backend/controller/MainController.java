@@ -46,8 +46,9 @@ public class MainController {
     private UserRepository userRepository;
 
     @PostMapping("/register")
-    public TodoUser registerUser(@RequestBody TodoUser todoUser) {
+    public LoginResponse registerUser(@RequestBody TodoUser todoUser) {
         return authService.registerUser(todoUser.getEmail(), todoUser.getPassword());
+
     }
 
     @PostMapping("/login")
