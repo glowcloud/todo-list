@@ -121,7 +121,7 @@ const Home = () => {
 
     const json = await res.json();
 
-    await sendTask(json);
+    await sendTask(json, token);
 
     setAddingTask(false);
     setAlertMsg("Task added and sent to your email.");

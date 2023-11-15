@@ -64,12 +64,10 @@ public class MainController {
         Optional<TodoUser> userData = userRepository.findByEmail(email);
         if (userData.isPresent()) {
 
-            List<Task> tasks = new ArrayList<Task>();
-            taskRepository.findAll().forEach(tasks::add);
             Optional<ArrayList<Task>> tasksData = taskRepository.findAllByUser_Id(userData.get().getId());
 
             if (tasksData.isPresent()) {
-                tasks.addAll(tasksData.get());
+                List<Task> tasks = new ArrayList<Task>(tasksData.get());
 
                 if (tasks.isEmpty()){
                     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -102,10 +100,9 @@ public class MainController {
             try {
                 task.setUser(userData.get());
                 Task newTask = taskRepository.save(task);
-                scheduleTask(newTask);
+                scheduleTask(newTask, email);
                 return new ResponseEntity<>(newTask, HttpStatus.CREATED);
             } catch(Exception e) {
-                System.out.println(e);
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
@@ -128,7 +125,7 @@ public class MainController {
                 task.setAllDay(newTask.getAllDay());
 
                 scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
-                scheduleTask(task);
+                scheduleTask(task, task.getUser().getEmail());
 
                 return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
 
@@ -174,8 +171,12 @@ public class MainController {
 
     @PostMapping(path="/sendmail")
     public ResponseEntity<HttpStatus> sendAttachmentMail(@RequestBody String file) {
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
         mailService.sendEmailWithAttachment(
-                "oliwia.rogala97@gmail.com",
+                email,
                 "New task",
                 "You have a new task.",
                 file);
@@ -207,7 +208,7 @@ public class MainController {
                 .build();
     }
 
-    private void scheduleTask(Task task) throws SchedulerException {
+    private void scheduleTask(Task task, String email) throws SchedulerException {
         ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(15);
 
         String mailBody = "";
@@ -222,7 +223,7 @@ public class MainController {
                 + task.getDescription();
 
 //            String jobUUID = UUID.randomUUID().toString();
-        JobDetail jobDetail = buildJobDetail("oliwia.rogala97@gmail.com",
+        JobDetail jobDetail = buildJobDetail(email,
                 "Upcoming task: " + task.getTitle(),
                 mailBody,
                 task.getId().toString()
