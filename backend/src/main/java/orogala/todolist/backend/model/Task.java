@@ -3,6 +3,8 @@ package orogala.todolist.backend.model;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.apache.catalina.User;
 import org.hibernate.annotations.OnDelete;
@@ -24,6 +26,7 @@ public class Task {
     private Boolean allDay;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private TodoUser user;
 
     public Integer getId() {
