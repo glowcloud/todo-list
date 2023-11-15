@@ -9,15 +9,22 @@ const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { handleSignIn } = useAuth();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (email && password && isEmail()) {
       if (isLogin) {
         // logic for login here
+        const res = await fetch("http://localhost:8080/login", {
+          method: "POST",
+          body: JSON.stringify({ email, password }),
+          headers: { "Content-Type": "application/json" },
+        });
+        const json = await res.json();
+        if (json.user && json.jwt) {
+          handleSignIn(json.jwt);
+        }
       } else {
         // logic for sign up here
       }
-      const newUser = { email, password, id: "test" };
-      handleSignIn(newUser);
       setEmail("");
       setPassword("");
       setError(false);

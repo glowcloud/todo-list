@@ -35,11 +35,17 @@ const Home = () => {
   const [addingTask, setAddingTask] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
-  const { user } = useAuth();
+  const { token } = useAuth();
 
   useEffect(() => {
     const getTasks = async () => {
-      const res = await fetch("http://localhost:8080/tasks");
+      const res = await fetch("http://localhost:8080/tasks", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (res.ok) {
         const json = await res.json();
         setTasks(json);
@@ -47,16 +53,24 @@ const Home = () => {
     };
 
     const getPriorities = async () => {
-      const res = await fetch("http://localhost:8080/priorities");
+      const res = await fetch("http://localhost:8080/priorities", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (res.ok) {
         const json = await res.json();
         setPriorities(json);
       }
     };
 
-    getPriorities();
-    getTasks();
-  }, []);
+    if (token) {
+      getPriorities();
+      getTasks();
+    }
+  }, [token]);
 
   useEffect(() => {
     if (alertMsg) {
@@ -173,7 +187,7 @@ const Home = () => {
     });
   };
 
-  return !user ? (
+  return !token ? (
     <Login />
   ) : priorities.length > 0 ? (
     <>
