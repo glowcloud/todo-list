@@ -22,7 +22,6 @@ import orogala.todolist.backend.repository.TaskRepository;
 import orogala.todolist.backend.repository.UserRepository;
 import orogala.todolist.backend.service.AuthenticationService;
 import orogala.todolist.backend.service.MailService;
-import orogala.todolist.backend.service.TokenService;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -67,33 +66,50 @@ public class MainController {
 
             List<Task> tasks = new ArrayList<Task>();
             taskRepository.findAll().forEach(tasks::add);
-            if (tasks.isEmpty()){
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            Optional<ArrayList<Task>> tasksData = taskRepository.findAllByUser_Id(userData.get().getId());
+
+            if (tasksData.isPresent()) {
+                tasks.addAll(tasksData.get());
+
+                if (tasks.isEmpty()){
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+
+                return new ResponseEntity<>(tasks, HttpStatus.OK);
             }
-            return new ResponseEntity<>(tasks, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(path="/tasks/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
-        Optional<Task> taskData = taskRepository.findById(id);
-
-        if (taskData.isPresent()) {
-            return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @GetMapping(path="/tasks/{id}")
+//    public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
+//        Optional<Task> taskData = taskRepository.findById(id);
+//
+//        if (taskData.isPresent()) {
+//            return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 
     @PostMapping(path="/tasks")
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
-        try {
-            Task newTask = taskRepository.save(task);
-            scheduleTask(newTask);
-            return new ResponseEntity<>(newTask, HttpStatus.CREATED);
-        } catch(Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isPresent()) {
+            try {
+                task.setUser(userData.get());
+                Task newTask = taskRepository.save(task);
+                scheduleTask(newTask);
+                return new ResponseEntity<>(newTask, HttpStatus.CREATED);
+            } catch(Exception e) {
+                System.out.println(e);
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping(path="/tasks/{id}")

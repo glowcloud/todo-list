@@ -22,9 +22,9 @@ public class Task {
     private Priority priority;
     private Boolean finished;
     private Boolean allDay;
-//    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private TodoUser user;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private TodoUser user;
 
     public Integer getId() {
         return id;
@@ -90,11 +90,11 @@ public class Task {
         this.allDay = allDay;
     }
 
-//    public TodoUser getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(TodoUser user) {
-//        this.user = user;
-//    }
+    public TodoUser getUser() {
+        return user;
+    }
+
+    public void setUser(TodoUser user) {
+        this.user = user;
+    }
 }

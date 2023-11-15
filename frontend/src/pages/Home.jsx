@@ -46,7 +46,7 @@ const Home = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (res.ok) {
+      if (res.ok && res.status !== 204) {
         const json = await res.json();
         setTasks(json);
       }
@@ -113,7 +113,10 @@ const Home = () => {
     const res = await fetch("http://localhost:8080/tasks", {
       method: "POST",
       body: JSON.stringify(task),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const json = await res.json();
