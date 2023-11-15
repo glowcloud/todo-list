@@ -5,7 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import orogala.todolist.backend.job.EmailJob;
@@ -16,8 +19,10 @@ import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.model.TodoUser;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
+import orogala.todolist.backend.repository.UserRepository;
 import orogala.todolist.backend.service.AuthenticationService;
 import orogala.todolist.backend.service.MailService;
+import orogala.todolist.backend.service.TokenService;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -38,6 +43,8 @@ public class MainController {
     private Scheduler scheduler;
     @Autowired
     private AuthenticationService authService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/register")
     public TodoUser registerUser(@RequestBody TodoUser todoUser) {
@@ -51,12 +58,21 @@ public class MainController {
 
     @GetMapping(path="/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = new ArrayList<Task>();
-        taskRepository.findAll().forEach(tasks::add);
-        if (tasks.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isPresent()) {
+
+            List<Task> tasks = new ArrayList<Task>();
+            taskRepository.findAll().forEach(tasks::add);
+            if (tasks.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
         }
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(path="/tasks/{id}")
