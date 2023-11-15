@@ -85,7 +85,7 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
     (date) => ({
       ...(dayjs().isSame(dayjs(date), "day") && {
         style: {
-          //   backgroundColor: "rgba(255, 255, 255, 0.5)",
+            // backgroundColor: "#829CBC",
         },
       }),
     }),

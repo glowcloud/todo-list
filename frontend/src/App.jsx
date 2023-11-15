@@ -4,11 +4,32 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Home from "./pages/Home";
 import Layout from "./components/Layout";
 import { AuthContextProvider } from "./context/AuthContext";
+import { useTheme } from "./context/ThemeContext";
 
 function App() {
+  const { mode } = useTheme();
+
   const theme = createTheme({
     palette: {
-      // mode: "dark",
+      mode: mode,
+      ...(mode === "light"
+        ? {}
+        : {
+            primary: {
+              main: "#90caf9",
+            },
+            secondary: {
+              main: "#f9b690",
+            },
+            text: {
+              primary: "#ffffff",
+              secondary: "b3b3b3",
+            },
+            background: {
+              default: "#121212",
+              paper: "#282828",
+            },
+          }),
     },
   });
 

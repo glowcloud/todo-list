@@ -17,7 +17,6 @@ import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
 import SwitchViewButtons from "../components/SwitchViewButtons";
-import dayjs from "dayjs";
 import { sendTask } from "../utils/calendarIntegrationUtils";
 import { isOverdue } from "../utils/generalUtils";
 import { useAuth } from "../context/AuthContext";
