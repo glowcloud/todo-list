@@ -140,13 +140,16 @@ const Home = () => {
     const res = await fetch(`http://localhost:8080/tasks/${task.id}`, {
       method: "PUT",
       body: JSON.stringify(task),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (res.ok) {
       const json = await res.json();
       if (!task.finished) {
-        await sendTask(json);
+        await sendTask(json, token);
         setTasks((prevTasks) => {
           const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
           return [...filteredTasks, json];
@@ -162,7 +165,10 @@ const Home = () => {
   const handleDeleteTask = async (id) => {
     const res = await fetch(`http://localhost:8080/tasks/${id}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (res.ok) {
