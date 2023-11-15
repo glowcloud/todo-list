@@ -13,6 +13,7 @@ import { useState } from "react";
 import { sendTask } from "../utils/calendarIntegrationUtils";
 import ConfirmDialog from "./ConfirmDialog";
 import { isOverdue } from "../utils/generalUtils";
+import { useAuth } from "../context/AuthContext";
 
 /* eslint-disable react/prop-types */
 const TaskModal = ({
@@ -27,6 +28,7 @@ const TaskModal = ({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isResendDialogOpen, setIsResendDialogOpen] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const { token } = useAuth();
 
   const handleCheck = () => {
     handleCheckTask(task.id, !task.finished);
@@ -61,7 +63,7 @@ const TaskModal = ({
 
   const handleResend = async () => {
     setIsResending(true);
-    await sendTask(task);
+    await sendTask(task, token);
     setIsResending(false);
     setAlertMsg("Task resent.");
   };

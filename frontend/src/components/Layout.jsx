@@ -3,7 +3,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 
 const Layout = ({ children }) => {
-  const { user, handleSignOut } = useAuth();
+  const { token, handleSignOut } = useAuth();
 
   return (
     <Box display="flex">
@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
           <Typography variant="h6" flexGrow={1}>
             To Do List
           </Typography>
-          {user && (
+          {token && (
             <Button
               variant="text"
               size="large"

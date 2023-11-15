@@ -35,28 +35,45 @@ const Home = () => {
   const [addingTask, setAddingTask] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
-  const { user } = useAuth();
+  const { token } = useAuth();
 
   useEffect(() => {
     const getTasks = async () => {
-      const res = await fetch("http://localhost:8080/tasks");
-      if (res.ok) {
+      const res = await fetch("http://localhost:8080/tasks", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok && res.status !== 204) {
         const json = await res.json();
         setTasks(json);
+      }
+      else {
+        setTasks([]);
       }
     };
 
     const getPriorities = async () => {
-      const res = await fetch("http://localhost:8080/priorities");
+      const res = await fetch("http://localhost:8080/priorities", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       if (res.ok) {
         const json = await res.json();
         setPriorities(json);
       }
     };
 
-    getPriorities();
-    getTasks();
-  }, []);
+    if (token) {
+      getPriorities();
+      getTasks();
+    }
+  }, [token]);
 
   useEffect(() => {
     if (alertMsg) {
@@ -99,12 +116,15 @@ const Home = () => {
     const res = await fetch("http://localhost:8080/tasks", {
       method: "POST",
       body: JSON.stringify(task),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const json = await res.json();
 
-    await sendTask(json);
+    await sendTask(json, token);
 
     setAddingTask(false);
     setAlertMsg("Task added and sent to your email.");
@@ -123,13 +143,16 @@ const Home = () => {
     const res = await fetch(`http://localhost:8080/tasks/${task.id}`, {
       method: "PUT",
       body: JSON.stringify(task),
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (res.ok) {
       const json = await res.json();
       if (!task.finished) {
-        await sendTask(json);
+        await sendTask(json, token);
         setTasks((prevTasks) => {
           const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
           return [...filteredTasks, json];
@@ -145,7 +168,10 @@ const Home = () => {
   const handleDeleteTask = async (id) => {
     const res = await fetch(`http://localhost:8080/tasks/${id}`, {
       method: "DELETE",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (res.ok) {
@@ -173,7 +199,7 @@ const Home = () => {
     });
   };
 
-  return !user ? (
+  return !token ? (
     <Login />
   ) : priorities.length > 0 ? (
     <>

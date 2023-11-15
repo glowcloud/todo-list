@@ -5,14 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import orogala.todolist.backend.job.EmailJob;
 import orogala.todolist.backend.job.ReminderJob;
+import orogala.todolist.backend.model.LoginResponse;
 import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
+import orogala.todolist.backend.model.TodoUser;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
+import orogala.todolist.backend.repository.UserRepository;
+import orogala.todolist.backend.service.AuthenticationService;
 import orogala.todolist.backend.service.MailService;
 
 import java.time.ZoneId;
@@ -21,7 +29,7 @@ import java.util.*;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
-@Controller
+@RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class MainController {
     @Autowired
@@ -32,36 +40,74 @@ public class MainController {
     private MailService mailService;
     @Autowired
     private Scheduler scheduler;
+    @Autowired
+    private AuthenticationService authService;
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping("/register")
+    public LoginResponse registerUser(@RequestBody TodoUser todoUser) {
+        return authService.registerUser(todoUser.getEmail(), todoUser.getPassword());
+
+    }
+
+    @PostMapping("/login")
+    public LoginResponse loginUser(@RequestBody TodoUser todoUser) {
+        return authService.loginUser(todoUser.getEmail(), todoUser.getPassword());
+    }
 
     @GetMapping(path="/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = new ArrayList<Task>();
-        taskRepository.findAll().forEach(tasks::add);
-        if (tasks.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isPresent()) {
+
+            Optional<ArrayList<Task>> tasksData = taskRepository.findAllByUser_Id(userData.get().getId());
+
+            if (tasksData.isPresent()) {
+                List<Task> tasks = new ArrayList<Task>(tasksData.get());
+
+                if (tasks.isEmpty()){
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+
+                return new ResponseEntity<>(tasks, HttpStatus.OK);
+            }
         }
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping(path="/tasks/{id}")
-    public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
-        Optional<Task> taskData = taskRepository.findById(id);
-
-        if (taskData.isPresent()) {
-            return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @GetMapping(path="/tasks/{id}")
+//    public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
+//        Optional<Task> taskData = taskRepository.findById(id);
+//
+//        if (taskData.isPresent()) {
+//            return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
+//        }
+//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 
     @PostMapping(path="/tasks")
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
-        try {
-            Task newTask = taskRepository.save(task);
-            scheduleTask(newTask);
-            return new ResponseEntity<>(newTask, HttpStatus.CREATED);
-        } catch(Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isPresent()) {
+            try {
+                task.setUser(userData.get());
+                Task newTask = taskRepository.save(task);
+                scheduleTask(newTask, email);
+                return new ResponseEntity<>(newTask, HttpStatus.CREATED);
+            } catch(Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PutMapping(path="/tasks/{id}")
@@ -80,7 +126,7 @@ public class MainController {
                 task.setAllDay(newTask.getAllDay());
 
                 scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
-                scheduleTask(task);
+                scheduleTask(task, task.getUser().getEmail());
 
                 return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
 
@@ -126,8 +172,12 @@ public class MainController {
 
     @PostMapping(path="/sendmail")
     public ResponseEntity<HttpStatus> sendAttachmentMail(@RequestBody String file) {
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
         mailService.sendEmailWithAttachment(
-                "oliwia.rogala97@gmail.com",
+                email,
                 "New task",
                 "You have a new task.",
                 file);
@@ -159,7 +209,7 @@ public class MainController {
                 .build();
     }
 
-    private void scheduleTask(Task task) throws SchedulerException {
+    private void scheduleTask(Task task, String email) throws SchedulerException {
         ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(15);
 
         String mailBody = "";
@@ -174,7 +224,7 @@ public class MainController {
                 + task.getDescription();
 
 //            String jobUUID = UUID.randomUUID().toString();
-        JobDetail jobDetail = buildJobDetail("oliwia.rogala97@gmail.com",
+        JobDetail jobDetail = buildJobDetail(email,
                 "Upcoming task: " + task.getTitle(),
                 mailBody,
                 task.getId().toString()

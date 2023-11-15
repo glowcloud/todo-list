@@ -4,28 +4,28 @@ import { createContext, useContext, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const localUser = localStorage.getItem("todo-user");
-    if (localUser) {
+    const localToken = localStorage.getItem("todo-token");
+    if (localToken) {
       // validate token on backend
-      setUser(localUser);
+      setToken(localToken);
     }
   }, []);
 
-  const handleSignIn = (newUser) => {
-    localStorage.setItem("todo-user", newUser.id);
-    setUser(newUser);
+  const handleSignIn = (newToken) => {
+    localStorage.setItem("todo-token", newToken);
+    setToken(newToken);
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem("todo-user");
-    setUser(null);
+    localStorage.removeItem("todo-token");
+    setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, handleSignIn, handleSignOut }}>
+    <AuthContext.Provider value={{ token, handleSignIn, handleSignOut }}>
       {children}
     </AuthContext.Provider>
   );

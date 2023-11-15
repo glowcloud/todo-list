@@ -24,7 +24,7 @@ const getCalendarEvent = (task) => {
   };
 };
 
-const sendTask = async (task) => {
+const sendTask = async (task, token) => {
   const filename = "tasks.ics";
   const file = await new Promise((resolve, reject) => {
     createEvent(getCalendarEvent(task), (error, value) => {
@@ -39,7 +39,10 @@ const sendTask = async (task) => {
   await fetch("http://localhost:8080/sendmail", {
     method: "POST",
     body: file,
-    headers: { "Content-Type": "text/calendar" },
+    headers: {
+      "Content-Type": "text/calendar",
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 

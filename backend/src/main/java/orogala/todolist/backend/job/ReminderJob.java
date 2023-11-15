@@ -7,11 +7,13 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.repository.TaskRepository;
+import orogala.todolist.backend.repository.UserRepository;
 import orogala.todolist.backend.service.MailService;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReminderJob extends QuartzJobBean {
@@ -19,32 +21,37 @@ public class ReminderJob extends QuartzJobBean {
     private MailService mailService;
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-//        for every user get tasks
-//        if any overdue tasks: send mail
+        userRepository.findAll().forEach(user -> {
+            List<Task> tasks = new ArrayList<Task>();
+            Optional<ArrayList<Task>> tasksData =  taskRepository.findAllByUser_Id(user.getId());
 
-        List<Task> tasks = new ArrayList<Task>();
-        taskRepository.findAll().forEach(task -> {
-            if (!task.getFinished()
-                    && (task.getEndDate().before(new Date()) && task.getEndDate().getDay() != new Date().getDay())
-                    || (task.getEndDate().before(new Date()) && task.getEndDate().getDay() == new Date().getDay())
-                        && !task.getAllDay()) {
-                tasks.add(task);
+            if (tasksData.isPresent()) {
+                tasksData.get().forEach(task -> {
+                    if (!task.getFinished()
+                            && (task.getEndDate().before(new Date()) && task.getEndDate().getDay() != new Date().getDay())
+                            || (task.getEndDate().before(new Date()) && task.getEndDate().getDay() == new Date().getDay())
+                            && !task.getAllDay()) {
+                        tasks.add(task);
+                    }
+                });
+
+                if (!tasks.isEmpty()) {
+                    String body = "Your unfinished tasks:\n\n";
+                    for (Task task : tasks) {
+                        body += task.getTitle();
+                        body += "\n";
+                    }
+                    String subject = "You have unfinished tasks!";
+                    mailService.sendEmail(user.getEmail(),
+                            "You have unfinished tasks!",
+                            body);
+                }
             }
         });
-
-        if (!tasks.isEmpty()) {
-            String body = "Your unfinished tasks:\n\n";
-            for (Task task : tasks) {
-                body += task.getTitle();
-                body += "\n";
-            }
-            String subject = "You have unfinished tasks!";
-            mailService.sendEmail("oliwia.rogala97@gmail.com",
-                    "You have unfinished tasks!",
-                    body);
-        }
     }
 }
