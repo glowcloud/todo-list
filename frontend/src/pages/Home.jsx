@@ -49,8 +49,7 @@ const Home = () => {
       if (res.ok && res.status !== 204) {
         const json = await res.json();
         setTasks(json);
-      }
-      else {
+      } else {
         setTasks([]);
       }
     };
@@ -226,14 +225,7 @@ const Home = () => {
         </Box>
         <SwitchViewButtons
           setCurrentView={setCurrentView}
-          badgeContent={
-            tasks.filter(
-              (task) =>
-                !task.finished &&
-                (dayjs(task.endDate).isBefore(dayjs()) ||
-                  (dayjs().isSame(task.endDate, "d") && !task.allDay))
-            ).length
-          }
+          badgeContent={tasks.filter((task) => isOverdue(task)).length}
         />
       </Box>
       {currentView === "calendar" && (
@@ -267,7 +259,7 @@ const Home = () => {
       )}
       {currentView === "overdue" && (
         <TasksList
-          tasks={tasks.filter((task) => !task.finished && isOverdue(task))}
+          tasks={tasks.filter((task) => isOverdue(task))}
           priorityFilters={priorityFilters}
           setTaskOpen={setTaskOpen}
           handleCheckTask={handleCheckTask}
