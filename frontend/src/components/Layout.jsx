@@ -15,18 +15,20 @@ const Layout = ({ currentView, setCurrentView, children }) => {
 
   return (
     <Box display="flex">
-      <AppBar
-        sx={{
-          display: { xs: "block", md: "none" },
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-      >
-        <Toolbar>
-          <IconButton onClick={handleMenuClick}>
-            <Menu sx={{ color: "white" }} />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      {token && (
+        <AppBar
+          sx={{
+            display: { xs: "block", md: "none" },
+            zIndex: (theme) => theme.zIndex.drawer + 1,
+          }}
+        >
+          <Toolbar>
+            <IconButton onClick={handleMenuClick}>
+              <Menu sx={{ color: "white" }} />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+      )}
       {token && (
         <Sidebar
           isSidebarOpen={isSidebarOpen}
