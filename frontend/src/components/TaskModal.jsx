@@ -6,13 +6,47 @@ import {
   Delete,
   Email,
 } from "@mui/icons-material";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Divider, IconButton, Typography } from "@mui/material";
 import CustomModal from "./CustomModal";
 import dayjs from "dayjs";
 import { useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
 import { isOverdue } from "../utils/generalUtils";
 import { useDataContext } from "../context/DataContext";
+
+const getFormattedDates = (startDate, endDate, allDay) => {
+  if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
+    if (allDay) {
+      return (
+        <Typography gutterBottom>
+          on {dayjs(startDate).format("DD/MM/YYYY")}
+        </Typography>
+      );
+    } else {
+      return (
+        <>
+          <Typography gutterBottom>
+            on {dayjs(startDate).format("DD/MM/YYYY")}
+          </Typography>
+          <Typography gutterBottom>
+            from {dayjs(startDate).format("h:mm A")} to{" "}
+            {dayjs(endDate).format("h:mm A")}
+          </Typography>
+        </>
+      );
+    }
+  }
+  return (
+    <>
+      <Typography gutterBottom>
+        from {dayjs(startDate).format("h:mm A DD/MM/YYYY")}
+      </Typography>
+      <Typography gutterBottom>
+        to {dayjs(endDate).format("h:mm A DD/MM/YYYY")}
+      </Typography>
+    </>
+  );
+};
 
 const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -101,41 +135,32 @@ const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
           {task && task.priority.name} priority
         </Typography>
       }
-      <Typography gutterBottom>
-        {task
-          ? `Start: ${
-              task.allDay
-                ? dayjs(task.startDate).format("DD/MM/YYYY")
-                : dayjs(task.startDate).toDate().toLocaleString()
-            }`
-          : ""}
-      </Typography>
-      <Typography gutterBottom>
-        {task
-          ? `End: ${
-              task.allDay
-                ? dayjs(task.endDate).format("DD/MM/YYYY")
-                : dayjs(task.endDate).toDate().toLocaleString()
-            }`
-          : ""}
-      </Typography>
       <Typography
         variant="h5"
         sx={{
           overflowWrap: "break-word",
+          fontWeight: "bold",
         }}
         gutterBottom
       >
         {task?.title}
       </Typography>
-      <Typography
-        sx={{
-          overflowWrap: "break-word",
-        }}
-        gutterBottom
-      >
-        {task?.description}
-      </Typography>
+      {task && getFormattedDates(task.startDate, task.endDate, task.allDay)}
+
+      {task?.description && (
+        <>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="h6" gutterBottom>Description:</Typography>
+          <Typography
+            sx={{
+              overflowWrap: "break-word",
+            }}
+            gutterBottom
+          >
+            {task?.description}
+          </Typography>
+        </>
+      )}
       <ConfirmDialog
         open={isDeleteDialogOpen}
         handleClose={handleCloseDelete}
