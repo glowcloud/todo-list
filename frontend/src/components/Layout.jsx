@@ -1,55 +1,42 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
 import { useAuth } from "../context/AuthContext";
-import { DarkMode, LightMode } from "@mui/icons-material";
-import { useTheme } from "../context/ThemeContext";
+import { Menu } from "@mui/icons-material";
 import Sidebar from "./Sidebar";
 import CustomSnackbar from "./CustomSnackbar";
+import { useState } from "react";
 
 const Layout = ({ currentView, setCurrentView, children }) => {
-  const { token, handleSignOut } = useAuth();
-  const { mode, handleChangeMode } = useTheme();
+  const { token } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleMenuClick = () => {
+    setIsSidebarOpen((prevSidebar) => !prevSidebar);
+  };
 
   return (
     <Box display="flex">
-      <AppBar sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        sx={{
+          display: { xs: "block", md: "none" },
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+      >
         <Toolbar>
-          <Typography variant="h6" flexGrow={1}>
-            To Do List
-          </Typography>
-          {mode === "light" && (
-            <IconButton onClick={handleChangeMode}>
-              <LightMode sx={{ color: "white" }} />
-            </IconButton>
-          )}
-          {mode === "dark" && (
-            <IconButton onClick={handleChangeMode}>
-              <DarkMode />
-            </IconButton>
-          )}
-          {token && (
-            <Button
-              variant="text"
-              size="large"
-              sx={{ color: "white" }}
-              onClick={handleSignOut}
-            >
-              Logout
-            </Button>
-          )}
+          <IconButton onClick={handleMenuClick}>
+            <Menu sx={{ color: "white" }} />
+          </IconButton>
         </Toolbar>
       </AppBar>
       {token && (
-        <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
+          currentView={currentView}
+          setCurrentView={setCurrentView}
+        />
       )}
       <Box component="main" width="100%">
-        <Toolbar />
+        <Toolbar sx={{ display: { xs: "block", md: "none" }, mt: 2 }} />
         {children}
         <CustomSnackbar />
       </Box>
