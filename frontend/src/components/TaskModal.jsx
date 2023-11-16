@@ -14,16 +14,11 @@ import ConfirmDialog from "./ConfirmDialog";
 import { isOverdue } from "../utils/generalUtils";
 import { useDataContext } from "../context/DataContext";
 
-const TaskModal = ({
-  task,
-  isOpen,
-  handleModalClose,
-  handleCheckTask,
-  handleEditOpen,
-}) => {
+const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isResendDialogOpen, setIsResendDialogOpen] = useState(false);
-  const { loading, handleDeleteTask, handleResend } = useDataContext();
+  const { loading, handleDeleteTask, handleResend, handleCheckTask } =
+    useDataContext();
 
   const handleCheck = () => {
     handleCheckTask(task.id, !task.finished);

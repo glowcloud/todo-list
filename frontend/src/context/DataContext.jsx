@@ -144,6 +144,7 @@ export const DataContextProvider = ({ children }) => {
         priorities,
         loading,
         alertMsg,
+        setAlertMsg,
         handleAddTask,
         handleEditTask,
         handleDeleteTask,

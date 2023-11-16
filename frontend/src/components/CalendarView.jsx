@@ -126,7 +126,6 @@ const CalendarView = ({ search, priorityFilters, setTaskOpen }) => {
         onSelectEvent={onEventClick}
         dayPropGetter={dayPropGetter}
         eventPropGetter={eventPropGetter}
-        defaultView="day"
         views={["month", "week", "day"]}
         sx={{
           height: { xs: 600, sm: 625, md: 675 },
