@@ -14,6 +14,7 @@ import {
   ListOutlined,
   PriorityHigh,
 } from "@mui/icons-material";
+import { useDataContext } from "../context/DataContext";
 
 const navItems = (badgeContent) => {
   return [
@@ -32,7 +33,14 @@ const navItems = (badgeContent) => {
   ];
 };
 
-const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, badgeContent }) => {
+const Sidebar = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
+  currentView,
+  setCurrentView,
+}) => {
+  const { getOverdueCount } = useDataContext();
+
   return (
     <Drawer
       component="nav"
@@ -49,9 +57,9 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, badgeContent }) => {
     >
       <Toolbar />
       <List>
-        {navItems(badgeContent).map((item) => (
+        {navItems(getOverdueCount()).map((item) => (
           <ListItem key={item.view} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={() => setCurrentView(item.view)}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>

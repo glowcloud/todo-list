@@ -5,10 +5,14 @@ import Home from "./pages/Home";
 import Layout from "./components/Layout";
 import { useTheme } from "./context/ThemeContext";
 import { DataContextProvider } from "./context/DataContext";
-import { AuthContextProvider } from "./context/AuthContext";
+import Login from "./pages/Login";
+import { useAuth } from "./context/AuthContext";
+import { useState } from "react";
 
 function App() {
   const { mode } = useTheme();
+  const { token } = useAuth();
+  const [currentView, setCurrentView] = useState("list");
 
   const theme = createTheme({
     palette: {
@@ -36,16 +40,14 @@ function App() {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <AuthContextProvider>
-        <DataContextProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Layout>
-              <Home />
-            </Layout>
-          </ThemeProvider>
-        </DataContextProvider>
-      </AuthContextProvider>
+      <DataContextProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Layout currentView={currentView} setCurrentView={setCurrentView}>
+            {token ? <Home currentView={currentView} /> : <Login />}
+          </Layout>
+        </ThemeProvider>
+      </DataContextProvider>
     </LocalizationProvider>
   );
 }

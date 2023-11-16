@@ -16,21 +16,15 @@ import {
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
-import SwitchViewButtons from "../components/SwitchViewButtons";
-import { isOverdue } from "../utils/generalUtils";
-import { useAuth } from "../context/AuthContext";
-import Login from "../components/Login";
 import { useDataContext } from "../context/DataContext";
 
-const Home = () => {
+const Home = ({ currentView }) => {
   const [taskOpen, setTaskOpen] = useState(-1);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [priorityFilters, setPriorityFilters] = useState([]);
   const [search, setSearch] = useState("");
-  const [currentView, setCurrentView] = useState("calendar");
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const { token } = useAuth();
   const { tasks, priorities, alertMsg, setAlertMsg } = useDataContext();
 
   useEffect(() => {
@@ -74,9 +68,7 @@ const Home = () => {
     });
   };
 
-  return !token ? (
-    <Login />
-  ) : priorities.length > 0 ? (
+  return priorities.length > 0 ? (
     <>
       <Box
         display="flex"
@@ -99,10 +91,10 @@ const Home = () => {
           />
           <Search search={search} setSearch={setSearch} />
         </Box>
-        <SwitchViewButtons
+        {/* <SwitchViewButtons
           setCurrentView={setCurrentView}
           badgeContent={tasks.filter((task) => isOverdue(task)).length}
-        />
+        /> */}
       </Box>
       {currentView === "calendar" && (
         <>
@@ -138,18 +130,12 @@ const Home = () => {
         isOpen={taskOpen >= 0}
         handleModalClose={handleTaskClose}
         handleEditOpen={handleEditOpen}
-        setAlertMsg={setAlertMsg}
       />
-      <AddModal
-        isOpen={isAddOpen}
-        handleModalClose={handleAddClose}
-        setAlertMsg={setAlertMsg}
-      />
+      <AddModal isOpen={isAddOpen} handleModalClose={handleAddClose} />
       <EditModal
         task={tasks.find((task) => task.id === taskOpen)}
         isOpen={isEditOpen}
         handleModalClose={handleEditClose}
-        setAlertMsg={setAlertMsg}
       />
       <Snackbar
         open={isSnackbarOpen}

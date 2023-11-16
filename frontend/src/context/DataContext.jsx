@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { sendTask } from "../utils/calendarIntegrationUtils";
+import { isOverdue } from "../utils/generalUtils";
 
 export const DataContext = createContext();
 
@@ -137,6 +138,10 @@ export const DataContextProvider = ({ children }) => {
     setAlertMsg("Task resent.");
   };
 
+  const getOverdueCount = () => {
+    return tasks.filter((task) => isOverdue(task)).length;
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -150,6 +155,7 @@ export const DataContextProvider = ({ children }) => {
         handleDeleteTask,
         handleCheckTask,
         handleResend,
+        getOverdueCount,
       }}
     >
       {children}
