@@ -17,6 +17,7 @@ import { useState } from "react";
 import CustomModal from "./CustomModal";
 import { DateTimePicker, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { useDataContext } from "../context/DataContext";
 
 const defaultState = {
   title: "",
@@ -26,16 +27,11 @@ const defaultState = {
   priority: 3,
 };
 
-const AddModal = ({
-  isOpen,
-  handleModalClose,
-  handleAddTask,
-  priorities,
-  addingTask,
-}) => {
+const AddModal = ({ isOpen, handleModalClose }) => {
   const [formState, setFormState] = useState(defaultState);
   const [isAllDay, setIsAllDay] = useState(true);
   const [error, setError] = useState(false);
+  const { priorities, loading, handleAddTask } = useDataContext();
 
   const handleAdd = async () => {
     if (
@@ -60,7 +56,7 @@ const AddModal = ({
   };
 
   const handleClose = () => {
-    if (!addingTask) {
+    if (!loading) {
       setFormState(defaultState);
       handleModalClose();
     }
@@ -86,14 +82,14 @@ const AddModal = ({
           margin="normal"
           fullWidth
           required
-          disabled={addingTask}
+          disabled={loading}
           error={error && !formState.title}
         />
         <Box>
           <FormControlLabel
             label="Only date"
             checked={isAllDay}
-            disabled={addingTask}
+            disabled={loading}
             control={
               <Checkbox
                 value={isAllDay}
@@ -109,7 +105,7 @@ const AddModal = ({
               orientation="portrait"
               value={formState.startDate}
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
                 mr: 1,
@@ -130,7 +126,7 @@ const AddModal = ({
               orientation="portrait"
               value={formState.endDate}
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
                 mr: 1,
@@ -157,7 +153,7 @@ const AddModal = ({
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
                 mr: 1,
@@ -181,7 +177,7 @@ const AddModal = ({
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
               minDateTime={formState.startDate.add(5, "minutes")}
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
               }}
@@ -203,7 +199,7 @@ const AddModal = ({
           <Select
             value={formState.priority}
             label="Priority"
-            disabled={addingTask}
+            disabled={loading}
             onChange={(e) =>
               setFormState((prevState) => {
                 return { ...prevState, priority: e.target.value };
@@ -229,13 +225,13 @@ const AddModal = ({
           multiline
           rows={4}
           fullWidth
-          disabled={addingTask}
+          disabled={loading}
         />
         <Box sx={{ mt: 3, textAlign: "center", position: "relative" }}>
-          <Button variant="outlined" disabled={addingTask} onClick={handleAdd}>
+          <Button variant="outlined" disabled={loading} onClick={handleAdd}>
             Add
           </Button>
-          {addingTask && (
+          {loading && (
             <CircularProgress
               size={24}
               sx={{
