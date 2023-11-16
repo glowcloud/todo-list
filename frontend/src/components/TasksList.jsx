@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import TaskCard from "./TaskCard";
-import SortPopover from "./SortPopover";
 import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import ResendingBackdrop from "./ResendingBackdrop";
 import { useDataContext } from "../context/DataContext";
 import { isOverdue } from "../utils/generalUtils";
+import SortFilterSearch from "./SortFilterSearch";
 
 const getFilteredTasks = (
   tasks,
@@ -43,11 +43,13 @@ const getFilteredTasks = (
     });
 };
 
-const TasksList = ({ priorityFilters, setTaskOpen, search, overdue }) => {
+const TasksList = ({ setTaskOpen, overdue }) => {
   const [sortType, setSortType] = useState("none");
   const [timeFrame, setTimeFrame] = useState(overdue ? "overall" : "day");
   const [chosenTime, setChosenTime] = useState(dayjs());
   const [isResending, setIsResending] = useState(false);
+  const [search, setSearch] = useState("");
+  const [priorityFilters, setPriorityFilters] = useState([]);
   const { tasks, priorities, handleCheckTask } = useDataContext();
 
   const handleCheck = async (id, isChecked) => {
@@ -60,8 +62,27 @@ const TasksList = ({ priorityFilters, setTaskOpen, search, overdue }) => {
     }
   };
 
+  const handleFilterClick = (id) => {
+    setPriorityFilters((prevFilters) => {
+      if (prevFilters.includes(id))
+        return prevFilters.filter((item) => item !== id);
+      else {
+        return [...prevFilters, id];
+      }
+    });
+  };
+
   return (
     <Box sx={{ mx: { md: 15, lg: 35, xl: 60 } }}>
+      <SortFilterSearch
+        sortType={sortType}
+        setSortType={setSortType}
+        search={search}
+        setSearch={setSearch}
+        handleFilterClick={handleFilterClick}
+        priorityFilters={priorityFilters}
+        setPriorityFilters={setPriorityFilters}
+      />
       <Box
         mb={3}
         mx={3}
@@ -69,7 +90,6 @@ const TasksList = ({ priorityFilters, setTaskOpen, search, overdue }) => {
         justifyContent="center"
         alignItems="center"
       >
-        <SortPopover sortType={sortType} setSortType={setSortType} />
         {!overdue && (
           <TimeFrameSelect
             timeFrame={timeFrame}

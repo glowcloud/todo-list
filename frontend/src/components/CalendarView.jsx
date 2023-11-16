@@ -33,7 +33,7 @@ const createEvents = (tasks) => {
   return events;
 };
 
-const CalendarView = ({ search, priorityFilters, setTaskOpen }) => {
+const CalendarView = ({ setTaskOpen }) => {
   const [events, setEvents] = useState([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -43,19 +43,9 @@ const CalendarView = ({ search, priorityFilters, setTaskOpen }) => {
 
   useEffect(() => {
     if (tasks) {
-      setEvents(
-        createEvents(
-          tasks.filter(
-            (task) =>
-              (task.title.includes(search) ||
-                task.description.includes(search)) &&
-              (priorityFilters.length === 0 ||
-                priorityFilters.includes(task.priority.id))
-          )
-        )
-      );
+      setEvents(createEvents(tasks));
     }
-  }, [tasks, search, priorityFilters]);
+  }, [tasks]);
 
   const handleConfirmEdit = async () => {
     const currentTask = tasks.find(

@@ -38,7 +38,7 @@ const Layout = ({ currentView, setCurrentView, children }) => {
         />
       )}
       <Box component="main" width="100%">
-        <Toolbar sx={{ display: { xs: "block", md: "none" }, mt: 2 }} />
+        <Toolbar />
         {children}
         <CustomSnackbar />
       </Box>

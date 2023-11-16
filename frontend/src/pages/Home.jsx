@@ -1,11 +1,9 @@
 import AddModal from "../components/AddModal";
 import { useState } from "react";
 import TaskModal from "../components/TaskModal";
-import FiltersPopover from "../components/FiltersPopover";
 import TasksList from "../components/TasksList";
 import AddFab from "../components/AddFab";
 import EditModal from "../components/EditModal";
-import Search from "../components/Search";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
@@ -16,8 +14,6 @@ const Home = ({ currentView }) => {
   const [taskOpen, setTaskOpen] = useState(-1);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [priorityFilters, setPriorityFilters] = useState([]);
-  const [search, setSearch] = useState("");
   const { tasks, priorities } = useDataContext();
 
   const handleTaskClose = () => {
@@ -40,67 +36,20 @@ const Home = ({ currentView }) => {
     setIsEditOpen(true);
   };
 
-  const handleFilterClick = (id) => {
-    setPriorityFilters((prevFilters) => {
-      if (prevFilters.includes(id))
-        return prevFilters.filter((item) => item !== id);
-      else {
-        return [...prevFilters, id];
-      }
-    });
-  };
-
   return priorities.length > 0 ? (
     <>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        sx={{ mb: 2 }}
-        flexDirection={{ xs: "column-reverse", md: "row" }}
-      >
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          mt={{ xs: 0, md: 3 }}
-        >
-          <FiltersPopover
-            handleFilterClick={handleFilterClick}
-            priorities={priorities}
-            priorityFilters={priorityFilters}
-            setPriorityFilters={setPriorityFilters}
-          />
-          <Search search={search} setSearch={setSearch} />
-        </Box>
-      </Box>
       {currentView === "calendar" && (
         <>
-          <CalendarView
-            search={search}
-            priorityFilters={priorityFilters}
-            setTaskOpen={setTaskOpen}
-          />
+          <CalendarView setTaskOpen={setTaskOpen} />
           <DownloadButton tasks={tasks} />
         </>
       )}
       {currentView === "summary" && (
         <Summary tasks={tasks} priorities={priorities} />
       )}
-      {currentView === "list" && (
-        <TasksList
-          priorityFilters={priorityFilters}
-          setTaskOpen={setTaskOpen}
-          search={search}
-        />
-      )}
+      {currentView === "list" && <TasksList setTaskOpen={setTaskOpen} />}
       {currentView === "overdue" && (
-        <TasksList
-          priorityFilters={priorityFilters}
-          setTaskOpen={setTaskOpen}
-          search={search}
-          overdue
-        />
+        <TasksList setTaskOpen={setTaskOpen} overdue />
       )}
       <AddFab handleAddOpen={handleAddOpen} />
       <TaskModal

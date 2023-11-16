@@ -87,7 +87,7 @@ const Summary = () => {
   const { tasks, priorities } = useDataContext();
 
   return (
-    <>
+    <> 
       <TimeFrameSelect
         timeFrame={timeFrame}
         setTimeFrame={setTimeFrame}
