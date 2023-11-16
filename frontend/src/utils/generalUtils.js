@@ -14,4 +14,41 @@ const isOverdue = (task) => {
   return false;
 };
 
-export { isOverdue };
+const getFilteredTasks = (
+  tasks,
+  timeFrame,
+  chosenTime,
+  priorityFilters,
+  sortType,
+  search,
+  overdue,
+  finished
+) => {
+  return tasks
+    .filter(
+      (task) =>
+        (!overdue || isOverdue(task)) &&
+        (timeFrame === "overall" ||
+          dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame) ||
+          dayjs(chosenTime).isSame(dayjs(task.endDate), timeFrame) ||
+          (dayjs(task.startDate).isBefore(dayjs(chosenTime), timeFrame) &&
+            dayjs(task.endDate).isAfter(dayjs(chosenTime), timeFrame))) &&
+        (task.title.includes(search) || task.description.includes(search)) &&
+        (priorityFilters.length === 0 ||
+          priorityFilters.includes(task.priority.id)) &&
+        (!finished || task.finished)
+    )
+    .sort((x, y) => {
+      if (sortType === "none") {
+        return x.finished - y.finished;
+      }
+      if (sortType === "priority") {
+        return x.priority.id - y.priority.id;
+      }
+      if (sortType === "date") {
+        return dayjs(x.endDate).toDate() - dayjs(y.endDate).toDate();
+      }
+    });
+};
+
+export { isOverdue, getFilteredTasks };

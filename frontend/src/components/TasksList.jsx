@@ -5,61 +5,20 @@ import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import ResendingBackdrop from "./ResendingBackdrop";
 import { useDataContext } from "../context/DataContext";
-import { isOverdue } from "../utils/generalUtils";
+import { getFilteredTasks } from "../utils/generalUtils";
 import SortFilterSearch from "./SortFilterSearch";
-
-const getFilteredTasks = (
-  tasks,
-  timeFrame,
-  chosenTime,
-  priorityFilters,
-  sortType,
-  search,
-  overdue
-) => {
-  return tasks
-    .filter(
-      (task) =>
-        (!overdue || isOverdue(task)) &&
-        (timeFrame === "overall" ||
-          dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame) ||
-          dayjs(chosenTime).isSame(dayjs(task.endDate), timeFrame) ||
-          (dayjs(task.startDate).isBefore(dayjs(chosenTime), timeFrame) &&
-            dayjs(task.endDate).isAfter(dayjs(chosenTime), timeFrame))) &&
-        (task.title.includes(search) || task.description.includes(search)) &&
-        (priorityFilters.length === 0 ||
-          priorityFilters.includes(task.priority.id))
-    )
-    .sort((x, y) => {
-      if (sortType === "none") {
-        return x.finished - y.finished;
-      }
-      if (sortType === "priority") {
-        return x.priority.id - y.priority.id;
-      }
-      if (sortType === "date") {
-        return dayjs(x.endDate).toDate() - dayjs(y.endDate).toDate();
-      }
-    });
-};
+import TasksProgress from "./TasksProgress";
 
 const TasksList = ({ setTaskOpen, overdue }) => {
   const [sortType, setSortType] = useState("none");
   const [timeFrame, setTimeFrame] = useState(overdue ? "overall" : "day");
   const [chosenTime, setChosenTime] = useState(dayjs());
-  const [isResending, setIsResending] = useState(false);
   const [search, setSearch] = useState("");
   const [priorityFilters, setPriorityFilters] = useState([]);
-  const { tasks, priorities, handleCheckTask } = useDataContext();
+  const { tasks, priorities, loading, handleCheckTask } = useDataContext();
 
   const handleCheck = async (id, isChecked) => {
-    if (isChecked) {
-      await handleCheckTask(id, isChecked);
-    } else {
-      setIsResending(true);
-      await handleCheckTask(id, isChecked);
-      setIsResending(false);
-    }
+    await handleCheckTask(id, isChecked);
   };
 
   const handleFilterClick = (id) => {
@@ -99,6 +58,33 @@ const TasksList = ({ setTaskOpen, overdue }) => {
           />
         </Box>
       )}
+      {!overdue && (
+        <TasksProgress
+          value={
+            (getFilteredTasks(
+              tasks,
+              timeFrame,
+              chosenTime,
+              priorityFilters,
+              sortType,
+              search,
+              overdue,
+              true
+            ).length /
+              getFilteredTasks(
+                tasks,
+                timeFrame,
+                chosenTime,
+                priorityFilters,
+                sortType,
+                search,
+                overdue,
+                false
+              ).length) *
+            100
+          }
+        />
+      )}
       {getFilteredTasks(
         tasks,
         timeFrame,
@@ -106,7 +92,8 @@ const TasksList = ({ setTaskOpen, overdue }) => {
         priorityFilters,
         sortType,
         search,
-        overdue
+        overdue,
+        false
       ).map((task) => (
         <TaskCard
           key={task.id}
@@ -124,13 +111,15 @@ const TasksList = ({ setTaskOpen, overdue }) => {
           chosenTime,
           priorityFilters,
           sortType,
-          search
+          search,
+          overdue,
+          false
         ).length === 0) && (
         <Box textAlign="center" mt={5}>
           <Typography variant="h5">No tasks found.</Typography>
         </Box>
       )}
-      <ResendingBackdrop isResending={isResending} />
+      <ResendingBackdrop isResending={loading} />
     </Box>
   );
 };
