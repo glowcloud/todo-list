@@ -184,6 +184,17 @@ public class MainController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping(path="/validate")
+    public ResponseEntity<HttpStatus>  validateToken () {
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isPresent()) return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
     private JobDetail buildJobDetail(String email, String subject, String body, String id) {
         JobDataMap jobDataMap = new JobDataMap();
 
@@ -223,7 +234,6 @@ public class MainController {
                 + "\n\n"
                 + task.getDescription();
 
-//            String jobUUID = UUID.randomUUID().toString();
         JobDetail jobDetail = buildJobDetail(email,
                 "Upcoming task: " + task.getTitle(),
                 mailBody,

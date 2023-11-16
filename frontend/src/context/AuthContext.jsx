@@ -9,8 +9,23 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const localToken = localStorage.getItem("todo-token");
     if (localToken) {
-      // validate token on backend
-      setToken(localToken);
+      const validateToken = async () => {
+        try {
+          const res = await fetch("http://localhost:8080/validate", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localToken}`,
+            },
+          });
+          if (res.ok) {
+            setToken(localToken);
+          }
+        } catch (e) {
+          console.log("Invalid token.");
+        }
+      };
+      validateToken();
     }
   }, []);
 
