@@ -126,10 +126,10 @@ const Home = () => {
       )}
       {currentView === "overdue" && (
         <TasksList
-          tasks={tasks.filter((task) => isOverdue(task))}
           priorityFilters={priorityFilters}
           setTaskOpen={setTaskOpen}
           search={search}
+          overdue
         />
       )}
       <AddFab handleAddOpen={handleAddOpen} />

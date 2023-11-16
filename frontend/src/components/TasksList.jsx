@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import ResendingBackdrop from "./ResendingBackdrop";
 import { useDataContext } from "../context/DataContext";
+import { isOverdue } from "../utils/generalUtils";
 
 const getFilteredTasks = (
   tasks,
@@ -13,11 +14,13 @@ const getFilteredTasks = (
   chosenTime,
   priorityFilters,
   sortType,
-  search
+  search,
+  overdue
 ) => {
   return tasks
     .filter(
       (task) =>
+        (!overdue || isOverdue(task)) &&
         (timeFrame === "overall" ||
           dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame) ||
           dayjs(chosenTime).isSame(dayjs(task.endDate), timeFrame) ||
@@ -40,9 +43,9 @@ const getFilteredTasks = (
     });
 };
 
-const TasksList = ({ priorityFilters, setTaskOpen, search }) => {
+const TasksList = ({ priorityFilters, setTaskOpen, search, overdue }) => {
   const [sortType, setSortType] = useState("none");
-  const [timeFrame, setTimeFrame] = useState("day");
+  const [timeFrame, setTimeFrame] = useState(overdue ? "overall" : "day");
   const [chosenTime, setChosenTime] = useState(dayjs());
   const [isResending, setIsResending] = useState(false);
   const { tasks, priorities, handleCheckTask } = useDataContext();
@@ -67,12 +70,14 @@ const TasksList = ({ priorityFilters, setTaskOpen, search }) => {
         alignItems="center"
       >
         <SortPopover sortType={sortType} setSortType={setSortType} />
-        <TimeFrameSelect
-          timeFrame={timeFrame}
-          setTimeFrame={setTimeFrame}
-          chosenTime={chosenTime}
-          setChosenTime={setChosenTime}
-        />
+        {!overdue && (
+          <TimeFrameSelect
+            timeFrame={timeFrame}
+            setTimeFrame={setTimeFrame}
+            chosenTime={chosenTime}
+            setChosenTime={setChosenTime}
+          />
+        )}
       </Box>
       {getFilteredTasks(
         tasks,
@@ -80,7 +85,8 @@ const TasksList = ({ priorityFilters, setTaskOpen, search }) => {
         chosenTime,
         priorityFilters,
         sortType,
-        search
+        search,
+        overdue
       ).map((task) => (
         <TaskCard
           key={task.id}
