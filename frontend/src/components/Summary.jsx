@@ -92,15 +92,9 @@ const Summary = () => {
           mx={{ xs: 1, md: 2, lg: 5, xl: 40 }}
           mt={3}
         >
-          <CustomPieChart
-            data={getStatusData(tasks, timeFrame, chosenTime)}
-            width={500}
-            height={400}
-          />
+          <CustomPieChart data={getStatusData(tasks, timeFrame, chosenTime)} />
           <CustomPieChart
             data={getPrioritiesData(tasks, priorities, timeFrame, chosenTime)}
-            width={500}
-            height={400}
           />
         </Box>
       ) : (
