@@ -1,18 +1,12 @@
 import AddModal from "../components/AddModal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TaskModal from "../components/TaskModal";
 import FiltersPopover from "../components/FiltersPopover";
 import TasksList from "../components/TasksList";
 import AddFab from "../components/AddFab";
 import EditModal from "../components/EditModal";
 import Search from "../components/Search";
-import {
-  Alert,
-  Box,
-  CircularProgress,
-  Snackbar,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
@@ -24,19 +18,7 @@ const Home = ({ currentView }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [priorityFilters, setPriorityFilters] = useState([]);
   const [search, setSearch] = useState("");
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const { tasks, priorities, alertMsg, setAlertMsg } = useDataContext();
-
-  useEffect(() => {
-    if (alertMsg) {
-      setIsSnackbarOpen(true);
-    }
-  }, [alertMsg]);
-
-  const handleSnackbarClose = () => {
-    setIsSnackbarOpen(false);
-    setAlertMsg("");
-  };
+  const { tasks, priorities } = useDataContext();
 
   const handleTaskClose = () => {
     setTaskOpen(-1);
@@ -91,10 +73,6 @@ const Home = ({ currentView }) => {
           />
           <Search search={search} setSearch={setSearch} />
         </Box>
-        {/* <SwitchViewButtons
-          setCurrentView={setCurrentView}
-          badgeContent={tasks.filter((task) => isOverdue(task)).length}
-        /> */}
       </Box>
       {currentView === "calendar" && (
         <>
@@ -137,15 +115,6 @@ const Home = ({ currentView }) => {
         isOpen={isEditOpen}
         handleModalClose={handleEditClose}
       />
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          {alertMsg}
-        </Alert>
-      </Snackbar>
     </>
   ) : (
     <Box

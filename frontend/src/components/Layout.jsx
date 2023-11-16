@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { useTheme } from "../context/ThemeContext";
 import Sidebar from "./Sidebar";
+import CustomSnackbar from "./CustomSnackbar";
 
 const Layout = ({ currentView, setCurrentView, children }) => {
   const { token, handleSignOut } = useAuth();
@@ -50,6 +51,7 @@ const Layout = ({ currentView, setCurrentView, children }) => {
       <Box component="main" width="100%">
         <Toolbar />
         {children}
+        <CustomSnackbar />
       </Box>
     </Box>
   );
