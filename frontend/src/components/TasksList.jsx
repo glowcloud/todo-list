@@ -5,6 +5,8 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import ResendingBackdrop from "./ResendingBackdrop";
+import { useDataContext } from "../context/DataContext";
+import { isOverdue } from "../utils/generalUtils";
 
 const getFilteredTasks = (
   tasks,
@@ -12,11 +14,13 @@ const getFilteredTasks = (
   chosenTime,
   priorityFilters,
   sortType,
-  search
+  search,
+  overdue
 ) => {
   return tasks
     .filter(
       (task) =>
+        (!overdue || isOverdue(task)) &&
         (timeFrame === "overall" ||
           dayjs(chosenTime).isSame(dayjs(task.startDate), timeFrame) ||
           dayjs(chosenTime).isSame(dayjs(task.endDate), timeFrame) ||
@@ -39,18 +43,12 @@ const getFilteredTasks = (
     });
 };
 
-const TasksList = ({
-  tasks,
-  priorityFilters,
-  setTaskOpen,
-  handleCheckTask,
-  priorities,
-  search,
-}) => {
+const TasksList = ({ priorityFilters, setTaskOpen, search, overdue }) => {
   const [sortType, setSortType] = useState("none");
-  const [timeFrame, setTimeFrame] = useState("day");
+  const [timeFrame, setTimeFrame] = useState(overdue ? "overall" : "day");
   const [chosenTime, setChosenTime] = useState(dayjs());
   const [isResending, setIsResending] = useState(false);
+  const { tasks, priorities, handleCheckTask } = useDataContext();
 
   const handleCheck = async (id, isChecked) => {
     if (isChecked) {
@@ -72,12 +70,14 @@ const TasksList = ({
         alignItems="center"
       >
         <SortPopover sortType={sortType} setSortType={setSortType} />
-        <TimeFrameSelect
-          timeFrame={timeFrame}
-          setTimeFrame={setTimeFrame}
-          chosenTime={chosenTime}
-          setChosenTime={setChosenTime}
-        />
+        {!overdue && (
+          <TimeFrameSelect
+            timeFrame={timeFrame}
+            setTimeFrame={setTimeFrame}
+            chosenTime={chosenTime}
+            setChosenTime={setChosenTime}
+          />
+        )}
       </Box>
       {getFilteredTasks(
         tasks,
@@ -85,7 +85,8 @@ const TasksList = ({
         chosenTime,
         priorityFilters,
         sortType,
-        search
+        search,
+        overdue
       ).map((task) => (
         <TaskCard
           key={task.id}

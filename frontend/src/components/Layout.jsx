@@ -1,9 +1,17 @@
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { useAuth } from "../context/AuthContext";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import { useTheme } from "../context/ThemeContext";
+import Sidebar from "./Sidebar";
 
-const Layout = ({ children }) => {
+const Layout = ({ currentView, setCurrentView, children }) => {
   const { token, handleSignOut } = useAuth();
   const { mode, handleChangeMode } = useTheme();
 
@@ -16,7 +24,7 @@ const Layout = ({ children }) => {
           </Typography>
           {mode === "light" && (
             <IconButton onClick={handleChangeMode}>
-              <LightMode sx={{color: "white"}} />
+              <LightMode sx={{ color: "white" }} />
             </IconButton>
           )}
           {mode === "dark" && (
@@ -36,6 +44,9 @@ const Layout = ({ children }) => {
           )}
         </Toolbar>
       </AppBar>
+      {token && (
+        <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
+      )}
       <Box component="main" width="100%">
         <Toolbar />
         {children}

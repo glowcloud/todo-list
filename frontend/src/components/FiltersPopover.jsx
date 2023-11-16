@@ -9,14 +9,15 @@ import {
 } from "@mui/material";
 import { FilterAlt } from "@mui/icons-material";
 import { useState } from "react";
+import { useDataContext } from "../context/DataContext";
 
 const FiltersPopover = ({
   handleFilterClick,
-  priorities,
   priorityFilters,
   setPriorityFilters,
 }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const { priorities } = useDataContext();
 
   const handlePopoverOpen = (e) => {
     setAnchorEl(e.currentTarget);

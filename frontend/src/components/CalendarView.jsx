@@ -9,6 +9,7 @@ import { isOverdue } from "../utils/generalUtils";
 import ConfirmDialog from "./ConfirmDialog";
 import ResendingBackdrop from "./ResendingBackdrop";
 import { useTheme } from "../context/ThemeContext";
+import { useDataContext } from "../context/DataContext";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -32,16 +33,29 @@ const createEvents = (tasks) => {
   return events;
 };
 
-const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
-  const [events, setEvents] = useState(createEvents(tasks));
+const CalendarView = ({ search, priorityFilters, setTaskOpen }) => {
+  const [events, setEvents] = useState([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [changedTaskData, setChangedTaskData] = useState(null);
   const { mode } = useTheme();
+  const { tasks, handleEditTask } = useDataContext();
 
   useEffect(() => {
-    setEvents(createEvents(tasks));
-  }, [tasks]);
+    if (tasks) {
+      setEvents(
+        createEvents(
+          tasks.filter(
+            (task) =>
+              (task.title.includes(search) ||
+                task.description.includes(search)) &&
+              (priorityFilters.length === 0 ||
+                priorityFilters.includes(task.priority.id))
+          )
+        )
+      );
+    }
+  }, [tasks, search, priorityFilters]);
 
   const handleConfirmEdit = async () => {
     const currentTask = tasks.find(
@@ -61,7 +75,6 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
   };
 
   const onEventChange = async (data) => {
-    // confirm prompt
     setChangedTaskData(data);
     setIsConfirmOpen(true);
   };
@@ -113,7 +126,6 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
         onSelectEvent={onEventClick}
         dayPropGetter={dayPropGetter}
         eventPropGetter={eventPropGetter}
-        defaultView="day"
         views={["month", "week", "day"]}
         sx={{
           height: { xs: 600, sm: 625, md: 675 },
@@ -129,8 +141,8 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
             color: mode === "dark" ? "white" : "black",
           },
           ".rbc-active": {
-            color: "black !important" 
-          }
+            color: "black !important",
+          },
         }}
       />
       <ConfirmDialog

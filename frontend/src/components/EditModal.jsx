@@ -17,18 +17,13 @@ import { useEffect, useState } from "react";
 import CustomModal from "./CustomModal";
 import { DateTimePicker, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import { useDataContext } from "../context/DataContext";
 
-const EditModal = ({
-  task,
-  isOpen,
-  handleModalClose,
-  handleEditTask,
-  priorities,
-  addingTask,
-}) => {
+const EditModal = ({ task, isOpen, handleModalClose }) => {
   const [formState, setFormState] = useState({ ...task });
   const [isAllDay, setIsAllDay] = useState(false);
   const [error, setError] = useState(false);
+  const { priorities, loading, handleEditTask } = useDataContext();
 
   useEffect(() => {
     if (task) {
@@ -83,14 +78,14 @@ const EditModal = ({
           margin="normal"
           fullWidth
           required
-          disabled={addingTask}
+          disabled={loading}
           error={error && !formState.title}
         />
         <Box>
           <FormControlLabel
             label="No time"
             checked={isAllDay}
-            disabled={addingTask}
+            disabled={loading}
             control={
               <Checkbox
                 value={isAllDay}
@@ -106,7 +101,7 @@ const EditModal = ({
               orientation="portrait"
               value={formState.startDate}
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
                 mr: 1,
@@ -127,7 +122,7 @@ const EditModal = ({
               orientation="portrait"
               value={formState.endDate}
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
                 mr: 1,
@@ -154,7 +149,7 @@ const EditModal = ({
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
                 mr: 1,
@@ -180,7 +175,7 @@ const EditModal = ({
                 formState.startDate ? formState.startDate.add(5, "minutes") : ""
               }
               disablePast
-              disabled={addingTask}
+              disabled={loading}
               sx={{
                 my: 1,
               }}
@@ -202,7 +197,7 @@ const EditModal = ({
           <Select
             value={formState.priority}
             label="Priority"
-            disabled={addingTask}
+            disabled={loading}
             onChange={(e) => {
               setFormState((prevState) => {
                 return { ...prevState, priority: e.target.value };
@@ -219,7 +214,7 @@ const EditModal = ({
         <TextField
           label="Description"
           value={formState.description}
-          disabled={addingTask}
+          disabled={loading}
           onChange={(e) =>
             setFormState((prevState) => {
               return { ...prevState, description: e.target.value };
@@ -231,10 +226,10 @@ const EditModal = ({
           fullWidth
         />
         <Box sx={{ textAlign: "center", mt: 3 }}>
-          <Button variant="outlined" disabled={addingTask} onClick={handleEdit}>
+          <Button variant="outlined" disabled={loading} onClick={handleEdit}>
             Save changes
           </Button>
-          {addingTask && (
+          {loading && (
             <CircularProgress
               size={24}
               sx={{

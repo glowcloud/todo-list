@@ -3,6 +3,7 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
+import { useDataContext } from "../context/DataContext";
 
 const getFilteredTasks = (tasks, timeFrame, chosenTime) => {
   if (timeFrame !== "overall") {
@@ -80,9 +81,10 @@ const getPrioritiesData = (tasks, priorities, timeFrame, chosenTime) => {
   return data;
 };
 
-const Summary = ({ tasks, priorities }) => {
+const Summary = () => {
   const [timeFrame, setTimeFrame] = useState("day");
   const [chosenTime, setChosenTime] = useState(dayjs());
+  const { tasks, priorities } = useDataContext();
 
   return (
     <>
@@ -97,7 +99,7 @@ const Summary = ({ tasks, priorities }) => {
           display="flex"
           flexDirection={{ xs: "column", md: "row" }}
           alignItems="center"
-          mx={{xs: 1, md: 2, lg: 5, xl: 40}}
+          mx={{ xs: 1, md: 2, lg: 5, xl: 40 }}
         >
           <PieChart
             series={[

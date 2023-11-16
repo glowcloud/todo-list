@@ -10,24 +10,15 @@ import { Box, IconButton, Typography } from "@mui/material";
 import CustomModal from "./CustomModal";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { sendTask } from "../utils/calendarIntegrationUtils";
 import ConfirmDialog from "./ConfirmDialog";
 import { isOverdue } from "../utils/generalUtils";
-import { useAuth } from "../context/AuthContext";
+import { useDataContext } from "../context/DataContext";
 
-const TaskModal = ({
-  task,
-  isOpen,
-  handleModalClose,
-  handleCheckTask,
-  handleEditOpen,
-  handleDeleteTask,
-  setAlertMsg,
-}) => {
+const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isResendDialogOpen, setIsResendDialogOpen] = useState(false);
-  const [isResending, setIsResending] = useState(false);
-  const { token } = useAuth();
+  const { loading, handleDeleteTask, handleResend, handleCheckTask } =
+    useDataContext();
 
   const handleCheck = () => {
     handleCheckTask(task.id, !task.finished);
@@ -44,7 +35,7 @@ const TaskModal = ({
   const handleDeleteConfirm = async () => {
     handleCloseDelete();
     await handleDeleteTask(task.id);
-    setAlertMsg("Task deleted.");
+    handleModalClose();
   };
 
   const handleCloseResend = () => {
@@ -57,41 +48,34 @@ const TaskModal = ({
 
   const handleResendConfirm = async () => {
     handleCloseResend();
-    await handleResend();
-  };
-
-  const handleResend = async () => {
-    setIsResending(true);
-    await sendTask(task, token);
-    setIsResending(false);
-    setAlertMsg("Task resent.");
+    await handleResend(task);
   };
 
   return (
     <CustomModal
       isOpen={isOpen}
       handleClose={() => {
-        if (!isResending) handleModalClose();
+        if (!loading) handleModalClose();
       }}
     >
       <Box textAlign="right" pt={3}>
-        <IconButton disabled={isResending} onClick={handleCheck}>
+        <IconButton disabled={loading} onClick={handleCheck}>
           {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
         </IconButton>
         {!task?.finished && (
-          <IconButton disabled={isResending} onClick={handleOpenResend}>
+          <IconButton disabled={loading} onClick={handleOpenResend}>
             <Email />
           </IconButton>
         )}
         {!task?.finished && (
-          <IconButton disabled={isResending} onClick={handleEditOpen}>
+          <IconButton disabled={loading} onClick={handleEditOpen}>
             <Edit />
           </IconButton>
         )}
-        <IconButton disabled={isResending} onClick={handleOpenDelete}>
+        <IconButton disabled={loading} onClick={handleOpenDelete}>
           <Delete />
         </IconButton>
-        <IconButton disabled={isResending} onClick={handleModalClose}>
+        <IconButton disabled={loading} onClick={handleModalClose}>
           <Close />
         </IconButton>
       </Box>
