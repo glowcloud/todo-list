@@ -51,7 +51,7 @@ const Home = ({ currentView }) => {
       {currentView === "overdue" && (
         <TasksList setTaskOpen={setTaskOpen} overdue />
       )}
-      <AddFab handleAddOpen={handleAddOpen} />
+      {currentView !== "summary" && <AddFab handleAddOpen={handleAddOpen} />}
       <TaskModal
         task={tasks.find((task) => task.id === taskOpen)}
         isOpen={taskOpen >= 0}

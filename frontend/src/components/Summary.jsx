@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
-import { PieChart } from "@mui/x-charts/PieChart";
 import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import { useDataContext } from "../context/DataContext";
+import CustomPieChart from "./CustomPieChart";
 
 const getFilteredTasks = (tasks, timeFrame, chosenTime) => {
   if (timeFrame !== "overall") {
@@ -59,23 +59,13 @@ const getPrioritiesData = (tasks, priorities, timeFrame, chosenTime) => {
   tasks = getFilteredTasks(tasks, timeFrame, chosenTime);
 
   priorities.forEach((priority) => {
-    const currTasks = tasks.filter(
-      (task) => task.priority.id === priority.id && !task.finished
-    );
+    const currTasks = tasks.filter((task) => task.priority.id === priority.id);
     data.push({
       id: priority.id,
       label: priority.name,
       value: currTasks.length,
       color: priority.color,
     });
-  });
-
-  const finishedTasks = tasks.filter((task) => task.finished);
-  data.push({
-    id: 6,
-    label: "Finished",
-    value: finishedTasks.length,
-    color: "lightblue",
   });
 
   return data;
@@ -87,7 +77,7 @@ const Summary = () => {
   const { tasks, priorities } = useDataContext();
 
   return (
-    <> 
+    <Box mt={3}>
       <TimeFrameSelect
         timeFrame={timeFrame}
         setTimeFrame={setTimeFrame}
@@ -97,44 +87,20 @@ const Summary = () => {
       {getFilteredTasks(tasks, timeFrame, chosenTime).length > 0 ? (
         <Box
           display="flex"
-          flexDirection={{ xs: "column", md: "row" }}
+          flexDirection="column"
           alignItems="center"
           mx={{ xs: 1, md: 2, lg: 5, xl: 40 }}
+          mt={3}
         >
-          <PieChart
-            series={[
-              {
-                data: getStatusData(tasks, timeFrame, chosenTime),
-                innerRadius: 0,
-                outerRadius: 170,
-                paddingAngle: 0,
-                cornerRadius: 0,
-                startAngle: 0,
-                endAngle: 360,
-              },
-            ]}
+          <CustomPieChart
+            data={getStatusData(tasks, timeFrame, chosenTime)}
             width={500}
-            height={500}
+            height={400}
           />
-          <PieChart
-            series={[
-              {
-                data: getPrioritiesData(
-                  tasks,
-                  priorities,
-                  timeFrame,
-                  chosenTime
-                ),
-                innerRadius: 0,
-                outerRadius: 170,
-                paddingAngle: 0,
-                cornerRadius: 0,
-                startAngle: 0,
-                endAngle: 360,
-              },
-            ]}
+          <CustomPieChart
+            data={getPrioritiesData(tasks, priorities, timeFrame, chosenTime)}
             width={500}
-            height={500}
+            height={400}
           />
         </Box>
       ) : (
@@ -142,7 +108,7 @@ const Summary = () => {
           <Typography variant="h5">No tasks found.</Typography>
         </Box>
       )}
-    </>
+    </Box>
   );
 };
 
