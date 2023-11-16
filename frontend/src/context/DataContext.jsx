@@ -120,6 +120,7 @@ export const DataContextProvider = ({ children }) => {
         const filteredTasks = prevTasks.filter((t) => t.id !== id);
         return [...filteredTasks];
       });
+      setAlertMsg("Task deleted.");
     }
   };
 
@@ -127,6 +128,13 @@ export const DataContextProvider = ({ children }) => {
     const curTask = tasks.find((task) => task.id === id);
     curTask.finished = isChecked;
     await handleEditTask(curTask);
+  };
+
+  const handleResend = async (task) => {
+    setLoading(true);
+    await sendTask(task, token);
+    setLoading(false);
+    setAlertMsg("Task resent.");
   };
 
   return (
@@ -140,6 +148,7 @@ export const DataContextProvider = ({ children }) => {
         handleEditTask,
         handleDeleteTask,
         handleCheckTask,
+        handleResend,
       }}
     >
       {children}
