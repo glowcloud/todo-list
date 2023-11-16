@@ -5,6 +5,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import ResendingBackdrop from "./ResendingBackdrop";
+import { useDataContext } from "../context/DataContext";
 
 const getFilteredTasks = (
   tasks,
@@ -39,18 +40,12 @@ const getFilteredTasks = (
     });
 };
 
-const TasksList = ({
-  tasks,
-  priorityFilters,
-  setTaskOpen,
-  handleCheckTask,
-  priorities,
-  search,
-}) => {
+const TasksList = ({ priorityFilters, setTaskOpen, search }) => {
   const [sortType, setSortType] = useState("none");
   const [timeFrame, setTimeFrame] = useState("day");
   const [chosenTime, setChosenTime] = useState(dayjs());
   const [isResending, setIsResending] = useState(false);
+  const { tasks, priorities, handleCheckTask } = useDataContext();
 
   const handleCheck = async (id, isChecked) => {
     if (isChecked) {

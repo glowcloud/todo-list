@@ -237,6 +237,8 @@ const Home = () => {
                 (priorityFilters.length === 0 ||
                   priorityFilters.includes(task.priority.id))
             )}
+            search={search}
+            priorityFilters={priorityFilters}
             handleEditTask={handleEditTask}
             setTaskOpen={setTaskOpen}
           />
