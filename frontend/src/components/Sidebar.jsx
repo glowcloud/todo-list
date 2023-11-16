@@ -3,19 +3,43 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
   Toolbar,
+  Badge,
 } from "@mui/material";
+import {
+  CalendarMonth,
+  PieChart,
+  ListOutlined,
+  PriorityHigh,
+} from "@mui/icons-material";
 
-const navItems = ["Task List", "Calendar", "Archive"];
+const navItems = (badgeContent) => {
+  return [
+    { text: "Tasks", icon: <ListOutlined />, view: "list" },
+    {
+      text: "Overdue",
+      icon: (
+        <Badge badgeContent={badgeContent} color="error">
+          <PriorityHigh />
+        </Badge>
+      ),
+      view: "overdue",
+    },
+    { text: "Calendar", icon: <CalendarMonth />, view: "calendar" },
+    { text: "Summary", icon: <PieChart />, view: "summary" },
+  ];
+};
 
-const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, badgeContent }) => {
   return (
     <Drawer
-      component="div"
+      component="nav"
       anchor="left"
-      open={isSidebarOpen}
-      onClose={() => setIsSidebarOpen(false)}
+      // open={isSidebarOpen}
+      variant="permanent"
+      // onClose={() => setIsSidebarOpen(false)}
       sx={{
         width: "200px",
         "& .MuiDrawer-paper": {
@@ -25,10 +49,11 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     >
       <Toolbar />
       <List>
-        {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
+        {navItems(badgeContent).map((item) => (
+          <ListItem key={item.view} disablePadding>
             <ListItemButton>
-              <ListItemText primary={item} />
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}

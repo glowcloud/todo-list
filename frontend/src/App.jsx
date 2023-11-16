@@ -3,8 +3,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Home from "./pages/Home";
 import Layout from "./components/Layout";
-import { AuthContextProvider } from "./context/AuthContext";
 import { useTheme } from "./context/ThemeContext";
+import { DataContextProvider } from "./context/DataContext";
+import { AuthContextProvider } from "./context/AuthContext";
 
 function App() {
   const { mode } = useTheme();
@@ -36,12 +37,14 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <AuthContextProvider>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <Layout>
-            <Home />
-          </Layout>
-        </ThemeProvider>
+        <DataContextProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Layout>
+              <Home />
+            </Layout>
+          </ThemeProvider>
+        </DataContextProvider>
       </AuthContextProvider>
     </LocalizationProvider>
   );

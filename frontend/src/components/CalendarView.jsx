@@ -9,6 +9,7 @@ import { isOverdue } from "../utils/generalUtils";
 import ConfirmDialog from "./ConfirmDialog";
 import ResendingBackdrop from "./ResendingBackdrop";
 import { useTheme } from "../context/ThemeContext";
+import { useDataContext } from "../context/DataContext";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -32,15 +33,18 @@ const createEvents = (tasks) => {
   return events;
 };
 
-const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
-  const [events, setEvents] = useState(createEvents(tasks));
+const CalendarView = ({ setTaskOpen }) => {
+  const [events, setEvents] = useState([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [changedTaskData, setChangedTaskData] = useState(null);
   const { mode } = useTheme();
+  const { tasks, handleEditTask } = useDataContext();
 
   useEffect(() => {
-    setEvents(createEvents(tasks));
+    if (tasks) {
+      setEvents(createEvents(tasks));
+    }
   }, [tasks]);
 
   const handleConfirmEdit = async () => {
@@ -129,8 +133,8 @@ const CalendarView = ({ tasks, handleEditTask, setTaskOpen }) => {
             color: mode === "dark" ? "white" : "black",
           },
           ".rbc-active": {
-            color: "black !important" 
-          }
+            color: "black !important",
+          },
         }}
       />
       <ConfirmDialog
