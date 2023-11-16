@@ -83,22 +83,22 @@ const TasksList = ({ setTaskOpen, overdue }) => {
         priorityFilters={priorityFilters}
         setPriorityFilters={setPriorityFilters}
       />
-      <Box
-        mb={3}
-        mx={3}
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-      >
-        {!overdue && (
+      {!overdue && (
+        <Box
+          mb={3}
+          mx={3}
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
           <TimeFrameSelect
             timeFrame={timeFrame}
             setTimeFrame={setTimeFrame}
             chosenTime={chosenTime}
             setChosenTime={setChosenTime}
           />
-        )}
-      </Box>
+        </Box>
+      )}
       {getFilteredTasks(
         tasks,
         timeFrame,

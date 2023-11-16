@@ -4,11 +4,11 @@ import TaskModal from "../components/TaskModal";
 import TasksList from "../components/TasksList";
 import AddFab from "../components/AddFab";
 import EditModal from "../components/EditModal";
-import { Box, CircularProgress, Typography } from "@mui/material";
 import CalendarView from "../components/CalendarView";
 import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
 import { useDataContext } from "../context/DataContext";
+import LoadingProgress from "../components/LoadingProgress";
 
 const Home = ({ currentView }) => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -66,17 +66,7 @@ const Home = ({ currentView }) => {
       />
     </>
   ) : (
-    <Box
-      sx={{
-        textAlign: "center",
-        my: 45,
-      }}
-    >
-      <Typography variant="h6" sx={{ mb: 3 }} gutterBottom>
-        Loading...
-      </Typography>
-      <CircularProgress color="inherit" />
-    </Box>
+    <LoadingProgress />
   );
 };
 
