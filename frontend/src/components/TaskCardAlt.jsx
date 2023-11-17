@@ -69,11 +69,12 @@ const getFormattedDates = (startDate, endDate, allDay) => {
   );
 };
 
-const TaskCardAlt = ({ task, handleCheckTask }) => {
+const TaskCardAlt = ({ task }) => {
   const [expanded, setExpanded] = useState(false);
+  const { handleCheckTask } = useDataContext();
 
-  const handleCheck = async (e) => {
-    await handleCheckTask(task.id, e.target.checked);
+  const handleCheck = async () => {
+    await handleCheckTask(task.id, !task.finished);
   };
 
   const handleExpandedClick = () => {
@@ -138,7 +139,7 @@ const TaskCardAlt = ({ task, handleCheckTask }) => {
           </Typography>
           {getFormattedDates(task.startDate, task.endDate, task.allDay)}
         </Box>
-        <TaskCardMenu finished={task?.finished} />
+        <TaskCardMenu task={task} />
       </CardContent>
       <CardActions disableSpacing>
         <IconButton onClick={handleCheck} sx={{ marginLeft: "auto" }}>

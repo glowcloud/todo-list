@@ -8,20 +8,25 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Email, MoreVert } from "@mui/icons-material";
 import { useState } from "react";
+import { useDataContext } from "../context/DataContext";
+import ConfirmDialog from "./ConfirmDialog";
 
-const menuItems = (finished) => {
+const menuItems = (finished, handleOpenDelete, handleOpenResend) => {
   if (!finished) {
     return [
-      { text: "Resend", icon: <Email />, onClick: () => {} },
+      { text: "Resend", icon: <Email />, onClick: handleOpenResend },
       { text: "Edit", icon: <Edit />, onClick: () => {} },
-      { text: "Delete", icon: <Delete />, onClick: () => {} },
+      { text: "Delete", icon: <Delete />, onClick: handleOpenDelete },
     ];
   }
-  return [{ text: "Delete", icon: <Delete />, onClick: () => {} }];
+  return [{ text: "Delete", icon: <Delete />, onClick: handleOpenDelete }];
 };
 
-const TaskCardMenu = ({ finished }) => {
+const TaskCardMenu = ({ task }) => {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isResendDialogOpen, setIsResendDialogOpen] = useState(false);
+  const { loading, handleDeleteTask, handleResend } = useDataContext();
 
   const handleMenuOpen = (e) => {
     setAnchorEl(e.currentTarget);
@@ -29,6 +34,33 @@ const TaskCardMenu = ({ finished }) => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+  const handleCloseDelete = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  const handleOpenDelete = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    handleCloseDelete();
+    setAnchorEl(null);
+    await handleDeleteTask(task.id);
+  };
+
+  const handleCloseResend = () => {
+    setIsResendDialogOpen(false);
+  };
+
+  const handleOpenResend = () => {
+    setIsResendDialogOpen(true);
+  };
+
+  const handleResendConfirm = async () => {
+    handleCloseResend();
+    setAnchorEl(null);
+    await handleResend(task);
   };
 
   return (
@@ -48,13 +80,29 @@ const TaskCardMenu = ({ finished }) => {
           textAlign: "center",
         }}
       >
-        {menuItems(finished).map((item) => (
-          <MenuItem key={item.text}>
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText>{item.text}</ListItemText>
-          </MenuItem>
-        ))}
+        {menuItems(task.finished, handleOpenDelete, handleOpenResend).map(
+          (item) => (
+            <MenuItem key={item.text} onClick={item.onClick} disabled={loading}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText>{item.text}</ListItemText>
+            </MenuItem>
+          )
+        )}
       </Menu>
+      <ConfirmDialog
+        open={isDeleteDialogOpen}
+        handleClose={handleCloseDelete}
+        handleConfirm={handleDeleteConfirm}
+        title="Confirm delete"
+        content="Are you sure you want to delete this task?"
+      />
+      <ConfirmDialog
+        open={isResendDialogOpen}
+        handleClose={handleCloseResend}
+        handleConfirm={handleResendConfirm}
+        title="Confirm resend"
+        content="Do you want to resend this task?"
+      />
     </Box>
   );
 };
