@@ -226,6 +226,7 @@ const AddModal = ({ isOpen, handleModalClose }) => {
           rows={4}
           fullWidth
           disabled={loading}
+          inputProps={{maxLength: 255}}
         />
         <Box sx={{ mt: 3, textAlign: "center", position: "relative" }}>
           <Button variant="outlined" disabled={loading} onClick={handleAdd}>
