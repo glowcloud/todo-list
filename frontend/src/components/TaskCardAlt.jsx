@@ -6,6 +6,7 @@ import {
   IconButton,
   Collapse,
   Box,
+  Divider,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { isOverdue } from "../utils/generalUtils";
@@ -213,6 +214,7 @@ const TaskCardAlt = ({ task }) => {
         {task?.description && (
           <Collapse in={expanded}>
             <CardContent>
+              <Divider sx={{mb: 2}} />
               <Typography paragraph>{task?.description}</Typography>
             </CardContent>
           </Collapse>

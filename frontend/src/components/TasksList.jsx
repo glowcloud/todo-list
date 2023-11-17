@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Pagination, Typography } from "@mui/material";
 import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
@@ -10,13 +10,22 @@ import TasksProgress from "./TasksProgress";
 import TaskCardAlt from "./TaskCardAlt";
 import { Masonry } from "@mui/lab";
 
+const paginate = (tasks, page) => {
+  return tasks.slice((page - 1) * 9, page * 9);
+};
+
 const TasksList = ({ setTaskOpen, overdue }) => {
   const [sortType, setSortType] = useState("none");
   const [timeFrame, setTimeFrame] = useState(overdue ? "overall" : "day");
   const [chosenTime, setChosenTime] = useState(dayjs());
   const [search, setSearch] = useState("");
   const [priorityFilters, setPriorityFilters] = useState([]);
+  const [page, setPage] = useState(1);
   const { tasks, priorities, loading, handleCheckTask } = useDataContext();
+
+  const handleChangePage = (e, v) => {
+    setPage(v);
+  };
 
   const handleCheck = async (id, isChecked) => {
     await handleCheckTask(id, isChecked);
@@ -37,7 +46,6 @@ const TasksList = ({ setTaskOpen, overdue }) => {
       <Box
         sx={{
           mx: { sm: 2, md: 15, lg: 35, xl: 60 },
-          // mr: { xs: 2, sm: 4, md: 15 },
           mt: { xs: 5, md: 0 },
         }}
       >
@@ -131,25 +139,52 @@ const TasksList = ({ setTaskOpen, overdue }) => {
         }}
       >
         <Masonry columns={{ xs: 1, md: 2, lg: 3 }}>
-          {getFilteredTasks(
-            tasks,
-            timeFrame,
-            chosenTime,
-            priorityFilters,
-            sortType,
-            search,
-            overdue,
-            false
-          ).map((task) => (
-            <TaskCardAlt
-              key={task.id}
-              task={task}
-              handleClick={() => setTaskOpen(task.id)}
-              handleCheckTask={handleCheck}
-              priorities={priorities}
-            />
-          ))}
+          {paginate(
+            getFilteredTasks(
+              tasks,
+              timeFrame,
+              chosenTime,
+              priorityFilters,
+              sortType,
+              search,
+              overdue,
+              false
+            ).map((task) => (
+              <TaskCardAlt
+                key={task.id}
+                task={task}
+                handleClick={() => setTaskOpen(task.id)}
+                handleCheckTask={handleCheck}
+                priorities={priorities}
+              />
+            )),
+            page
+          )}
         </Masonry>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          my: 4,
+        }}
+      >
+        <Pagination
+          count={Math.ceil(
+            getFilteredTasks(
+              tasks,
+              timeFrame,
+              chosenTime,
+              priorityFilters,
+              sortType,
+              search,
+              overdue,
+              false
+            ).length / 9
+          )}
+          page={page}
+          onChange={handleChangePage}
+        />
       </Box>
       {(!tasks ||
         tasks.length === 0 ||
