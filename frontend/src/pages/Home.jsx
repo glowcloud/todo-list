@@ -9,6 +9,7 @@ import Summary from "../components/Summary";
 import DownloadButton from "../components/DownloadButton";
 import { useDataContext } from "../context/DataContext";
 import LoadingProgress from "../components/LoadingProgress";
+import { Box } from "@mui/material";
 
 const Home = ({ currentView }) => {
   const [taskOpen, setTaskOpen] = useState(-1);
@@ -37,7 +38,7 @@ const Home = ({ currentView }) => {
   };
 
   return priorities.length > 0 ? (
-    <>
+    <Box>
       {currentView === "calendar" && (
         <>
           <CalendarView setTaskOpen={setTaskOpen} />
@@ -51,7 +52,9 @@ const Home = ({ currentView }) => {
       {currentView === "overdue" && (
         <TasksList setTaskOpen={setTaskOpen} overdue />
       )}
-      {currentView !== "summary" && <AddFab handleAddOpen={handleAddOpen} />}
+      {(currentView === "list" || currentView === "calendar") && (
+        <AddFab handleAddOpen={handleAddOpen} />
+      )}
       <TaskModal
         task={tasks.find((task) => task.id === taskOpen)}
         isOpen={taskOpen >= 0}
@@ -64,7 +67,7 @@ const Home = ({ currentView }) => {
         isOpen={isEditOpen}
         handleModalClose={handleEditClose}
       />
-    </>
+    </Box>
   ) : (
     <LoadingProgress />
   );

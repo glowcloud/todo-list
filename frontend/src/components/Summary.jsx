@@ -77,7 +77,7 @@ const Summary = () => {
   const { tasks, priorities } = useDataContext();
 
   return (
-    <Box mt={3}>
+    <Box mt={{xs: 5, md: 3}}>
       <TimeFrameSelect
         timeFrame={timeFrame}
         setTimeFrame={setTimeFrame}

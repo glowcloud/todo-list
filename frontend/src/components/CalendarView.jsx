@@ -118,9 +118,10 @@ const CalendarView = ({ setTaskOpen }) => {
         eventPropGetter={eventPropGetter}
         views={["month", "week", "day"]}
         sx={{
-          height: { xs: 600, sm: 625, md: 675 },
-          mx: { xs: 1, sm: 2, md: 10, lg: 15, xl: 35 },
+          height: { xs: 625, sm: 625, md: 675 },
+          mx: { xs: 1, sm: 2, md: 5, lg: 15, xl: 35 },
           my: 2,
+          mt: { xs: 5, md: 0 },
           ".rbc-toolbar": {
             flexDirection: { xs: "column-reverse", md: "row" },
           },
