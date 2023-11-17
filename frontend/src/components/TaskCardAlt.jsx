@@ -1,6 +1,5 @@
 import {
   Card,
-  CardActionArea,
   CardContent,
   Typography,
   CardActions,
@@ -14,13 +13,10 @@ import { useDataContext } from "../context/DataContext";
 import {
   CheckCircle,
   CheckCircleOutline,
-  Edit,
-  Delete,
-  Email,
   ExpandMore,
-  MoreVert,
 } from "@mui/icons-material";
 import { useState } from "react";
+import TaskCardMenu from "./TaskCardMenu";
 
 const getFormattedDates = (startDate, endDate, allDay) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
@@ -73,7 +69,7 @@ const getFormattedDates = (startDate, endDate, allDay) => {
   );
 };
 
-const TaskCardAlt = ({ task, handleClick, handleCheckTask }) => {
+const TaskCardAlt = ({ task, handleCheckTask }) => {
   const [expanded, setExpanded] = useState(false);
 
   const handleCheck = async (e) => {
@@ -142,29 +138,14 @@ const TaskCardAlt = ({ task, handleClick, handleCheckTask }) => {
           </Typography>
           {getFormattedDates(task.startDate, task.endDate, task.allDay)}
         </Box>
-        <IconButton>
-          <MoreVert />
-        </IconButton>
+        <TaskCardMenu finished={task?.finished} />
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton onClick={handleCheck}>
+        <IconButton onClick={handleCheck} sx={{ marginLeft: "auto" }}>
           {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
         </IconButton>
-        {!task?.finished && (
-          <IconButton>
-            <Email />
-          </IconButton>
-        )}
-        {!task?.finished && (
-          <IconButton>
-            <Edit />
-          </IconButton>
-        )}
-        <IconButton>
-          <Delete />
-        </IconButton>
         {task?.description && (
-          <IconButton onClick={handleExpandedClick} sx={{ marginLeft: "auto" }}>
+          <IconButton onClick={handleExpandedClick}>
             <ExpandMore />
           </IconButton>
         )}
