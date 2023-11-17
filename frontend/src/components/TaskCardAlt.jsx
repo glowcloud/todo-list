@@ -19,15 +19,26 @@ import { useState } from "react";
 import TaskCardMenu from "./TaskCardMenu";
 import EditModal from "../components/EditModal";
 
-const getFormattedDates = (startDate, endDate, allDay) => {
+const getFormattedDates = (startDate, endDate, allDay, finished) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
     if (allDay) {
       return (
         <>
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{
+              textDecoration: finished ? "line-through" : "none",
+            }}
+          >
             on {dayjs(startDate).format("DD/MM/YYYY")}
           </Typography>
-          <Typography variant="body2" gutterBottom>
+          <Typography
+            variant="body2"
+            gutterBottom
+            sx={{
+              textDecoration: finished ? "line-through" : "none",
+            }}
+          >
             all day
           </Typography>
         </>
@@ -35,10 +46,21 @@ const getFormattedDates = (startDate, endDate, allDay) => {
     } else {
       return (
         <>
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{
+              textDecoration: finished ? "line-through" : "none",
+            }}
+          >
             on {dayjs(startDate).format("DD/MM/YYYY")}
           </Typography>
-          <Typography variant="body2" gutterBottom>
+          <Typography
+            variant="body2"
+            gutterBottom
+            sx={{
+              textDecoration: finished ? "line-through" : "none",
+            }}
+          >
             from {dayjs(startDate).format("h:mm A")} to{" "}
             {dayjs(endDate).format("h:mm A")}
           </Typography>
@@ -49,10 +71,21 @@ const getFormattedDates = (startDate, endDate, allDay) => {
   if (allDay) {
     return (
       <>
-        <Typography variant="body2">
+        <Typography
+          variant="body2"
+          sx={{
+            textDecoration: finished ? "line-through" : "none",
+          }}
+        >
           from {dayjs(startDate).format("DD/MM/YYYY")}
         </Typography>
-        <Typography variant="body2" gutterBottom>
+        <Typography
+          variant="body2"
+          gutterBottom
+          sx={{
+            textDecoration: finished ? "line-through" : "none",
+          }}
+        >
           to {dayjs(endDate).format("DD/MM/YYYY")}
         </Typography>
       </>
@@ -60,10 +93,21 @@ const getFormattedDates = (startDate, endDate, allDay) => {
   }
   return (
     <>
-      <Typography variant="body2">
+      <Typography
+        variant="body2"
+        sx={{
+          textDecoration: finished ? "line-through" : "none",
+        }}
+      >
         from {dayjs(startDate).format("h:mm A DD/MM/YYYY")}
       </Typography>
-      <Typography variant="body2" gutterBottom>
+      <Typography
+        variant="body2"
+        gutterBottom
+        sx={{
+          textDecoration: finished ? "line-through" : "none",
+        }}
+      >
         to {dayjs(endDate).format("h:mm A DD/MM/YYYY")}
       </Typography>
     </>
@@ -142,13 +186,17 @@ const TaskCardAlt = ({ task }) => {
               variant="h5"
               sx={{
                 textDecoration: task.finished ? "line-through" : "none",
-                width: 330,
               }}
               gutterBottom
             >
               {task.title}
             </Typography>
-            {getFormattedDates(task.startDate, task.endDate, task.allDay)}
+            {getFormattedDates(
+              task.startDate,
+              task.endDate,
+              task.allDay,
+              task.finished
+            )}
           </Box>
           <TaskCardMenu task={task} handleEditOpen={handleEditOpen} />
         </CardContent>
@@ -165,9 +213,7 @@ const TaskCardAlt = ({ task }) => {
         {task?.description && (
           <Collapse in={expanded}>
             <CardContent>
-              <Typography paragraph sx={{ width: 330 }}>
-                {task?.description}
-              </Typography>
+              <Typography paragraph>{task?.description}</Typography>
             </CardContent>
           </Collapse>
         )}

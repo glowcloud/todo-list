@@ -8,6 +8,7 @@ import { getFilteredTasks } from "../utils/generalUtils";
 import SortFilterSearch from "./SortFilterSearch";
 import TasksProgress from "./TasksProgress";
 import TaskCardAlt from "./TaskCardAlt";
+import { Masonry } from "@mui/lab";
 
 const TasksList = ({ setTaskOpen, overdue }) => {
   const [sortType, setSortType] = useState("none");
@@ -93,13 +94,14 @@ const TasksList = ({ setTaskOpen, overdue }) => {
           />
         )}
       </Box>
-      <Box
+      {/* <Box
         display="flex"
         flexWrap="wrap"
         justifyContent="center"
         sx={{
           mx: { sm: 2, md: 10 },
           mt: { xs: 5, md: 2 },
+          mb: 2,
         }}
       >
         {getFilteredTasks(
@@ -120,6 +122,34 @@ const TasksList = ({ setTaskOpen, overdue }) => {
             priorities={priorities}
           />
         ))}
+      </Box> */}
+      <Box
+        sx={{
+          mx: { sm: 2, md: 10 },
+          mt: { xs: 5, md: 2 },
+          mb: 2,
+        }}
+      >
+        <Masonry columns={{ xs: 1, md: 2, lg: 3 }}>
+          {getFilteredTasks(
+            tasks,
+            timeFrame,
+            chosenTime,
+            priorityFilters,
+            sortType,
+            search,
+            overdue,
+            false
+          ).map((task) => (
+            <TaskCardAlt
+              key={task.id}
+              task={task}
+              handleClick={() => setTaskOpen(task.id)}
+              handleCheckTask={handleCheck}
+              priorities={priorities}
+            />
+          ))}
+        </Masonry>
       </Box>
       {(!tasks ||
         tasks.length === 0 ||

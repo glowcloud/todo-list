@@ -62,11 +62,13 @@ const CalendarView = ({ setTaskOpen }) => {
   };
 
   const onEventChange = async (data) => {
-    if (dayjs(data.start).isAfter(dayjs())) {
+    if (tasks.find((task) => task.id === data.event.id).finished) {
+      setAlertMsg("Can't edit finished tasks.");
+    } else if (dayjs(data.start).isBefore(dayjs())) {
+      setAlertMsg("Can't set a task to start before current date.");
+    } else if (dayjs(data.start).isAfter(dayjs())) {
       setChangedTaskData(data);
       setIsConfirmOpen(true);
-    } else {
-      setAlertMsg("Can't set a task to start before current date.");
     }
   };
 
@@ -114,7 +116,7 @@ const CalendarView = ({ setTaskOpen }) => {
         views={["month", "week", "day"]}
         sx={{
           height: { xs: 625, sm: 625, md: 675, lg: 700, xl: 750 },
-          mx: { xs: 1, sm: 2, md: 5, lg: 15, xl: 35 },
+          mx: { xs: 1, sm: 2, md: 5, lg: 10, xl: 25 },
           my: 2,
           mt: { xs: 5, md: 0 },
           ".rbc-month-view": {
