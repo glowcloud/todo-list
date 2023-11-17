@@ -34,7 +34,7 @@ const TasksList = ({ setTaskOpen, overdue }) => {
   return (
     <Box
       sx={{
-        mx: { xs: 5, md: 15, lg: 35, xl: 60 },
+        mx: { sm: 2, md: 15, lg: 35, xl: 60 },
         // mr: { xs: 2, sm: 4, md: 15 },
         mt: { xs: 5, md: 0 },
       }}
