@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import TaskCard from "./TaskCard";
 import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
@@ -113,13 +112,6 @@ const TasksList = ({ setTaskOpen, overdue }) => {
           overdue,
           false
         ).map((task) => (
-          // <TaskCard
-          //   key={task.id}
-          //   task={task}
-          //   handleClick={() => setTaskOpen(task.id)}
-          //   handleCheckTask={handleCheck}
-          //   priorities={priorities}
-          // />
           <TaskCardAlt
             key={task.id}
             task={task}

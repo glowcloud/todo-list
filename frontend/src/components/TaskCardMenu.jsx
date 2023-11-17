@@ -11,18 +11,23 @@ import { useState } from "react";
 import { useDataContext } from "../context/DataContext";
 import ConfirmDialog from "./ConfirmDialog";
 
-const menuItems = (finished, handleOpenDelete, handleOpenResend) => {
+const menuItems = (
+  finished,
+  handleOpenDelete,
+  handleOpenResend,
+  handleOpenEdit
+) => {
   if (!finished) {
     return [
       { text: "Resend", icon: <Email />, onClick: handleOpenResend },
-      { text: "Edit", icon: <Edit />, onClick: () => {} },
+      { text: "Edit", icon: <Edit />, onClick: handleOpenEdit },
       { text: "Delete", icon: <Delete />, onClick: handleOpenDelete },
     ];
   }
   return [{ text: "Delete", icon: <Delete />, onClick: handleOpenDelete }];
 };
 
-const TaskCardMenu = ({ task }) => {
+const TaskCardMenu = ({ task, handleEditOpen }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isResendDialogOpen, setIsResendDialogOpen] = useState(false);
@@ -40,6 +45,7 @@ const TaskCardMenu = ({ task }) => {
   };
 
   const handleOpenDelete = () => {
+    setAnchorEl(null);
     setIsDeleteDialogOpen(true);
   };
 
@@ -54,6 +60,7 @@ const TaskCardMenu = ({ task }) => {
   };
 
   const handleOpenResend = () => {
+    setAnchorEl(null);
     setIsResendDialogOpen(true);
   };
 
@@ -61,6 +68,11 @@ const TaskCardMenu = ({ task }) => {
     handleCloseResend();
     setAnchorEl(null);
     await handleResend(task);
+  };
+
+  const handleOpenEdit = () => {
+    setAnchorEl(null);
+    handleEditOpen();
   };
 
   return (
@@ -80,14 +92,17 @@ const TaskCardMenu = ({ task }) => {
           textAlign: "center",
         }}
       >
-        {menuItems(task.finished, handleOpenDelete, handleOpenResend).map(
-          (item) => (
-            <MenuItem key={item.text} onClick={item.onClick} disabled={loading}>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText>{item.text}</ListItemText>
-            </MenuItem>
-          )
-        )}
+        {menuItems(
+          task.finished,
+          handleOpenDelete,
+          handleOpenResend,
+          handleOpenEdit
+        ).map((item) => (
+          <MenuItem key={item.text} onClick={item.onClick} disabled={loading}>
+            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemText>{item.text}</ListItemText>
+          </MenuItem>
+        ))}
       </Menu>
       <ConfirmDialog
         open={isDeleteDialogOpen}

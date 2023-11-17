@@ -17,6 +17,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import TaskCardMenu from "./TaskCardMenu";
+import EditModal from "../components/EditModal";
 
 const getFormattedDates = (startDate, endDate, allDay) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
@@ -71,6 +72,7 @@ const getFormattedDates = (startDate, endDate, allDay) => {
 
 const TaskCardAlt = ({ task }) => {
   const [expanded, setExpanded] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const { handleCheckTask } = useDataContext();
 
   const handleCheck = async () => {
@@ -81,86 +83,101 @@ const TaskCardAlt = ({ task }) => {
     setExpanded((prevExpanded) => !prevExpanded);
   };
 
+  const handleEditClose = () => {
+    setIsEditOpen(false);
+  };
+
+  const handleEditOpen = () => {
+    setIsEditOpen(true);
+  };
+
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        m: 2,
-      }}
-    >
-      <CardContent
+    <>
+      <Card
+        variant="outlined"
         sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
+          m: 2,
         }}
       >
-        <Box>
-          <Typography
-            color={
-              task?.finished
-                ? "primary.main"
-                : isOverdue(task)
-                ? "rgb(244, 67, 54)"
-                : "secondary"
-            }
-            variant="body2"
-          >
-            {task?.finished
-              ? "Finished"
-              : isOverdue(task)
-              ? "Overdue"
-              : "To Do"}
-          </Typography>
-          {
+        <CardContent
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box>
             <Typography
               color={
-                task
-                  ? task.finished
-                    ? "primary.main"
-                    : task.priority.color
-                  : ""
+                task?.finished
+                  ? "primary.main"
+                  : isOverdue(task)
+                  ? "rgb(244, 67, 54)"
+                  : "secondary"
               }
               variant="body2"
+            >
+              {task?.finished
+                ? "Finished"
+                : isOverdue(task)
+                ? "Overdue"
+                : "To Do"}
+            </Typography>
+            {
+              <Typography
+                color={
+                  task
+                    ? task.finished
+                      ? "primary.main"
+                      : task.priority.color
+                    : ""
+                }
+                variant="body2"
+                gutterBottom
+              >
+                {task && task.priority.name} priority
+              </Typography>
+            }
+            <Typography
+              variant="h5"
+              sx={{
+                textDecoration: task.finished ? "line-through" : "none",
+                width: 330,
+              }}
               gutterBottom
             >
-              {task && task.priority.name} priority
+              {task.title}
             </Typography>
-          }
-          <Typography
-            variant="h5"
-            sx={{
-              textDecoration: task.finished ? "line-through" : "none",
-              width: 330,
-            }}
-            gutterBottom
-          >
-            {task.title}
-          </Typography>
-          {getFormattedDates(task.startDate, task.endDate, task.allDay)}
-        </Box>
-        <TaskCardMenu task={task} />
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton onClick={handleCheck} sx={{ marginLeft: "auto" }}>
-          {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
-        </IconButton>
-        {task?.description && (
-          <IconButton onClick={handleExpandedClick}>
-            <ExpandMore />
+            {getFormattedDates(task.startDate, task.endDate, task.allDay)}
+          </Box>
+          <TaskCardMenu task={task} handleEditOpen={handleEditOpen} />
+        </CardContent>
+        <CardActions disableSpacing>
+          <IconButton onClick={handleCheck} sx={{ marginLeft: "auto" }}>
+            {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
           </IconButton>
+          {task?.description && (
+            <IconButton onClick={handleExpandedClick}>
+              <ExpandMore />
+            </IconButton>
+          )}
+        </CardActions>
+        {task?.description && (
+          <Collapse in={expanded}>
+            <CardContent>
+              <Typography paragraph sx={{ width: 330 }}>
+                {task?.description}
+              </Typography>
+            </CardContent>
+          </Collapse>
         )}
-      </CardActions>
-      {task?.description && (
-        <Collapse in={expanded}>
-          <CardContent>
-            <Typography paragraph sx={{ width: 330 }}>
-              {task?.description}
-            </Typography>
-          </CardContent>
-        </Collapse>
-      )}
-    </Card>
+      </Card>
+      <EditModal
+        task={task}
+        isOpen={isEditOpen}
+        handleModalClose={handleEditClose}
+      />
+    </>
   );
 };
 
