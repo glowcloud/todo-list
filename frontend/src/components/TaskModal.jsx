@@ -18,17 +18,22 @@ const getFormattedDates = (startDate, endDate, allDay) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
     if (allDay) {
       return (
-        <Typography gutterBottom>
-          on {dayjs(startDate).format("DD/MM/YYYY")}
-        </Typography>
+        <>
+          <Typography variant="body2">
+            on {dayjs(startDate).format("DD/MM/YYYY")}
+          </Typography>
+          <Typography variant="body2" gutterBottom>
+            all day
+          </Typography>
+        </>
       );
     } else {
       return (
         <>
-          <Typography gutterBottom>
+          <Typography variant="body2">
             on {dayjs(startDate).format("DD/MM/YYYY")}
           </Typography>
-          <Typography gutterBottom>
+          <Typography variant="body2" gutterBottom>
             from {dayjs(startDate).format("h:mm A")} to{" "}
             {dayjs(endDate).format("h:mm A")}
           </Typography>
@@ -36,12 +41,24 @@ const getFormattedDates = (startDate, endDate, allDay) => {
       );
     }
   }
+  if (allDay) {
+    return (
+      <>
+        <Typography variant="body2">
+          from {dayjs(startDate).format("DD/MM/YYYY")}
+        </Typography>
+        <Typography variant="body2" gutterBottom>
+          to {dayjs(endDate).format("DD/MM/YYYY")}
+        </Typography>
+      </>
+    );
+  }
   return (
     <>
-      <Typography gutterBottom>
+      <Typography variant="body2">
         from {dayjs(startDate).format("h:mm A DD/MM/YYYY")}
       </Typography>
-      <Typography gutterBottom>
+      <Typography variant="body2" gutterBottom>
         to {dayjs(endDate).format("h:mm A DD/MM/YYYY")}
       </Typography>
     </>
@@ -150,7 +167,9 @@ const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
       {task?.description && (
         <>
           <Divider sx={{ my: 2 }} />
-          <Typography variant="h6" gutterBottom>Description:</Typography>
+          <Typography variant="h6" gutterBottom>
+            Description:
+          </Typography>
           <Typography
             sx={{
               overflowWrap: "break-word",

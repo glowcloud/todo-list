@@ -22,7 +22,7 @@ const SortPopover = ({ sortType, setSortType }) => {
   };
 
   return (
-    <Box >
+    <Box>
       <IconButton onClick={handlePopoverOpen}>
         <SortOutlined />
       </IconButton>

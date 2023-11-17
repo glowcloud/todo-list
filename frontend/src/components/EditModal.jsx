@@ -172,7 +172,9 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
               minDateTime={
-                formState.startDate ? formState.startDate.add(5, "minutes") : ""
+                dayjs(formState.startDate)
+                  ? dayjs(formState.startDate).add(5, "minutes")
+                  : ""
               }
               disablePast
               disabled={loading}
