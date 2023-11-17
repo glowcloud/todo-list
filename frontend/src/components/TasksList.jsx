@@ -8,6 +8,7 @@ import { useDataContext } from "../context/DataContext";
 import { getFilteredTasks } from "../utils/generalUtils";
 import SortFilterSearch from "./SortFilterSearch";
 import TasksProgress from "./TasksProgress";
+import TaskCardAlt from "./TaskCardAlt";
 
 const TasksList = ({ setTaskOpen, overdue }) => {
   const [sortType, setSortType] = useState("none");
@@ -32,52 +33,43 @@ const TasksList = ({ setTaskOpen, overdue }) => {
   };
 
   return (
-    <Box
-      sx={{
-        mx: { sm: 2, md: 15, lg: 35, xl: 60 },
-        // mr: { xs: 2, sm: 4, md: 15 },
-        mt: { xs: 5, md: 0 },
-      }}
-    >
-      <SortFilterSearch
-        sortType={sortType}
-        setSortType={setSortType}
-        search={search}
-        setSearch={setSearch}
-        handleFilterClick={handleFilterClick}
-        priorityFilters={priorityFilters}
-        setPriorityFilters={setPriorityFilters}
-      />
-      {!overdue && (
-        <Box
-          mb={3}
-          mx={3}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <TimeFrameSelect
-            timeFrame={timeFrame}
-            setTimeFrame={setTimeFrame}
-            chosenTime={chosenTime}
-            setChosenTime={setChosenTime}
-          />
-        </Box>
-      )}
-      {!overdue && (
-        <TasksProgress
-          value={
-            (getFilteredTasks(
-              tasks,
-              timeFrame,
-              chosenTime,
-              priorityFilters,
-              sortType,
-              search,
-              overdue,
-              true
-            ).length /
-              getFilteredTasks(
+    <>
+      <Box
+        sx={{
+          mx: { sm: 2, md: 15, lg: 35, xl: 60 },
+          // mr: { xs: 2, sm: 4, md: 15 },
+          mt: { xs: 5, md: 0 },
+        }}
+      >
+        <SortFilterSearch
+          sortType={sortType}
+          setSortType={setSortType}
+          search={search}
+          setSearch={setSearch}
+          handleFilterClick={handleFilterClick}
+          priorityFilters={priorityFilters}
+          setPriorityFilters={setPriorityFilters}
+        />
+        {!overdue && (
+          <Box
+            mb={3}
+            mx={3}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <TimeFrameSelect
+              timeFrame={timeFrame}
+              setTimeFrame={setTimeFrame}
+              chosenTime={chosenTime}
+              setChosenTime={setChosenTime}
+            />
+          </Box>
+        )}
+        {!overdue && (
+          <TasksProgress
+            value={
+              (getFilteredTasks(
                 tasks,
                 timeFrame,
                 chosenTime,
@@ -85,30 +77,58 @@ const TasksList = ({ setTaskOpen, overdue }) => {
                 sortType,
                 search,
                 overdue,
-                false
-              ).length) *
-            100
-          }
-        />
-      )}
-      {getFilteredTasks(
-        tasks,
-        timeFrame,
-        chosenTime,
-        priorityFilters,
-        sortType,
-        search,
-        overdue,
-        false
-      ).map((task) => (
-        <TaskCard
-          key={task.id}
-          task={task}
-          handleClick={() => setTaskOpen(task.id)}
-          handleCheckTask={handleCheck}
-          priorities={priorities}
-        />
-      ))}
+                true
+              ).length /
+                getFilteredTasks(
+                  tasks,
+                  timeFrame,
+                  chosenTime,
+                  priorityFilters,
+                  sortType,
+                  search,
+                  overdue,
+                  false
+                ).length) *
+              100
+            }
+          />
+        )}
+      </Box>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        justifyContent="center"
+        sx={{
+          mx: { sm: 2, md: 10 },
+          mt: { xs: 5, md: 2 },
+        }}
+      >
+        {getFilteredTasks(
+          tasks,
+          timeFrame,
+          chosenTime,
+          priorityFilters,
+          sortType,
+          search,
+          overdue,
+          false
+        ).map((task) => (
+          // <TaskCard
+          //   key={task.id}
+          //   task={task}
+          //   handleClick={() => setTaskOpen(task.id)}
+          //   handleCheckTask={handleCheck}
+          //   priorities={priorities}
+          // />
+          <TaskCardAlt
+            key={task.id}
+            task={task}
+            handleClick={() => setTaskOpen(task.id)}
+            handleCheckTask={handleCheck}
+            priorities={priorities}
+          />
+        ))}
+      </Box>
       {(!tasks ||
         tasks.length === 0 ||
         getFilteredTasks(
@@ -126,7 +146,7 @@ const TasksList = ({ setTaskOpen, overdue }) => {
         </Box>
       )}
       <ResendingBackdrop isResending={loading} />
-    </Box>
+    </>
   );
 };
 
