@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Divider, Typography } from "@mui/material";
 import { useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
@@ -77,7 +77,7 @@ const Summary = () => {
   const { tasks, priorities } = useDataContext();
 
   return (
-    <Box mt={{xs: 5, md: 3}}>
+    <Box mt={{ xs: 5, md: 3 }}>
       <TimeFrameSelect
         timeFrame={timeFrame}
         setTimeFrame={setTimeFrame}
@@ -92,7 +92,15 @@ const Summary = () => {
           mx={{ xs: 1, md: 2, lg: 5, xl: 40 }}
           mt={3}
         >
+          <Divider flexItem sx={{ my: 3, mx: { xs: 1, md: 10 } }} />
+          <Typography variant="h5" mt={2}>
+            Number of tasks per task status
+          </Typography>
           <CustomPieChart data={getStatusData(tasks, timeFrame, chosenTime)} />
+          <Divider flexItem sx={{ my: 3, mx: { xs: 1, md: 10 } }} />
+          <Typography variant="h5" mt={2}>
+            Number of tasks per priority
+          </Typography>
           <CustomPieChart
             data={getPrioritiesData(tasks, priorities, timeFrame, chosenTime)}
           />

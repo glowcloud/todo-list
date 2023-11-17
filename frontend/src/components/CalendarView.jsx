@@ -36,10 +36,9 @@ const createEvents = (tasks) => {
 const CalendarView = ({ setTaskOpen }) => {
   const [events, setEvents] = useState([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const [isResending, setIsResending] = useState(false);
   const [changedTaskData, setChangedTaskData] = useState(null);
   const { mode } = useTheme();
-  const { tasks, handleEditTask } = useDataContext();
+  const { tasks, handleEditTask, setAlertMsg, loading } = useDataContext();
 
   useEffect(() => {
     if (tasks) {
@@ -55,9 +54,7 @@ const CalendarView = ({ setTaskOpen }) => {
     currentTask.endDate = dayjs(changedTaskData.end);
     handleConfirmClose();
 
-    setIsResending(true);
     await handleEditTask(currentTask);
-    setIsResending(false);
   };
 
   const handleConfirmClose = () => {
@@ -65,8 +62,12 @@ const CalendarView = ({ setTaskOpen }) => {
   };
 
   const onEventChange = async (data) => {
-    setChangedTaskData(data);
-    setIsConfirmOpen(true);
+    if (dayjs(data.start).isAfter(dayjs())) {
+      setChangedTaskData(data);
+      setIsConfirmOpen(true);
+    } else {
+      setAlertMsg("Can't set a task to start before current date.");
+    }
   };
 
   const onEventClick = (event) => {
@@ -169,7 +170,7 @@ const CalendarView = ({ setTaskOpen }) => {
         title="Confirm edit"
         content="Are you sure you want to reschedule this task?"
       />
-      <ResendingBackdrop isResending={isResending} />
+      <ResendingBackdrop isResending={loading} />
     </>
   );
 };
