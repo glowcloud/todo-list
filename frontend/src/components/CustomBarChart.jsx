@@ -26,7 +26,6 @@ const CustomBarChart = ({ data }) => {
   return (
     <BarChart
       dataset={data}
-      //   xAxis={[{ scaleType: "band", dataKey: "time" }]}
       series={[
         {
           dataKey: "Highest",
