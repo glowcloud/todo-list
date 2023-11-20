@@ -218,11 +218,10 @@ public class MainController {
 
     private void scheduleTask(Task task, String email) throws SchedulerException {
         ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(15);
-        DateTimeFormatter formatter;
-
         String mailBody = "";
         String start = "";
         String end = "";
+
         if (task.getAllDay()) {
             mailBody = "All day task\n";
             start = DateTimeFormatter.ofPattern("dd/MM/yyyy")

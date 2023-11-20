@@ -10,6 +10,8 @@ import orogala.todolist.backend.repository.TaskRepository;
 import orogala.todolist.backend.repository.UserRepository;
 import orogala.todolist.backend.service.MailService;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,9 +46,17 @@ public class ReminderJob extends QuartzJobBean {
                     String body = "Your unfinished tasks:\n\n";
                     for (Task task : tasks) {
                         body += task.getTitle();
-                        body += "\n";
+                        body += " (start: ";
+                        if (task.getAllDay()) {
+                            body += DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                                    .format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
+                        }
+                        else {
+                            body += DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")
+                                    .format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
+                        }
+                        body += ")\n";
                     }
-                    String subject = "You have unfinished tasks!";
                     mailService.sendEmail(user.getEmail(),
                             "You have unfinished tasks!",
                             body);
