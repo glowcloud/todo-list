@@ -38,7 +38,7 @@ const SortPopover = ({ sortType, setSortType }) => {
           textAlign: "center",
         }}
       >
-        <FormControl sx={{ width: 500 }}>
+        <FormControl sx={{ width: 150 }}>
           <InputLabel>Sort</InputLabel>
           <Select
             value={sortType}

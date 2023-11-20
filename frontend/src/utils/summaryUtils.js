@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import { isOverdue } from "./generalUtils";
 
 const getFilteredTasks = (tasks, timeFrame, chosenTime) => {
   if (timeFrame !== "overall") {
@@ -21,11 +22,7 @@ const getStatusData = (tasks, timeFrame, chosenTime) => {
 
   tasks.forEach((task) => {
     if (task.finished) done++;
-    else if (
-      dayjs(task.endDate).isBefore(dayjs()) ||
-      (dayjs().isSame(task.endDate, "d") && !task.allDay)
-    )
-      overdue++;
+    else if (isOverdue(task)) overdue++;
     else todo++;
   });
 
