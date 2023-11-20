@@ -176,7 +176,6 @@ public class MainController {
         mailService.sendEmailWithAttachment(
                 email,
                 "New task",
-                "You have a new task.",
                 file);
         return new ResponseEntity<>(HttpStatus.OK);
     }

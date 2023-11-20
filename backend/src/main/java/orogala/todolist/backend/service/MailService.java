@@ -27,7 +27,7 @@ public class MailService {
         mailSender.send(message);
     }
 
-    public void sendEmailWithAttachment(String to, String subject, String body, String file) {
+    public void sendEmailWithAttachment(String to, String subject, String file) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
 
@@ -36,7 +36,6 @@ public class MailService {
             helper.setFrom("orogala97@gmail.com");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(body);
 
             message.addHeader("Content-Class", "urn:content-classes:calendarmessage");
             message.setContent(file, "text/calendar");
