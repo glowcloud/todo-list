@@ -10,6 +10,7 @@ export const DataContextProvider = ({ children }) => {
   const [priorities, setPriorities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
+  const [alertType, setAlertType] = useState("success");
   const { token } = useAuth();
 
   useEffect(() => {
@@ -72,10 +73,12 @@ export const DataContextProvider = ({ children }) => {
 
       setLoading(false);
       setAlertMsg("Task added.");
+      setAlertType("success");
       setTasks((prevTasks) => [...prevTasks, json]);
     } else {
       setLoading(false);
       setAlertMsg("Something went wrong, please try again.");
+      setAlertType("error");
     }
   };
 
@@ -108,9 +111,11 @@ export const DataContextProvider = ({ children }) => {
       });
       setLoading(false);
       setAlertMsg(task.finished ? "" : "Task edited.");
+      setAlertType("success");
     } else {
       setLoading(false);
       setAlertMsg("Something went wrong, please try again.");
+      setAlertType("error");
     }
   };
 
@@ -132,9 +137,11 @@ export const DataContextProvider = ({ children }) => {
       });
       setLoading(false);
       setAlertMsg("Task deleted.");
+      setAlertType("success");
     } else {
       setLoading(false);
       setAlertMsg("Something went wrong, please try again.");
+      setAlertType("error");
     }
   };
 
@@ -149,6 +156,7 @@ export const DataContextProvider = ({ children }) => {
     await sendTask(task, token);
     setLoading(false);
     setAlertMsg("Task resent.");
+    setAlertType("success");
   };
 
   const getOverdueCount = () => {
@@ -162,6 +170,7 @@ export const DataContextProvider = ({ children }) => {
         priorities,
         loading,
         alertMsg,
+        alertType,
         setAlertMsg,
         handleAddTask,
         handleEditTask,

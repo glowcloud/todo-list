@@ -4,7 +4,7 @@ import { Snackbar, Alert } from "@mui/material";
 
 const CustomSnackbar = () => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const { alertMsg, setAlertMsg } = useDataContext();
+  const { alertMsg, alertType, setAlertMsg } = useDataContext();
 
   useEffect(() => {
     if (alertMsg) {
@@ -23,7 +23,7 @@ const CustomSnackbar = () => {
       autoHideDuration={6000}
       onClose={handleSnackbarClose}
     >
-      <Alert severity="success" sx={{ width: "100%" }}>
+      <Alert severity={alertType} sx={{ width: "100%" }}>
         {alertMsg}
       </Alert>
     </Snackbar>
