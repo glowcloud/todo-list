@@ -65,13 +65,18 @@ export const DataContextProvider = ({ children }) => {
       },
     });
 
-    const json = await res.json();
+    if (res.ok) {
+      const json = await res.json();
 
-    await sendTask(json, token);
+      await sendTask(json, token);
 
-    setLoading(false);
-    setAlertMsg("Task added and sent to your email.");
-    setTasks((prevTasks) => [...prevTasks, json]);
+      setLoading(false);
+      setAlertMsg("Task added.");
+      setTasks((prevTasks) => [...prevTasks, json]);
+    } else {
+      setLoading(false);
+      setAlertMsg("Something went wrong, please try again.");
+    }
   };
 
   const handleEditTask = async (task) => {
@@ -101,13 +106,17 @@ export const DataContextProvider = ({ children }) => {
           return [...filteredTasks, json];
         });
       }
+      setLoading(false);
+      setAlertMsg(task.finished ? "" : "Task edited.");
+    } else {
+      setLoading(false);
+      setAlertMsg("Something went wrong, please try again.");
     }
-
-    setLoading(false);
-    setAlertMsg(task.finished ? "" : "Edited task was sent to your email.");
   };
 
   const handleDeleteTask = async (id) => {
+    setLoading(true);
+
     const res = await fetch(`http://localhost:8080/tasks/${id}`, {
       method: "DELETE",
       headers: {
@@ -121,7 +130,11 @@ export const DataContextProvider = ({ children }) => {
         const filteredTasks = prevTasks.filter((t) => t.id !== id);
         return [...filteredTasks];
       });
+      setLoading(false);
       setAlertMsg("Task deleted.");
+    } else {
+      setLoading(false);
+      setAlertMsg("Something went wrong, please try again.");
     }
   };
 

@@ -36,14 +36,18 @@ const sendTask = async (task, token) => {
     });
   });
 
-  await fetch("http://localhost:8080/sendmail", {
-    method: "POST",
-    body: file,
-    headers: {
-      "Content-Type": "text/calendar",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    fetch("http://localhost:8080/sendmail", {
+      method: "POST",
+      body: file,
+      headers: {
+        "Content-Type": "text/calendar",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export { sendTask };
