@@ -99,43 +99,62 @@ public class MainController {
 
     @PutMapping(path="/tasks/{id}")
     public ResponseEntity<Task> editTask(@RequestBody Task newTask, @PathVariable("id") Integer id) {
-        Optional<Task> taskData = taskRepository.findById(id);
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
 
-        if (taskData.isPresent()) {
-            try {
-                Task task = taskData.get();
-                task.setTitle(newTask.getTitle());
-                task.setDescription(newTask.getDescription());
-                task.setStartDate(newTask.getStartDate());
-                task.setEndDate(newTask.getEndDate());
-                task.setPriority(newTask.getPriority());
-                task.setFinished(newTask.getFinished());
-                task.setAllDay(newTask.getAllDay());
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isPresent()) {
+            Optional<Task> taskData = taskRepository.findById(id);
+            if (taskData.isPresent() && Objects.equals(taskData.get().getUser().getId(), userData.get().getId())) {
+                    try {
+                        Task task = taskData.get();
+                        task.setTitle(newTask.getTitle());
+                        task.setDescription(newTask.getDescription());
+                        task.setStartDate(newTask.getStartDate());
+                        task.setEndDate(newTask.getEndDate());
+                        task.setPriority(newTask.getPriority());
+                        task.setFinished(newTask.getFinished());
+                        task.setAllDay(newTask.getAllDay());
 
-                scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
-                scheduleTask(task, task.getUser().getEmail());
+                        scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
+                        scheduleTask(task, task.getUser().getEmail());
 
-                return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
+                        return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
 
+                    }
+                    catch(Exception e) {
+                        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                    }
             }
-            catch(Exception e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
         }
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @DeleteMapping(path="/tasks/{id}")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Integer id) {
-        try {
-            taskRepository.deleteById(id);
-            scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isPresent()) {
+            Optional<Task> taskData = taskRepository.findById(id);
+            if (taskData.isPresent() && Objects.equals(taskData.get().getUser().getId(), userData.get().getId())) {
+                try {
+                    taskRepository.deleteById(id);
+                    scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                } catch (Exception e) {
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            }
+            else return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping(path="/priorities")
@@ -146,15 +165,6 @@ public class MainController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(priorities, HttpStatus.OK);
-    }
-
-    @GetMapping(path="/priorities/{id}")
-    public ResponseEntity<Priority> getPriorityById(@PathVariable("id") Integer id) {
-        Optional<Priority> priorityData = priorityRepository.findById(id);
-        if (priorityData.isPresent()) {
-            return new ResponseEntity<>(priorityData.get(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping(path="/sendmail")
@@ -172,7 +182,7 @@ public class MainController {
     }
 
     @GetMapping(path="/validate")
-    public ResponseEntity<HttpStatus>  validateToken () {
+    public ResponseEntity<HttpStatus> validateToken () {
         JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) token.getCredentials();
         String email = jwt.getClaims().get("sub").toString();
