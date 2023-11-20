@@ -1,10 +1,32 @@
+import { useMediaQuery, useTheme } from "@mui/material";
 import { BarChart } from "@mui/x-charts";
 
+const getSettings = (matches, matchesSM, matchesMD) => {
+  if (matches)
+    return {
+      yAxis: [{ scaleType: "band", dataKey: "time" }],
+      layout: "horizontal",
+      width: matchesSM ? 550 : 400,
+      height: 750,
+    };
+  return {
+    xAxis: [{ scaleType: "band", dataKey: "time" }],
+    layout: "vertical",
+    width: matchesMD ? 650 : 900,
+    height: matchesMD ? 500 : 600,
+  };
+};
+
 const CustomBarChart = ({ data }) => {
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down("md"));
+  const matchesSM = useMediaQuery(theme.breakpoints.only("sm"));
+  const matchesMD = useMediaQuery(theme.breakpoints.only("md"));
+
   return (
     <BarChart
       dataset={data}
-      xAxis={[{ scaleType: "band", dataKey: "time" }]}
+      //   xAxis={[{ scaleType: "band", dataKey: "time" }]}
       series={[
         {
           dataKey: "Highest",
@@ -24,8 +46,8 @@ const CustomBarChart = ({ data }) => {
           color: "rgba(60, 179, 113, 0.75)",
         },
       ]}
-      height={500}
-      width={750}
+      margin={{ top: 75 }}
+      {...getSettings(matches, matchesSM, matchesMD)}
     />
   );
 };
