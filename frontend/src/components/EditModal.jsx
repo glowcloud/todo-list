@@ -42,11 +42,14 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
       formState.title !== "" &&
       formState.startDate !== null &&
       formState.endDate !== null &&
-      ((isAllDay &&
-        (dayjs(formState.startDate).isAfter(dayjs()) ||
-          dayjs().isSame(dayjs(formState.startDate), "d")) &&
-        (dayjs(formState.endDate).isAfter(dayjs()) ||
-          dayjs().isSame(dayjs(formState.endDate), "d"))) ||
+      (dayjs(formState.startDate).isSame(dayjs(task.startDate)) ||
+        (dayjs(formState.startDate).isBefore(dayjs()) &&
+          dayjs(formState.endDate).isAfter(dayjs(formState.startDate))) ||
+        (isAllDay &&
+          (dayjs(formState.startDate).isAfter(dayjs()) ||
+            dayjs().isSame(dayjs(formState.startDate), "d")) &&
+          (dayjs(formState.endDate).isAfter(dayjs()) ||
+            dayjs().isSame(dayjs(formState.endDate), "d"))) ||
         (dayjs(formState.startDate).isAfter(dayjs()) &&
           formState.endDate.isAfter(formState.startDate))) &&
       formState.priority > 0
@@ -100,7 +103,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               label="Start"
               orientation="portrait"
               value={formState.startDate}
-              disablePast
+              // disablePast
               disabled={loading}
               sx={{
                 my: 1,
@@ -121,7 +124,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               label="End"
               orientation="portrait"
               value={formState.endDate}
-              disablePast
+              // disablePast
               disabled={loading}
               sx={{
                 my: 1,
@@ -148,7 +151,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               value={formState.startDate}
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
-              disablePast
+              // disablePast
               disabled={loading}
               sx={{
                 my: 1,
@@ -176,7 +179,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
                   ? dayjs(formState.startDate).add(5, "minutes")
                   : ""
               }
-              disablePast
+              // disablePast
               disabled={loading}
               sx={{
                 my: 1,

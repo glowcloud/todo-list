@@ -143,6 +143,10 @@ const CalendarView = ({ setTaskOpen }) => {
           ".rbc-time-slot": {
             borderColor: "#aaa",
           },
+          ".rbc-show-more": {
+            color: mode === "dark" ? "#ddd" : "",
+            backgroundColor: mode === "dark" ? "#121212" : "",
+          },
           ".rbc-toolbar": {
             flexDirection: { xs: "column-reverse", md: "row" },
           },

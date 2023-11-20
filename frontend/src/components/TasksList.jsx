@@ -1,5 +1,5 @@
 import { Box, Pagination, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import ResendingBackdrop from "./ResendingBackdrop";
@@ -21,7 +21,31 @@ const TasksList = ({ setTaskOpen, overdue }) => {
   const [search, setSearch] = useState("");
   const [priorityFilters, setPriorityFilters] = useState([]);
   const [page, setPage] = useState(1);
+  const [filteredTasks, setFilteredTasks] = useState([]);
   const { tasks, priorities, loading, handleCheckTask } = useDataContext();
+
+  useEffect(() => {
+    setFilteredTasks(
+      getFilteredTasks(
+        tasks,
+        timeFrame,
+        chosenTime,
+        priorityFilters,
+        sortType,
+        search,
+        overdue,
+        false
+      )
+    );
+  }, [
+    tasks,
+    priorityFilters,
+    search,
+    timeFrame,
+    sortType,
+    chosenTime,
+    overdue,
+  ]);
 
   const handleChangePage = (e, v) => {
     setPage(v);
@@ -74,7 +98,7 @@ const TasksList = ({ setTaskOpen, overdue }) => {
             />
           </Box>
         )}
-        {!overdue && (
+        {!overdue && filteredTasks.length > 0 && (
           <TasksProgress
             value={
               (getFilteredTasks(
@@ -87,50 +111,12 @@ const TasksList = ({ setTaskOpen, overdue }) => {
                 overdue,
                 true
               ).length /
-                getFilteredTasks(
-                  tasks,
-                  timeFrame,
-                  chosenTime,
-                  priorityFilters,
-                  sortType,
-                  search,
-                  overdue,
-                  false
-                ).length) *
+                filteredTasks.length) *
               100
             }
           />
         )}
       </Box>
-      {/* <Box
-        display="flex"
-        flexWrap="wrap"
-        justifyContent="center"
-        sx={{
-          mx: { sm: 2, md: 10 },
-          mt: { xs: 5, md: 2 },
-          mb: 2,
-        }}
-      >
-        {getFilteredTasks(
-          tasks,
-          timeFrame,
-          chosenTime,
-          priorityFilters,
-          sortType,
-          search,
-          overdue,
-          false
-        ).map((task) => (
-          <TaskCardAlt
-            key={task.id}
-            task={task}
-            handleClick={() => setTaskOpen(task.id)}
-            handleCheckTask={handleCheck}
-            priorities={priorities}
-          />
-        ))}
-      </Box> */}
       <Box
         sx={{
           mx: { sm: 2, md: 10 },
@@ -140,16 +126,7 @@ const TasksList = ({ setTaskOpen, overdue }) => {
       >
         <Masonry columns={{ xs: 1, md: 2, lg: 3 }}>
           {paginate(
-            getFilteredTasks(
-              tasks,
-              timeFrame,
-              chosenTime,
-              priorityFilters,
-              sortType,
-              search,
-              overdue,
-              false
-            ).map((task) => (
+            filteredTasks.map((task) => (
               <TaskCardAlt
                 key={task.id}
                 task={task}
@@ -162,42 +139,22 @@ const TasksList = ({ setTaskOpen, overdue }) => {
           )}
         </Masonry>
       </Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          my: 4,
-        }}
-      >
-        <Pagination
-          count={Math.ceil(
-            getFilteredTasks(
-              tasks,
-              timeFrame,
-              chosenTime,
-              priorityFilters,
-              sortType,
-              search,
-              overdue,
-              false
-            ).length / 9
-          )}
-          page={page}
-          onChange={handleChangePage}
-        />
-      </Box>
-      {(!tasks ||
-        tasks.length === 0 ||
-        getFilteredTasks(
-          tasks,
-          timeFrame,
-          chosenTime,
-          priorityFilters,
-          sortType,
-          search,
-          overdue,
-          false
-        ).length === 0) && (
+      {filteredTasks.length > 0 && (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            my: 4,
+          }}
+        >
+          <Pagination
+            count={Math.ceil(filteredTasks.length / 9)}
+            page={page}
+            onChange={handleChangePage}
+          />
+        </Box>
+      )}
+      {(!tasks || tasks.length === 0 || filteredTasks.length === 0) && (
         <Box textAlign="center" mt={5}>
           <Typography variant="h5">No tasks found.</Typography>
         </Box>

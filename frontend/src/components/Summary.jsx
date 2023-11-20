@@ -71,6 +71,27 @@ const getPrioritiesData = (tasks, priorities, timeFrame, chosenTime) => {
   return data;
 };
 
+const getPrioritiesDataset = (tasks, priorities, timeFrame, chosenTime) => {
+  const data = [];
+  tasks = getFilteredTasks(tasks, timeFrame, chosenTime);
+
+  if (timeFrame === "week") {
+
+
+    priorities.forEach((priority) => {
+      const currTasks = tasks.filter(
+        (task) => task.priority.id === priority.id
+      );
+      data.push({
+        id: priority.id,
+        label: priority.name,
+        value: currTasks.length,
+        color: priority.color,
+      });
+    });
+  }
+};
+
 const Summary = () => {
   const [timeFrame, setTimeFrame] = useState("day");
   const [chosenTime, setChosenTime] = useState(dayjs());
