@@ -1,15 +1,15 @@
 import { Box, Divider, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import TimeFrameSelect from "./TimeFrameSelect";
-import { useDataContext } from "../context/DataContext";
+import TimeFrameSelect from "../shared/TimeFrameSelect";
+import { useDataContext } from "../../context/DataContext";
 import CustomPieChart from "./CustomPieChart";
 import CustomBarChart from "./CustomBarChart";
 import {
   getFilteredTasks,
   getStatusData,
   getPrioritiesDataset,
-} from "../utils/summaryUtils";
+} from "../../utils/summaryUtils";
 
 const Summary = () => {
   const [timeFrame, setTimeFrame] = useState("day");

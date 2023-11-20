@@ -17,9 +17,9 @@ import {
   DarkMode,
   LightMode,
 } from "@mui/icons-material";
-import { useDataContext } from "../context/DataContext";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import { useDataContext } from "../../context/DataContext";
+import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 
 const navItems = (badgeContent) => {
   return [

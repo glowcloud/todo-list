@@ -33,7 +33,8 @@ const getFilteredTasks = (
           dayjs(chosenTime).isSame(dayjs(task.endDate), timeFrame) ||
           (dayjs(task.startDate).isBefore(dayjs(chosenTime), timeFrame) &&
             dayjs(task.endDate).isAfter(dayjs(chosenTime), timeFrame))) &&
-        (task.title.includes(search) || task.description.includes(search)) &&
+        (task.title.toLowerCase().includes(search.toLowerCase()) ||
+          task.description.toLowerCase().includes(search.toLowerCase())) &&
         (priorityFilters.length === 0 ||
           priorityFilters.includes(task.priority.id)) &&
         (!finished || task.finished)

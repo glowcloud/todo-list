@@ -9,8 +9,8 @@ import {
   Divider,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { isOverdue } from "../utils/generalUtils";
-import { useDataContext } from "../context/DataContext";
+import { isOverdue } from "../../utils/generalUtils";
+import { useDataContext } from "../../context/DataContext";
 import {
   CheckCircle,
   CheckCircleOutline,
@@ -18,7 +18,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import TaskCardMenu from "./TaskCardMenu";
-import EditModal from "../components/EditModal";
+import EditModal from "../shared/EditModal";
 
 const getFormattedDates = (startDate, endDate, allDay, finished) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
@@ -115,7 +115,7 @@ const getFormattedDates = (startDate, endDate, allDay, finished) => {
   );
 };
 
-const TaskCardAlt = ({ task }) => {
+const TaskCard = ({ task }) => {
   const [expanded, setExpanded] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const { handleCheckTask } = useDataContext();
@@ -214,7 +214,7 @@ const TaskCardAlt = ({ task }) => {
         {task?.description && (
           <Collapse in={expanded}>
             <CardContent>
-              <Divider sx={{mb: 2}} />
+              <Divider sx={{ mb: 2 }} />
               <Typography paragraph>{task?.description}</Typography>
             </CardContent>
           </Collapse>
@@ -229,4 +229,4 @@ const TaskCardAlt = ({ task }) => {
   );
 };
 
-export default TaskCardAlt;
+export default TaskCard;

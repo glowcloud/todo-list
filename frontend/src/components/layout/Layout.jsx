@@ -1,5 +1,5 @@
 import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { Menu } from "@mui/icons-material";
 import Sidebar from "./Sidebar";
 import CustomSnackbar from "./CustomSnackbar";

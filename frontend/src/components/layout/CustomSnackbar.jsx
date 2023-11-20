@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDataContext } from "../context/DataContext";
+import { useDataContext } from "../../context/DataContext";
 import { Snackbar, Alert } from "@mui/material";
 
 const CustomSnackbar = () => {

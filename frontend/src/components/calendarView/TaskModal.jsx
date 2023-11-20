@@ -7,12 +7,12 @@ import {
   Email,
 } from "@mui/icons-material";
 import { Box, Divider, IconButton, Typography } from "@mui/material";
-import CustomModal from "./CustomModal";
+import CustomModal from "../shared/CustomModal";
 import dayjs from "dayjs";
 import { useState } from "react";
-import ConfirmDialog from "./ConfirmDialog";
-import { isOverdue } from "../utils/generalUtils";
-import { useDataContext } from "../context/DataContext";
+import ConfirmDialog from "../shared/ConfirmDialog";
+import { isOverdue } from "../../utils/generalUtils";
+import { useDataContext } from "../../context/DataContext";
 
 const getFormattedDates = (startDate, endDate, allDay) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {

@@ -13,62 +13,63 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import CustomModal from "./CustomModal";
+import { useState } from "react";
+import CustomModal from "../shared/CustomModal";
 import { DateTimePicker, DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useDataContext } from "../context/DataContext";
+import { useDataContext } from "../../context/DataContext";
 
-const EditModal = ({ task, isOpen, handleModalClose }) => {
-  const [formState, setFormState] = useState({ ...task });
-  const [isAllDay, setIsAllDay] = useState(false);
+const defaultState = {
+  title: "",
+  description: "",
+  startDate: dayjs(),
+  endDate: dayjs().add(5, "minutes"),
+  priority: 3,
+};
+
+const AddModal = ({ isOpen, handleModalClose }) => {
+  const [formState, setFormState] = useState(defaultState);
+  const [isAllDay, setIsAllDay] = useState(true);
   const [error, setError] = useState(false);
-  const { priorities, loading, handleEditTask } = useDataContext();
+  const { priorities, loading, handleAddTask } = useDataContext();
 
-  useEffect(() => {
-    if (task) {
-      setFormState({
-        ...task,
-        startDate: dayjs(task.startDate),
-        endDate: dayjs(task.endDate),
-        priority: task.priority.id,
-      });
-      setIsAllDay(task.allDay !== null ? task.allDay : false);
-    }
-  }, [task]);
-
-  const handleEdit = async () => {
+  const handleAdd = async () => {
     if (
       formState.title !== "" &&
       formState.startDate !== null &&
       formState.endDate !== null &&
-      (dayjs(formState.startDate).isSame(dayjs(task.startDate)) ||
-        (dayjs(formState.startDate).isBefore(dayjs()) &&
-          dayjs(formState.endDate).isAfter(dayjs(formState.startDate))) ||
-        (isAllDay &&
-          (dayjs(formState.startDate).isAfter(dayjs()) ||
-            dayjs().isSame(dayjs(formState.startDate), "d")) &&
-          (dayjs(formState.endDate).isAfter(dayjs()) ||
-            dayjs().isSame(dayjs(formState.endDate), "d"))) ||
+      ((isAllDay &&
+        (dayjs(formState.startDate).isAfter(dayjs()) ||
+          dayjs().isSame(dayjs(formState.startDate), "d")) &&
+        (dayjs(formState.endDate).isAfter(dayjs()) ||
+          dayjs().isSame(dayjs(formState.endDate), "d"))) ||
         (dayjs(formState.startDate).isAfter(dayjs()) &&
           formState.endDate.isAfter(formState.startDate))) &&
       formState.priority > 0
     ) {
-      await handleEditTask({ ...formState, allDay: isAllDay });
+      await handleAddTask({ ...formState, allDay: isAllDay });
+      setFormState(defaultState);
       handleModalClose();
     } else {
       setError(true);
     }
   };
 
+  const handleClose = () => {
+    if (!loading) {
+      setFormState(defaultState);
+      handleModalClose();
+    }
+  };
+
   return (
-    <CustomModal isOpen={isOpen} handleClose={handleModalClose}>
+    <CustomModal isOpen={isOpen} handleClose={handleClose}>
       <Box textAlign="right" pt={3}>
-        <IconButton onClick={handleModalClose}>
+        <IconButton onClick={handleClose}>
           <Close />
         </IconButton>
       </Box>
-      <Typography variant="h5">{`Edit ${task?.title}`}</Typography>
+      <Typography variant="h5">Add a new task</Typography>
       <Box component="form" pt={1} pr={1}>
         <TextField
           label="Title"
@@ -86,7 +87,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
         />
         <Box>
           <FormControlLabel
-            label="No time"
+            label="Only date"
             checked={isAllDay}
             disabled={loading}
             control={
@@ -103,7 +104,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               label="Start"
               orientation="portrait"
               value={formState.startDate}
-              // disablePast
+              disablePast
               disabled={loading}
               sx={{
                 my: 1,
@@ -124,7 +125,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               label="End"
               orientation="portrait"
               value={formState.endDate}
-              // disablePast
+              disablePast
               disabled={loading}
               sx={{
                 my: 1,
@@ -151,7 +152,7 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               value={formState.startDate}
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
-              // disablePast
+              disablePast
               disabled={loading}
               sx={{
                 my: 1,
@@ -174,12 +175,8 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
               value={formState.endDate}
               ampm={false}
               timeSteps={{ hours: 1, minutes: 1, seconds: 1 }}
-              minDateTime={
-                dayjs(formState.startDate)
-                  ? dayjs(formState.startDate).add(5, "minutes")
-                  : ""
-              }
-              // disablePast
+              minDateTime={formState.startDate.add(5, "minutes")}
+              disablePast
               disabled={loading}
               sx={{
                 my: 1,
@@ -203,11 +200,11 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
             value={formState.priority}
             label="Priority"
             disabled={loading}
-            onChange={(e) => {
+            onChange={(e) =>
               setFormState((prevState) => {
                 return { ...prevState, priority: e.target.value };
-              });
-            }}
+              })
+            }
           >
             {priorities.map((priority) => (
               <MenuItem key={priority.id} value={priority.id}>
@@ -219,7 +216,6 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
         <TextField
           label="Description"
           value={formState.description}
-          disabled={loading}
           onChange={(e) =>
             setFormState((prevState) => {
               return { ...prevState, description: e.target.value };
@@ -229,10 +225,12 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
           multiline
           rows={4}
           fullWidth
+          disabled={loading}
+          inputProps={{maxLength: 255}}
         />
-        <Box sx={{ textAlign: "center", mt: 3 }}>
-          <Button variant="outlined" disabled={loading} onClick={handleEdit}>
-            Save changes
+        <Box sx={{ mt: 3, textAlign: "center", position: "relative" }}>
+          <Button variant="outlined" disabled={loading} onClick={handleAdd}>
+            Add
           </Button>
           {loading && (
             <CircularProgress
@@ -253,4 +251,4 @@ const EditModal = ({ task, isOpen, handleModalClose }) => {
   );
 };
 
-export default EditModal;
+export default AddModal;

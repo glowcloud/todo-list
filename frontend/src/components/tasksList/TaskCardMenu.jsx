@@ -8,8 +8,8 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Email, MoreVert } from "@mui/icons-material";
 import { useState } from "react";
-import { useDataContext } from "../context/DataContext";
-import ConfirmDialog from "./ConfirmDialog";
+import { useDataContext } from "../../context/DataContext";
+import ConfirmDialog from "../shared/ConfirmDialog";
 
 const menuItems = (
   finished,

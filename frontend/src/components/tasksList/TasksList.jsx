@@ -1,20 +1,20 @@
 import { Box, Pagination, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import TimeFrameSelect from "./TimeFrameSelect";
-import ResendingBackdrop from "./ResendingBackdrop";
-import { useDataContext } from "../context/DataContext";
-import { getFilteredTasks } from "../utils/generalUtils";
+import TimeFrameSelect from "../shared/TimeFrameSelect";
+import ResendingBackdrop from "../shared/ResendingBackdrop";
+import { useDataContext } from "../../context/DataContext";
+import { getFilteredTasks } from "../../utils/generalUtils";
 import SortFilterSearch from "./SortFilterSearch";
 import TasksProgress from "./TasksProgress";
-import TaskCardAlt from "./TaskCardAlt";
+import TaskCard from "./TaskCard";
 import { Masonry } from "@mui/lab";
 
 const paginate = (tasks, page) => {
   return tasks.slice((page - 1) * 9, page * 9);
 };
 
-const TasksList = ({ setTaskOpen, overdue }) => {
+const TasksList = ({ overdue }) => {
   const [sortType, setSortType] = useState("none");
   const [timeFrame, setTimeFrame] = useState(overdue ? "overall" : "day");
   const [chosenTime, setChosenTime] = useState(dayjs());
@@ -127,10 +127,9 @@ const TasksList = ({ setTaskOpen, overdue }) => {
         <Masonry columns={{ xs: 1, md: 2, lg: 3 }}>
           {paginate(
             filteredTasks.map((task) => (
-              <TaskCardAlt
+              <TaskCard
                 key={task.id}
                 task={task}
-                handleClick={() => setTaskOpen(task.id)}
                 handleCheckTask={handleCheck}
                 priorities={priorities}
               />

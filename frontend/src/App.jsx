@@ -2,7 +2,7 @@ import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Home from "./pages/Home";
-import Layout from "./components/Layout";
+import Layout from "./components/layout/Layout";
 import { useTheme } from "./context/ThemeContext";
 import { DataContextProvider } from "./context/DataContext";
 import Login from "./pages/Login";

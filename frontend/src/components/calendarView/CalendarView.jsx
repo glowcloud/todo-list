@@ -5,11 +5,14 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Box } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
-import { isOverdue } from "../utils/generalUtils";
-import ConfirmDialog from "./ConfirmDialog";
-import ResendingBackdrop from "./ResendingBackdrop";
-import { useTheme } from "../context/ThemeContext";
-import { useDataContext } from "../context/DataContext";
+import { isOverdue } from "../../utils/generalUtils";
+import ConfirmDialog from "../shared/ConfirmDialog";
+import ResendingBackdrop from "../shared/ResendingBackdrop";
+import { useTheme } from "../../context/ThemeContext";
+import { useDataContext } from "../../context/DataContext";
+import EditModal from "../shared/EditModal";
+import TaskModal from "./TaskModal";
+import DownloadButton from "./DownloadButton";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -33,12 +36,26 @@ const createEvents = (tasks) => {
   return events;
 };
 
-const CalendarView = ({ setTaskOpen }) => {
+const CalendarView = () => {
   const [events, setEvents] = useState([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [changedTaskData, setChangedTaskData] = useState(null);
   const { mode } = useTheme();
   const { tasks, handleEditTask, setAlertMsg, loading } = useDataContext();
+  const [taskOpen, setTaskOpen] = useState(-1);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleTaskClose = () => {
+    setTaskOpen(-1);
+  };
+
+  const handleEditClose = () => {
+    setIsEditOpen(false);
+  };
+
+  const handleEditOpen = () => {
+    setIsEditOpen(true);
+  };
 
   useEffect(() => {
     if (tasks) {
@@ -168,6 +185,18 @@ const CalendarView = ({ setTaskOpen }) => {
             backgroundColor: mode === "dark" ? "#282828" : "",
           },
         }}
+      />
+      <DownloadButton tasks={tasks} />
+      <TaskModal
+        task={tasks.find((task) => task.id === taskOpen)}
+        isOpen={taskOpen >= 0}
+        handleModalClose={handleTaskClose}
+        handleEditOpen={handleEditOpen}
+      />
+      <EditModal
+        task={tasks.find((task) => task.id === taskOpen)}
+        isOpen={isEditOpen}
+        handleModalClose={handleEditClose}
       />
       <ConfirmDialog
         open={isConfirmOpen}
