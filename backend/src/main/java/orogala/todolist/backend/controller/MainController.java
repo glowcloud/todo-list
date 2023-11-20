@@ -23,8 +23,10 @@ import orogala.todolist.backend.repository.UserRepository;
 import orogala.todolist.backend.service.AuthenticationService;
 import orogala.todolist.backend.service.MailService;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -222,15 +224,27 @@ public class MainController {
 
     private void scheduleTask(Task task, String email) throws SchedulerException {
         ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(15);
+        DateTimeFormatter formatter;
 
         String mailBody = "";
+        String start = "";
+        String end = "";
         if (task.getAllDay()) {
             mailBody = "All day task\n";
+            start = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
+            end = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
         }
+        else {
+            start = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm").format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
+            end = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm").format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
+        }
+
         mailBody += "Start: "
-                + task.getStartDate().toString()
+//                    + task.getStartDate().toString()
+                + start
                 + "\nEnd: "
-                + task.getEndDate().toString()
+//                    + task.getEndDate().toString()
+                + end
                 + "\n\n"
                 + task.getDescription();
 
