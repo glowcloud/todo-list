@@ -2,35 +2,24 @@ import { Box, Button, TextField, Typography, Link } from "@mui/material";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
+const isEmail = (email) => {
+  const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return pattern.test(email);
+};
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
-  const { handleSignIn } = useAuth();
+  const { handleSignIn, handleSignUp } = useAuth();
 
   const handleClick = async () => {
-    if (email && password && isEmail()) {
+    if (email && password && isEmail(email)) {
       if (isLogin) {
-        const res = await fetch("http://localhost:8080/login", {
-          method: "POST",
-          body: JSON.stringify({ email, password }),
-          headers: { "Content-Type": "application/json" },
-        });
-        const json = await res.json();
-        if (json.jwt) {
-          handleSignIn(json.jwt);
-        }
+        await handleSignIn(email, password);
       } else {
-        const res = await fetch("http://localhost:8080/register", {
-          method: "POST",
-          body: JSON.stringify({ email, password }),
-          headers: { "Content-Type": "application/json" },
-        });
-        const json = await res.json();
-        if (json.jwt) {
-          handleSignIn(json.jwt);
-        }
+        await handleSignUp(email, password);
       }
       setEmail("");
       setPassword("");
@@ -38,11 +27,6 @@ const Login = () => {
     } else {
       setError(true);
     }
-  };
-
-  const isEmail = () => {
-    const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    return pattern.test(email);
   };
 
   return (

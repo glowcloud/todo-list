@@ -38,12 +38,7 @@ const navItems = (badgeContent) => {
   ];
 };
 
-const Sidebar = ({
-  isSidebarOpen,
-  setIsSidebarOpen,
-  currentView,
-  setCurrentView,
-}) => {
+const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, setCurrentView }) => {
   const { getOverdueCount } = useDataContext();
   const { handleSignOut } = useAuth();
   const { mode, handleChangeMode } = useTheme();

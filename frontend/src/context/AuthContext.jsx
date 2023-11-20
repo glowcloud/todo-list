@@ -29,9 +29,30 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, []);
 
-  const handleSignIn = (newToken) => {
-    localStorage.setItem("todo-token", newToken);
-    setToken(newToken);
+  const handleSignIn = async (email, password) => {
+    const res = await fetch("http://localhost:8080/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/json" },
+    });
+    const json = await res.json();
+    if (json.jwt) {
+      localStorage.setItem("todo-token", json.jwt);
+      setToken(json.jwt);
+    }
+  };
+
+  const handleSignUp = async (email, password) => {
+    const res = await fetch("http://localhost:8080/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/json" },
+    });
+    const json = await res.json();
+    if (json.jwt) {
+      localStorage.setItem("todo-token", json.jwt);
+      setToken(json.jwt);
+    }
   };
 
   const handleSignOut = () => {
@@ -40,7 +61,9 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, handleSignIn, handleSignOut }}>
+    <AuthContext.Provider
+      value={{ token, handleSignIn, handleSignUp, handleSignOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
