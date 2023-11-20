@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import TimeFrameSelect from "./TimeFrameSelect";
 import { useDataContext } from "../context/DataContext";
 import CustomPieChart from "./CustomPieChart";
+import CustomBarChart from "./CustomBarChart";
 
 const getFilteredTasks = (tasks, timeFrame, chosenTime) => {
   if (timeFrame !== "overall") {
@@ -72,23 +73,91 @@ const getPrioritiesData = (tasks, priorities, timeFrame, chosenTime) => {
 };
 
 const getPrioritiesDataset = (tasks, priorities, timeFrame, chosenTime) => {
-  const data = [];
-  tasks = getFilteredTasks(tasks, timeFrame, chosenTime);
-
   if (timeFrame === "week") {
-
-
-    priorities.forEach((priority) => {
-      const currTasks = tasks.filter(
-        (task) => task.priority.id === priority.id
+    const dataset = [];
+    for (let i = 0; i < 7; i++) {
+      const day = dayjs(chosenTime).day(i);
+      const dayTasks = tasks.filter(
+        (task) =>
+          dayjs(task.startDate).isSame(day, "d") ||
+          dayjs(task.endDate).isSame(day, "d") ||
+          (dayjs(task.startDate).isBefore(day) &&
+            dayjs(task.endDate).isAfter(day))
       );
-      data.push({
-        id: priority.id,
-        label: priority.name,
-        value: currTasks.length,
-        color: priority.color,
+      const data = { time: day.format("ddd") };
+      priorities.forEach((priority) => {
+        data[priority.name] = dayTasks.filter(
+          (task) => task.priority.id === priority.id
+        ).length;
       });
+      dataset.push(data);
+    }
+    return dataset;
+  } else if (timeFrame === "year") {
+    const dataset = [];
+    for (let i = 0; i < 12; i++) {
+      const month = dayjs(chosenTime).month(i);
+      const monthTasks = tasks.filter(
+        (task) =>
+          dayjs(task.startDate).isSame(month, "month") ||
+          dayjs(task.endDate).isSame(month, "month") ||
+          (dayjs(task.startDate).isBefore(month) &&
+            dayjs(task.endDate).isAfter(month))
+      );
+      const data = { time: month.format("MMM") };
+      priorities.forEach((priority) => {
+        data[priority.name] = monthTasks.filter(
+          (task) => task.priority.id === priority.id
+        ).length;
+      });
+      dataset.push(data);
+    }
+    return dataset;
+  } else if (timeFrame === "month") {
+    const dataset = [];
+    const daysInMonth = dayjs(chosenTime).daysInMonth();
+    for (let i = 0; i < daysInMonth; i++) {
+      const day = dayjs(chosenTime).date(i + 1);
+      const dayTasks = tasks.filter(
+        (task) =>
+          dayjs(task.startDate).isSame(day, "day") ||
+          dayjs(task.endDate).isSame(day, "day") ||
+          (dayjs(task.startDate).isBefore(day) &&
+            dayjs(task.endDate).isAfter(day))
+      );
+      const data = { time: i + 1 };
+      priorities.forEach((priority) => {
+        data[priority.name] = dayTasks.filter(
+          (task) => task.priority.id === priority.id
+        ).length;
+      });
+      dataset.push(data);
+    }
+    return dataset;
+  } else if (timeFrame === "day") {
+    const day = dayjs(chosenTime);
+    const dayTasks = tasks.filter(
+      (task) =>
+        dayjs(task.startDate).isSame(day, "day") ||
+        dayjs(task.endDate).isSame(day, "day") ||
+        (dayjs(task.startDate).isBefore(day) &&
+          dayjs(task.endDate).isAfter(day))
+    );
+    const data = { time: chosenTime.format("DD/MM/YYYY") };
+    priorities.forEach((priority) => {
+      data[priority.name] = dayTasks.filter(
+        (task) => task.priority.id === priority.id
+      ).length;
     });
+    return [data];
+  } else {
+    const data = { time: "Overall" };
+    priorities.forEach((priority) => {
+      data[priority.name] = tasks.filter(
+        (task) => task.priority.id === priority.id
+      ).length;
+    });
+    return [data];
   }
 };
 
@@ -122,8 +191,16 @@ const Summary = () => {
           <Typography variant="h5" mt={2}>
             Number of tasks per priority
           </Typography>
-          <CustomPieChart
+          {/* <CustomPieChart
             data={getPrioritiesData(tasks, priorities, timeFrame, chosenTime)}
+          /> */}
+          <CustomBarChart
+            data={getPrioritiesDataset(
+              tasks,
+              priorities,
+              timeFrame,
+              chosenTime
+            )}
           />
         </Box>
       ) : (
