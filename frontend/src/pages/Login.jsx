@@ -18,7 +18,7 @@ const Login = () => {
           headers: { "Content-Type": "application/json" },
         });
         const json = await res.json();
-        if (json.user && json.jwt) {
+        if (json.jwt) {
           handleSignIn(json.jwt);
         }
       } else {
@@ -28,7 +28,7 @@ const Login = () => {
           headers: { "Content-Type": "application/json" },
         });
         const json = await res.json();
-        if (json.user && json.jwt) {
+        if (json.jwt) {
           handleSignIn(json.jwt);
         }
       }

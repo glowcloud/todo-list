@@ -48,12 +48,12 @@ public class AuthenticationService {
             Optional<TodoUser> userData = userRepository.findByEmail(email);
 
             if (userData.isPresent()) {
-                return new LoginResponse(userData.get(), token);
+                return new LoginResponse(token);
             }
-            return new LoginResponse(null, "");
+            return new LoginResponse("");
 
         } catch(AuthenticationException e) {
-            return new LoginResponse(null, "");
+            return new LoginResponse("");
         }
     }
 }

@@ -6,10 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import orogala.todolist.backend.job.EmailJob;
 import orogala.todolist.backend.job.ReminderJob;
@@ -22,13 +20,10 @@ import orogala.todolist.backend.repository.TaskRepository;
 import orogala.todolist.backend.repository.UserRepository;
 import orogala.todolist.backend.service.AuthenticationService;
 import orogala.todolist.backend.service.MailService;
-
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @RestController
@@ -81,16 +76,6 @@ public class MainController {
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-//    @GetMapping(path="/tasks/{id}")
-//    public ResponseEntity<Task> getTaskById(@PathVariable("id") Integer id) {
-//        Optional<Task> taskData = taskRepository.findById(id);
-//
-//        if (taskData.isPresent()) {
-//            return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
-//        }
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//    }
 
     @PostMapping(path="/tasks")
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
@@ -231,19 +216,21 @@ public class MainController {
         String end = "";
         if (task.getAllDay()) {
             mailBody = "All day task\n";
-            start = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
-            end = DateTimeFormatter.ofPattern("dd/MM/yyyy").format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
+            start = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                    .format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
+            end = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                    .format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
         }
         else {
-            start = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm").format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
-            end = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm").format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
+            start = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")
+                    .format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
+            end = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")
+                    .format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
         }
 
         mailBody += "Start: "
-//                    + task.getStartDate().toString()
                 + start
                 + "\nEnd: "
-//                    + task.getEndDate().toString()
                 + end
                 + "\n\n"
                 + task.getDescription();

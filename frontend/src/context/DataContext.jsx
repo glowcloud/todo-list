@@ -101,11 +101,11 @@ export const DataContextProvider = ({ children }) => {
       const json = await res.json();
       if (!task.finished) {
         await sendTask(json, token);
-        setTasks((prevTasks) => {
-          const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
-          return [...filteredTasks, json];
-        });
       }
+      setTasks((prevTasks) => {
+        const filteredTasks = prevTasks.filter((t) => t.id !== task.id);
+        return [...filteredTasks, json];
+      });
       setLoading(false);
       setAlertMsg(task.finished ? "" : "Task edited.");
     } else {
