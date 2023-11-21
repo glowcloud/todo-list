@@ -10,6 +10,7 @@ import {
 import { FilterAlt } from "@mui/icons-material";
 import { useState } from "react";
 import { useDataContext } from "../../context/DataContext";
+import { getColor } from "../../utils/generalUtils";
 
 const FiltersPopover = ({
   handleFilterClick,
@@ -52,7 +53,13 @@ const FiltersPopover = ({
                 <Checkbox checked={priorityFilters.includes(priority.id)} />
               }
               label={priority.name}
-              sx={{ mx: 2, my: 1, color: priority.color }}
+              sx={{
+                mx: 2,
+                my: 1,
+                ".MuiCheckbox-root": {
+                  color: getColor(priority.name),
+                },
+              }}
               onClick={() => handleFilterClick(priority.id)}
             />
           ))}
