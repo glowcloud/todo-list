@@ -4,7 +4,7 @@ import { isOverdue } from "../../utils/generalUtils";
 
 const TaskChipStack = ({ task }) => {
   return (
-    <Stack spacing={1} alignItems="start" mb={1}>
+    <Stack spacing={1} alignItems="start" mb={1.5}>
       <TaskChip
         text={
           task?.finished ? "Finished" : isOverdue(task) ? "Overdue" : "To Do"

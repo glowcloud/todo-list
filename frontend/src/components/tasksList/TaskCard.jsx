@@ -141,7 +141,7 @@ const TaskCard = ({ task }) => {
       <Card
         variant="outlined"
         sx={{
-          m: 2,
+          m: 0.75,
         }}
       >
         <CardContent

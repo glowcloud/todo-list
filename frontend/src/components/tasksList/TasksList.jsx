@@ -8,7 +8,7 @@ import { getFilteredTasks } from "../../utils/generalUtils";
 import SortFilterSearch from "./SortFilterSearch";
 import TasksProgress from "./TasksProgress";
 import TaskCard from "./TaskCard";
-import { Masonry } from "@mui/lab";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 const paginate = (tasks, page) => {
   return tasks.slice((page - 1) * 9, page * 9);
@@ -118,41 +118,47 @@ const TasksList = ({ overdue }) => {
           />
         )}
       </Box>
-      <Box
-        sx={{
-          mx: { xs: 1, sm: 2, md: 10 },
-          mt: { xs: 5, md: 2 },
-          mb: { xs: 0, md: 2 },
-        }}
-      >
-        <Masonry columns={{ xs: 1, md: 2, lg: 3 }}>
-          {paginate(
-            filteredTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                handleCheckTask={handleCheck}
-                priorities={priorities}
-              />
-            )),
-            page
-          )}
-        </Masonry>
-      </Box>
       {filteredTasks.length > 0 && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            my: { xs: 2, md: 4 },
-          }}
-        >
-          <Pagination
-            count={Math.ceil(filteredTasks.length / 9)}
-            page={page}
-            onChange={handleChangePage}
-          />
-        </Box>
+        <>
+          <Box
+            sx={{
+              mx: { xs: 1, sm: 2, md: 10 },
+              mt: { xs: 5, md: 2 },
+              mb: { xs: 0, md: 2 },
+            }}
+          >
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{ 0: 1, 900: 2, 1200: 3 }}
+            >
+              <Masonry>
+                {paginate(
+                  filteredTasks.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      handleCheckTask={handleCheck}
+                      priorities={priorities}
+                    />
+                  )),
+                  page
+                )}
+              </Masonry>
+            </ResponsiveMasonry>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              my: { xs: 2, md: 4 },
+            }}
+          >
+            <Pagination
+              count={Math.ceil(filteredTasks.length / 9)}
+              page={page}
+              onChange={handleChangePage}
+            />
+          </Box>
+        </>
       )}
       {(!tasks || tasks.length === 0 || filteredTasks.length === 0) && (
         <Box textAlign="center" mt={5}>
