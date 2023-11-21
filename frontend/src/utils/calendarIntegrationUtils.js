@@ -24,6 +24,14 @@ const getCalendarEvent = (task) => {
   };
 };
 
+const getCalendarEvents = (tasks) => {
+  const events = [];
+  tasks.forEach((task) => {
+    events.push(getCalendarEvent(task));
+  });
+  return events;
+};
+
 const sendTask = async (task, token) => {
   const filename = "tasks.ics";
   const file = await new Promise((resolve, reject) => {
@@ -50,4 +58,4 @@ const sendTask = async (task, token) => {
   }
 };
 
-export { sendTask };
+export { sendTask, getCalendarEvents };

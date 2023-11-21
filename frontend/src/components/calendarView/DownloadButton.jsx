@@ -1,33 +1,12 @@
 import { Button, Box } from "@mui/material";
-import dayjs from "dayjs";
 import { createEvents } from "ics";
-
-const getEvents = (tasks) => {
-  const events = [];
-  tasks.forEach((task) => {
-    const start = dayjs(task.startDate)
-      .format("YYYY-M-D-H-m")
-      .split("-")
-      .map((start) => +start);
-    const end = dayjs(task.endDate)
-      .format("YYYY-M-D-H-m")
-      .split("-")
-      .map((end) => +end);
-    events.push({
-      title: task.title,
-      description: task.description,
-      start,
-      end,
-    });
-  });
-  return events;
-};
+import { getCalendarEvents } from "../../utils/calendarIntegrationUtils";
 
 const DownloadButton = ({ tasks }) => {
   const handleDownload = async () => {
     const filename = "tasks.ics";
     const file = await new Promise((resolve, reject) => {
-      createEvents(getEvents(tasks), (error, value) => {
+      createEvents(getCalendarEvents(tasks), (error, value) => {
         if (error) {
           reject(error);
         }
