@@ -7,6 +7,7 @@ import {
   Collapse,
   Box,
   Divider,
+  Stack,
 } from "@mui/material";
 import dayjs from "dayjs";
 import { isOverdue } from "../../utils/generalUtils";
@@ -19,6 +20,7 @@ import {
 import { useState } from "react";
 import TaskCardMenu from "./TaskCardMenu";
 import EditModal from "../shared/EditModal";
+import TaskChip from "../shared/TaskChip";
 
 const getFormattedDates = (startDate, endDate, allDay, finished) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
@@ -152,24 +154,25 @@ const TaskCard = ({ task }) => {
           }}
         >
           <Box>
-            <Typography
-              color={
-                task?.finished
-                  ? "primary.main"
-                  : isOverdue(task)
-                  ? "rgb(244, 67, 54)"
-                  : "secondary"
-              }
-              variant="body2"
-            >
-              {task?.finished
-                ? "Finished"
-                : isOverdue(task)
-                ? "Overdue"
-                : "To Do"}
-            </Typography>
-            {
-              <Typography
+            <Stack spacing={1} alignItems="start" mb={1}>
+              <TaskChip
+                text={
+                  task?.finished
+                    ? "Finished"
+                    : isOverdue(task)
+                    ? "Overdue"
+                    : "To Do"
+                }
+                color={
+                  task?.finished
+                    ? "primary.main"
+                    : isOverdue(task)
+                    ? "rgb(244, 67, 54)"
+                    : "secondary.main"
+                }
+              />
+              <TaskChip
+                text={`${task && task.priority.name} priority`}
                 color={
                   task
                     ? task.finished
@@ -177,12 +180,8 @@ const TaskCard = ({ task }) => {
                       : task.priority.color
                     : ""
                 }
-                variant="body2"
-                gutterBottom
-              >
-                {task && task.priority.name} priority
-              </Typography>
-            }
+              />
+            </Stack>
             <Typography
               variant="h5"
               sx={{
