@@ -25,6 +25,7 @@ const TasksList = ({ overdue }) => {
   const { tasks, priorities, loading, handleCheckTask } = useDataContext();
 
   useEffect(() => {
+    setPage(1);
     setFilteredTasks(
       getFilteredTasks(
         tasks,
@@ -119,9 +120,9 @@ const TasksList = ({ overdue }) => {
       </Box>
       <Box
         sx={{
-          mx: { sm: 2, md: 10 },
+          mx: { xs: 1, sm: 2, md: 10 },
           mt: { xs: 5, md: 2 },
-          mb: 2,
+          mb: { xs: 0, md: 2 },
         }}
       >
         <Masonry columns={{ xs: 1, md: 2, lg: 3 }}>
@@ -143,7 +144,7 @@ const TasksList = ({ overdue }) => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            my: 4,
+            my: { xs: 2, md: 4 },
           }}
         >
           <Pagination

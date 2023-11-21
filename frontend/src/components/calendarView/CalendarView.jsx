@@ -5,7 +5,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Box } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
-import { getColor, isOverdue } from "../../utils/generalUtils";
+import { getColor } from "../../utils/generalUtils";
 import ConfirmDialog from "../shared/ConfirmDialog";
 import ResendingBackdrop from "../shared/ResendingBackdrop";
 import { useTheme } from "../../context/ThemeContext";
@@ -26,11 +26,6 @@ const createEvents = (tasks) => {
       start: dayjs(task.startDate).toDate(),
       end: dayjs(task.endDate).toDate(),
       allDay: task.allDay,
-      // color: task.finished
-      //   ? "lightblue"
-      //   // : isOverdue(task)
-      //   // ? "rgb(244, 67, 54)"
-      //   : task.priority.color,
       color: task.finished
         ? getColor("Finished")
         : getColor(task.priority.name),
