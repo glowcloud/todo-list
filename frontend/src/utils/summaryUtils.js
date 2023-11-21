@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { isOverdue } from "./generalUtils";
+import { getColor, isOverdue } from "./generalUtils";
 
 const getFilteredTasks = (tasks, timeFrame, chosenTime) => {
   if (timeFrame !== "overall") {
@@ -31,17 +31,19 @@ const getStatusData = (tasks, timeFrame, chosenTime) => {
       id: 0,
       value: done,
       label: "Finished",
+      color: getColor("Finished"),
     },
     {
       id: 1,
       value: todo,
       label: "To do",
+      color: getColor("To Do"),
     },
     {
       id: 2,
       value: overdue,
       label: "Overdue",
-      color: "rgb(244, 67, 54)",
+      color: getColor("Overdue"),
     },
   ];
 };

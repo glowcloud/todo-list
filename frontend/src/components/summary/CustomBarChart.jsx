@@ -1,5 +1,6 @@
 import { useMediaQuery, useTheme } from "@mui/material";
 import { BarChart } from "@mui/x-charts";
+import { getColor } from "../../utils/generalUtils";
 
 const getSettings = (matches, matchesSM, matchesMD) => {
   if (matches)
@@ -30,19 +31,23 @@ const CustomBarChart = ({ data }) => {
         {
           dataKey: "Highest",
           label: "Highest",
-          color: "rgba(255, 0, 0, 0.65)",
+          color: getColor("Highest"),
         },
-        { dataKey: "High", label: "High", color: "rgba(255, 165, 0, 0.65)" },
+        { dataKey: "High", label: "High", color: getColor("High") },
         {
           dataKey: "Moderate",
           label: "Moderate",
-          color: "rgba(255, 243, 51, 0.75)",
+          color: getColor("Moderate"),
         },
-        { dataKey: "Low", label: "Low", color: "rgba(202, 255, 51, 0.75)" },
+        {
+          dataKey: "Low",
+          label: "Low",
+          color: getColor("Low"),
+        },
         {
           dataKey: "Lowest",
           label: "Lowest",
-          color: "rgba(60, 179, 113, 0.75)",
+          color: getColor("Lowest"),
         },
       ]}
       margin={{ top: 75 }}
