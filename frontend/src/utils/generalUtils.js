@@ -52,4 +52,35 @@ const getFilteredTasks = (
     });
 };
 
-export { isOverdue, getFilteredTasks };
+const getColor = (text) => {
+  switch (text) {
+    case "To Do":
+      return "#66bb6a";
+    // return "success.main";
+    case "Overdue":
+      return "#f44336";
+    // return "error.main";
+    case "Finished":
+      // return "primary.main";
+      return "#90caf9";
+    case "Lowest":
+    case "Lowest priority":
+      return "rgb(3, 169, 244)";
+    case "Low":
+    case "Low priority":
+      return "rgb(0, 150, 136)";
+    case "Moderate":
+    case "Moderate priority":
+      return "rgb(76, 175, 80)";
+    case "High":
+    case "High priority":
+      return "rgb(255, 160, 0)";
+    case "Highest":
+    case "Highest priority":
+      return "rgb(255, 87, 34)";
+    default:
+      return "";
+  }
+};
+
+export { isOverdue, getFilteredTasks, getColor };

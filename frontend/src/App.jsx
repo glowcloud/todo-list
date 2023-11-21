@@ -23,9 +23,9 @@ function App() {
             primary: {
               main: "#90caf9",
             },
-            secondary: {
-              main: "#f9b690",
-            },
+            // secondary: {
+            //   main: "#f9b690",
+            // },
             text: {
               primary: "#ffffff",
               secondary: "b3b3b3",

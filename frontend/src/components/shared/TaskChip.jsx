@@ -1,7 +1,13 @@
 import { Chip } from "@mui/material";
+import { getColor } from "../../utils/generalUtils";
 
-const TaskChip = ({ text, color }) => {
-  return <Chip label={text} sx={{ backgroundColor: color, color: "white" }} />;
+const TaskChip = ({ text }) => {
+  return (
+    <Chip
+      label={text}
+      sx={{ backgroundColor: getColor(text), color: "white" }}
+    />
+  );
 };
 
 export default TaskChip;

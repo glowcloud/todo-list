@@ -7,10 +7,8 @@ import {
   Collapse,
   Box,
   Divider,
-  Stack,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { isOverdue } from "../../utils/generalUtils";
 import { useDataContext } from "../../context/DataContext";
 import {
   CheckCircle,
@@ -20,7 +18,7 @@ import {
 import { useState } from "react";
 import TaskCardMenu from "./TaskCardMenu";
 import EditModal from "../shared/EditModal";
-import TaskChip from "../shared/TaskChip";
+import TaskChipStack from "../shared/TaskChipStack";
 
 const getFormattedDates = (startDate, endDate, allDay, finished) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
@@ -154,34 +152,7 @@ const TaskCard = ({ task }) => {
           }}
         >
           <Box>
-            <Stack spacing={1} alignItems="start" mb={1}>
-              <TaskChip
-                text={
-                  task?.finished
-                    ? "Finished"
-                    : isOverdue(task)
-                    ? "Overdue"
-                    : "To Do"
-                }
-                color={
-                  task?.finished
-                    ? "primary.main"
-                    : isOverdue(task)
-                    ? "rgb(244, 67, 54)"
-                    : "secondary.main"
-                }
-              />
-              <TaskChip
-                text={`${task && task.priority.name} priority`}
-                color={
-                  task
-                    ? task.finished
-                      ? "primary.main"
-                      : task.priority.color
-                    : ""
-                }
-              />
-            </Stack>
+            <TaskChipStack task={task} />
             <Typography
               variant="h5"
               sx={{

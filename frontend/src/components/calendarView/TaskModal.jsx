@@ -11,8 +11,8 @@ import CustomModal from "../shared/CustomModal";
 import dayjs from "dayjs";
 import { useState } from "react";
 import ConfirmDialog from "../shared/ConfirmDialog";
-import { isOverdue } from "../../utils/generalUtils";
 import { useDataContext } from "../../context/DataContext";
+import TaskChipStack from "../shared/TaskChipStack";
 
 const getFormattedDates = (startDate, endDate, allDay) => {
   if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
@@ -130,28 +130,7 @@ const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
           <Close />
         </IconButton>
       </Box>
-      <Typography
-        color={
-          task?.finished
-            ? "primary.main"
-            : isOverdue(task)
-            ? "rgb(244, 67, 54)"
-            : "secondary"
-        }
-        gutterBottom
-      >
-        {task?.finished ? "Finished" : isOverdue(task) ? "Overdue" : "To Do"}
-      </Typography>
-      {
-        <Typography
-          color={
-            task ? (task.finished ? "primary.main" : task.priority.color) : ""
-          }
-          gutterBottom
-        >
-          {task && task.priority.name} priority
-        </Typography>
-      }
+      <TaskChipStack task={task} />
       <Typography
         variant="h5"
         sx={{

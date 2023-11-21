@@ -5,7 +5,7 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Box } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
-import { isOverdue } from "../../utils/generalUtils";
+import { getColor, isOverdue } from "../../utils/generalUtils";
 import ConfirmDialog from "../shared/ConfirmDialog";
 import ResendingBackdrop from "../shared/ResendingBackdrop";
 import { useTheme } from "../../context/ThemeContext";
@@ -26,11 +26,14 @@ const createEvents = (tasks) => {
       start: dayjs(task.startDate).toDate(),
       end: dayjs(task.endDate).toDate(),
       allDay: task.allDay,
+      // color: task.finished
+      //   ? "lightblue"
+      //   // : isOverdue(task)
+      //   // ? "rgb(244, 67, 54)"
+      //   : task.priority.color,
       color: task.finished
-        ? "lightblue"
-        : isOverdue(task)
-        ? "rgb(244, 67, 54)"
-        : task.priority.color,
+        ? getColor("Finished")
+        : getColor(task.priority.name),
     });
   });
   return events;
@@ -136,6 +139,12 @@ const CalendarView = () => {
           mx: { xs: 1, sm: 2, md: 5, lg: 10, xl: 25 },
           my: 2,
           mt: { xs: 5, md: 0 },
+          ".rbc-event-label": {
+            color: "white",
+          },
+          ".rbc-event-content": {
+            color: "white",
+          },
           ".rbc-month-view": {
             borderColor: "#aaa",
           },
