@@ -6,7 +6,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import orogala.todolist.backend.model.LoginResponse;
@@ -55,5 +58,13 @@ public class AuthenticationService {
         } catch(AuthenticationException e) {
             return new LoginResponse("");
         }
+    }
+
+    public Optional<TodoUser> validateUser() {
+        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwt = (Jwt) token.getCredentials();
+        String email = jwt.getClaims().get("sub").toString();
+
+        return userRepository.findByEmail(email);
     }
 }

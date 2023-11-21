@@ -2,29 +2,19 @@ package orogala.todolist.backend.controller;
 
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
-import orogala.todolist.backend.job.EmailJob;
-import orogala.todolist.backend.job.ReminderJob;
 import orogala.todolist.backend.model.LoginResponse;
 import orogala.todolist.backend.model.Priority;
 import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.model.TodoUser;
 import orogala.todolist.backend.repository.PriorityRepository;
 import orogala.todolist.backend.repository.TaskRepository;
-import orogala.todolist.backend.repository.UserRepository;
 import orogala.todolist.backend.service.AuthenticationService;
 import orogala.todolist.backend.service.MailService;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import orogala.todolist.backend.utils.TaskScheduleUtil;
 import java.util.*;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -40,7 +30,7 @@ public class MainController {
     @Autowired
     private AuthenticationService authService;
     @Autowired
-    private UserRepository userRepository;
+    TaskScheduleUtil scheduleUtil;
 
     @PostMapping("/register")
     public LoginResponse registerUser(@RequestBody TodoUser todoUser) {
@@ -55,11 +45,7 @@ public class MainController {
 
     @GetMapping(path="/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) token.getCredentials();
-        String email = jwt.getClaims().get("sub").toString();
-
-        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        Optional<TodoUser> userData = authService.validateUser();
         if (userData.isPresent()) {
 
             Optional<ArrayList<Task>> tasksData = taskRepository.findAllByUser_Id(userData.get().getId());
@@ -79,16 +65,13 @@ public class MainController {
 
     @PostMapping(path="/tasks")
     public ResponseEntity<Task> addTask(@RequestBody Task task) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) token.getCredentials();
-        String email = jwt.getClaims().get("sub").toString();
-
-        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        Optional<TodoUser> userData = authService.validateUser();
         if (userData.isPresent()) {
             try {
                 task.setUser(userData.get());
                 Task newTask = taskRepository.save(task);
-                scheduleTask(newTask, email);
+//                scheduleTask(newTask, userData.get().getEmail());
+                scheduleUtil.scheduleTask(newTask, userData.get().getEmail());
                 return new ResponseEntity<>(newTask, HttpStatus.CREATED);
             } catch(Exception e) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,11 +82,7 @@ public class MainController {
 
     @PutMapping(path="/tasks/{id}")
     public ResponseEntity<Task> editTask(@RequestBody Task newTask, @PathVariable("id") Integer id) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) token.getCredentials();
-        String email = jwt.getClaims().get("sub").toString();
-
-        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        Optional<TodoUser> userData = authService.validateUser();
         if (userData.isPresent()) {
             Optional<Task> taskData = taskRepository.findById(id);
             if (taskData.isPresent() && Objects.equals(taskData.get().getUser().getId(), userData.get().getId())) {
@@ -118,10 +97,9 @@ public class MainController {
                         task.setAllDay(newTask.getAllDay());
 
                         scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
-                        scheduleTask(task, task.getUser().getEmail());
-
+//                        scheduleTask(task, task.getUser().getEmail());
+                        scheduleUtil.scheduleTask(task, task.getUser().getEmail());
                         return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
-
                     }
                     catch(Exception e) {
                         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -136,11 +114,7 @@ public class MainController {
 
     @DeleteMapping(path="/tasks/{id}")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") Integer id) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) token.getCredentials();
-        String email = jwt.getClaims().get("sub").toString();
-
-        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        Optional<TodoUser> userData = authService.validateUser();
         if (userData.isPresent()) {
             Optional<Task> taskData = taskRepository.findById(id);
             if (taskData.isPresent() && Objects.equals(taskData.get().getUser().getId(), userData.get().getId())) {
@@ -169,103 +143,21 @@ public class MainController {
 
     @PostMapping(path="/sendmail")
     public ResponseEntity<HttpStatus> sendAttachmentMail(@RequestBody String file) {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) token.getCredentials();
-        String email = jwt.getClaims().get("sub").toString();
-
-        mailService.sendEmailWithAttachment(
-                email,
-                "New task",
-                file);
-        return new ResponseEntity<>(HttpStatus.OK);
+        Optional<TodoUser> userData = authService.validateUser();
+        if (userData.isPresent()) {
+            mailService.sendEmailWithAttachment(
+                    userData.get().getEmail(),
+                    "New task",
+                    file);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping(path="/validate")
     public ResponseEntity<HttpStatus> validateToken () {
-        JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) token.getCredentials();
-        String email = jwt.getClaims().get("sub").toString();
-
-        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        Optional<TodoUser> userData = authService.validateUser();
         if (userData.isPresent()) return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-
-    private JobDetail buildJobDetail(String email, String subject, String body, String id) {
-        JobDataMap jobDataMap = new JobDataMap();
-
-        jobDataMap.put("email", email);
-        jobDataMap.put("subject", subject);
-        jobDataMap.put("body", body);
-
-        return JobBuilder.newJob(EmailJob.class)
-                .withIdentity(id, "email-jobs")
-                .withDescription("Send Email Job")
-                .usingJobData(jobDataMap)
-                .storeDurably()
-                .build();
-    }
-
-    private Trigger buildJobTrigger(JobDetail jobDetail, ZonedDateTime startAt) {
-        return TriggerBuilder.newTrigger()
-                .forJob(jobDetail)
-                .withIdentity(jobDetail.getKey().getName(), "email-triggers")
-                .withDescription("Send Email Trigger")
-                .startAt(Date.from(startAt.toInstant()))
-                .withSchedule(simpleSchedule().withMisfireHandlingInstructionFireNow())
-                .build();
-    }
-
-    private void scheduleTask(Task task, String email) throws SchedulerException {
-        ZonedDateTime dateTime = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).minusMinutes(15);
-        String mailBody = "";
-        String start = "";
-        String end = "";
-
-        if (task.getAllDay()) {
-            mailBody = "All day task\n";
-            start = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                    .format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
-            end = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                    .format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
-        }
-        else {
-            start = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")
-                    .format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
-            end = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")
-                    .format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
-        }
-
-        mailBody += "Start: "
-                + start
-                + "\nEnd: "
-                + end
-                + "\n\n"
-                + task.getDescription();
-
-        JobDetail jobDetail = buildJobDetail(email,
-                "Upcoming task: " + task.getTitle(),
-                mailBody,
-                task.getId().toString()
-        );
-        Trigger trigger = buildJobTrigger(jobDetail, dateTime);
-        scheduler.scheduleJob(jobDetail, trigger);
-    }
-
-    @Bean
-    private void scheduleReminders() throws SchedulerException {
-        scheduler.deleteJob(new JobKey("reminders", "reminder-jobs"));
-
-        JobDetail jobDetail = JobBuilder.newJob(ReminderJob.class)
-                .withIdentity("reminders", "reminder-jobs")
-                .storeDurably()
-                .build();
-        Trigger trigger = TriggerBuilder
-                .newTrigger()
-                .withIdentity("reminders", "reminder-triggers")
-                .withSchedule(
-                        CronScheduleBuilder.cronSchedule("0 0 20 ? * * *"))
-                .build();
-        scheduler.scheduleJob(jobDetail, trigger);
     }
 }
