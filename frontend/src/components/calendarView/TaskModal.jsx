@@ -1,69 +1,12 @@
-import {
-  CheckCircle,
-  CheckCircleOutline,
-  Close,
-  Edit,
-  Delete,
-  Email,
-} from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import CustomModal from "../shared/CustomModal";
-import dayjs from "dayjs";
 import { useState } from "react";
 import ConfirmDialog from "../shared/ConfirmDialog";
 import { useDataContext } from "../../context/DataContext";
 import TaskChipStack from "../shared/TaskChipStack";
-
-const getFormattedDates = (startDate, endDate, allDay) => {
-  if (dayjs(startDate).isSame(dayjs(endDate), "d")) {
-    if (allDay) {
-      return (
-        <>
-          <Typography variant="body2">
-            on {dayjs(startDate).format("DD/MM/YYYY")}
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            all day
-          </Typography>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Typography variant="body2">
-            on {dayjs(startDate).format("DD/MM/YYYY")}
-          </Typography>
-          <Typography variant="body2" gutterBottom>
-            from {dayjs(startDate).format("h:mm A")} to{" "}
-            {dayjs(endDate).format("h:mm A")}
-          </Typography>
-        </>
-      );
-    }
-  }
-  if (allDay) {
-    return (
-      <>
-        <Typography variant="body2">
-          from {dayjs(startDate).format("DD/MM/YYYY")}
-        </Typography>
-        <Typography variant="body2" gutterBottom>
-          to {dayjs(endDate).format("DD/MM/YYYY")}
-        </Typography>
-      </>
-    );
-  }
-  return (
-    <>
-      <Typography variant="body2">
-        from {dayjs(startDate).format("h:mm A DD/MM/YYYY")}
-      </Typography>
-      <Typography variant="body2" gutterBottom>
-        to {dayjs(endDate).format("h:mm A DD/MM/YYYY")}
-      </Typography>
-    </>
-  );
-};
+import TaskModalButtons from "./TaskModalButtons";
+import FormattedDates from "../shared/FormattedDates";
+import TaskModalDescription from "./TaskModalDescription";
 
 const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -109,27 +52,14 @@ const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
         if (!loading) handleModalClose();
       }}
     >
-      <Box textAlign="right" pt={3}>
-        <IconButton disabled={loading} onClick={handleCheck}>
-          {task?.finished ? <CheckCircle /> : <CheckCircleOutline />}
-        </IconButton>
-        {!task?.finished && (
-          <IconButton disabled={loading} onClick={handleOpenResend}>
-            <Email />
-          </IconButton>
-        )}
-        {!task?.finished && (
-          <IconButton disabled={loading} onClick={handleEditOpen}>
-            <Edit />
-          </IconButton>
-        )}
-        <IconButton disabled={loading} onClick={handleOpenDelete}>
-          <Delete />
-        </IconButton>
-        <IconButton disabled={loading} onClick={handleModalClose}>
-          <Close />
-        </IconButton>
-      </Box>
+      <TaskModalButtons
+        task={task}
+        handleCheck={handleCheck}
+        handleOpenResend={handleOpenResend}
+        handleEditOpen={handleEditOpen}
+        handleOpenDelete={handleOpenDelete}
+        handleModalClose={handleModalClose}
+      />
       <TaskChipStack task={task} />
       <Typography
         variant="h5"
@@ -141,23 +71,17 @@ const TaskModal = ({ task, isOpen, handleModalClose, handleEditOpen }) => {
       >
         {task?.title}
       </Typography>
-      {task && getFormattedDates(task.startDate, task.endDate, task.allDay)}
-
+      {task && (
+        <FormattedDates
+          startDate={task.startDate}
+          endDate={task.endDate}
+          allDay={task.allDay}
+          finished={task.finished}
+          isModal
+        />
+      )}
       {task?.description && (
-        <>
-          <Divider sx={{ my: 2 }} />
-          <Typography variant="h6" gutterBottom>
-            Description:
-          </Typography>
-          <Typography
-            sx={{
-              overflowWrap: "break-word",
-            }}
-            gutterBottom
-          >
-            {task?.description}
-          </Typography>
-        </>
+        <TaskModalDescription description={task.description} />
       )}
       <ConfirmDialog
         open={isDeleteDialogOpen}
