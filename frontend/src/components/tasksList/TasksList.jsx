@@ -71,7 +71,7 @@ const TasksList = ({ overdue }) => {
     <>
       <Box
         sx={{
-          mx: { sm: 2, md: 15, lg: 35, xl: 60 },
+          // mx: { sm: 2, md: 15, lg: 35, xl: 60 },
           mt: { xs: 5, md: 0 },
         }}
       >
@@ -100,31 +100,33 @@ const TasksList = ({ overdue }) => {
             />
           </Box>
         )}
-        {!overdue && filteredTasks.length > 0 && (
-          <TasksProgress
-            value={
-              (getFilteredTasks(
-                tasks,
-                timeFrame,
-                chosenTime,
-                priorityFilters,
-                sortType,
-                search,
-                overdue,
-                true
-              ).length /
-                filteredTasks.length) *
-              100
-            }
-          />
-        )}
       </Box>
+
+      {!overdue && filteredTasks.length > 0 && (
+        <TasksProgress
+          value={
+            (getFilteredTasks(
+              tasks,
+              timeFrame,
+              chosenTime,
+              priorityFilters,
+              sortType,
+              search,
+              overdue,
+              true
+            ).length /
+              filteredTasks.length) *
+            100
+          }
+        />
+      )}
+
       {filteredTasks.length > 0 && (
         <>
           <Box
             sx={{
               mx: { xs: 1, sm: 2, md: 10 },
-              mt: { xs: 5, md: 2 },
+              mt: { xs: 3, md: 2 },
               mb: { xs: 0, md: 2 },
             }}
           >
