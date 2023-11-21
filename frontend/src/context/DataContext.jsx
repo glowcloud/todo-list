@@ -172,6 +172,7 @@ export const DataContextProvider = ({ children }) => {
         alertMsg,
         alertType,
         setAlertMsg,
+        setAlertType,
         handleAddTask,
         handleEditTask,
         handleDeleteTask,

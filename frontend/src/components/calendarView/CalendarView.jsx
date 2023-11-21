@@ -5,7 +5,6 @@ import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { Box } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
-import { getColor } from "../../utils/generalUtils";
 import ConfirmDialog from "../shared/ConfirmDialog";
 import ResendingBackdrop from "../shared/ResendingBackdrop";
 import { useTheme } from "../../context/ThemeContext";
@@ -13,33 +12,18 @@ import { useDataContext } from "../../context/DataContext";
 import EditModal from "../shared/EditModal";
 import TaskModal from "./TaskModal";
 import DownloadButton from "./DownloadButton";
+import { createEvents, getStyles } from "../../utils/calendarViewUtils";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
-
-const createEvents = (tasks) => {
-  const events = [];
-  tasks.forEach((task) => {
-    events.push({
-      id: task.id,
-      title: task.title,
-      start: dayjs(task.startDate).toDate(),
-      end: dayjs(task.endDate).toDate(),
-      allDay: task.allDay,
-      color: task.finished
-        ? getColor("Finished")
-        : getColor(task.priority.name),
-    });
-  });
-  return events;
-};
 
 const CalendarView = () => {
   const [events, setEvents] = useState([]);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [changedTaskData, setChangedTaskData] = useState(null);
   const { mode } = useTheme();
-  const { tasks, handleEditTask, setAlertMsg, loading } = useDataContext();
+  const { tasks, handleEditTask, setAlertMsg, setAlertType, loading } =
+    useDataContext();
   const [taskOpen, setTaskOpen] = useState(-1);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -78,10 +62,9 @@ const CalendarView = () => {
 
   const onEventChange = async (data) => {
     if (tasks.find((task) => task.id === data.event.id).finished) {
+      setAlertType("error");
       setAlertMsg("Can't edit finished tasks.");
-    } else if (dayjs(data.start).isBefore(dayjs())) {
-      setAlertMsg("Can't set a task to start before current date.");
-    } else if (dayjs(data.start).isAfter(dayjs())) {
+    } else {
       setChangedTaskData(data);
       setIsConfirmOpen(true);
     }
@@ -129,66 +112,7 @@ const CalendarView = () => {
         dayPropGetter={dayPropGetter}
         eventPropGetter={eventPropGetter}
         views={["month", "week", "day"]}
-        sx={{
-          height: { xs: 625, sm: 625, md: 675, lg: 700, xl: 750 },
-          mx: { xs: 1, sm: 2, md: 5, lg: 10, xl: 25 },
-          my: 2,
-          mt: { xs: 5, md: 0 },
-          ".rbc-event-label": {
-            color: "white",
-          },
-          ".rbc-event-content": {
-            color: "white",
-          },
-          ".rbc-month-view": {
-            borderColor: "#aaa",
-          },
-          ".rbc-row": {
-            borderColor: "#aaa",
-          },
-          ".rbc-month-row": {
-            borderColor: "#aaa",
-          },
-          ".rbc-time-view": {
-            borderColor: "#aaa",
-          },
-          ".rbc-time-header": {
-            borderColor: "#aaa",
-          },
-          ".rbc-time-content": {
-            borderColor: "#aaa",
-          },
-          ".rbc-day-slot": {
-            borderColor: "#aaa",
-          },
-          ".rbc-time-slot": {
-            borderColor: "#aaa",
-          },
-          ".rbc-show-more": {
-            color: mode === "dark" ? "#ddd" : "",
-            backgroundColor: mode === "dark" ? "#121212" : "",
-          },
-          ".rbc-toolbar": {
-            flexDirection: { xs: "column-reverse", md: "row" },
-          },
-          ".rbc-toolbar-label": {
-            my: { xs: 1, md: 0 },
-          },
-          ".rbc-toolbar button": {
-            color: mode === "dark" ? "white" : "black",
-          },
-          ".rbc-toolbar button:hover, .rbc-toolbar button:active, .rbc-toolbar button:focus":
-            {
-              backgroundColor: "#e6e6e6",
-              color: "black",
-            },
-          ".rbc-active": {
-            color: "black !important",
-          },
-          ".rbc-off-range-bg": {
-            backgroundColor: mode === "dark" ? "#282828" : "",
-          },
-        }}
+        {...getStyles(mode)}
       />
       <DownloadButton tasks={tasks} />
       <TaskModal
