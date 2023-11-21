@@ -10,6 +10,7 @@ import {
   getStatusData,
   getPrioritiesDataset,
 } from "../../utils/summaryUtils";
+import NoTasksMsg from "../shared/NoTasksMsg";
 
 const Summary = () => {
   const [timeFrame, setTimeFrame] = useState("day");
@@ -55,9 +56,7 @@ const Summary = () => {
           />
         </Box>
       ) : (
-        <Box textAlign="center" mt={5}>
-          <Typography variant="h5">No tasks found.</Typography>
-        </Box>
+        <NoTasksMsg />
       )}
     </Box>
   );

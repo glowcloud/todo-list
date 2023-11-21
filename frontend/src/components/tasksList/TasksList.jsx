@@ -1,4 +1,4 @@
-import { Box, Pagination, Typography } from "@mui/material";
+import { Box, Pagination } from "@mui/material";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "../shared/TimeFrameSelect";
@@ -9,6 +9,7 @@ import SortFilterSearch from "./SortFilterSearch";
 import TasksProgress from "./TasksProgress";
 import TaskCard from "./TaskCard";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import NoTasksMsg from "../shared/NoTasksMsg";
 
 const paginate = (tasks, page) => {
   return tasks.slice((page - 1) * 9, page * 9);
@@ -161,9 +162,7 @@ const TasksList = ({ overdue }) => {
         </>
       )}
       {(!tasks || tasks.length === 0 || filteredTasks.length === 0) && (
-        <Box textAlign="center" mt={5}>
-          <Typography variant="h5">No tasks found.</Typography>
-        </Box>
+        <NoTasksMsg />
       )}
       <ResendingBackdrop isResending={loading} />
     </>
