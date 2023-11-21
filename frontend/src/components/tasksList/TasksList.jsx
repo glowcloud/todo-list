@@ -1,4 +1,4 @@
-import { Box, Pagination } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import TimeFrameSelect from "../shared/TimeFrameSelect";
@@ -7,13 +7,9 @@ import { useDataContext } from "../../context/DataContext";
 import { getFilteredTasks } from "../../utils/generalUtils";
 import SortFilterSearch from "./SortFilterSearch";
 import TasksProgress from "./TasksProgress";
-import TaskCard from "./TaskCard";
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import NoTasksMsg from "../shared/NoTasksMsg";
-
-const paginate = (tasks, page) => {
-  return tasks.slice((page - 1) * 9, page * 9);
-};
+import TasksListPagination from "./TasksListPagination";
+import TasksListMasonry from "./TasksListMasonry";
 
 const TasksList = ({ overdue }) => {
   const [sortType, setSortType] = useState("none");
@@ -23,7 +19,7 @@ const TasksList = ({ overdue }) => {
   const [priorityFilters, setPriorityFilters] = useState([]);
   const [page, setPage] = useState(1);
   const [filteredTasks, setFilteredTasks] = useState([]);
-  const { tasks, priorities, loading, handleCheckTask } = useDataContext();
+  const { tasks, loading } = useDataContext();
 
   useEffect(() => {
     setPage(1);
@@ -53,10 +49,6 @@ const TasksList = ({ overdue }) => {
     setPage(v);
   };
 
-  const handleCheck = async (id, isChecked) => {
-    await handleCheckTask(id, isChecked);
-  };
-
   const handleFilterClick = (id) => {
     setPriorityFilters((prevFilters) => {
       if (prevFilters.includes(id))
@@ -71,7 +63,7 @@ const TasksList = ({ overdue }) => {
     <>
       <Box
         sx={{
-          // mx: { sm: 2, md: 15, lg: 35, xl: 60 },
+          mx: { sm: 2, md: 15, lg: 35, xl: 60 },
           mt: { xs: 5, md: 0 },
         }}
       >
@@ -101,7 +93,6 @@ const TasksList = ({ overdue }) => {
           </Box>
         )}
       </Box>
-
       {!overdue && filteredTasks.length > 0 && (
         <TasksProgress
           value={
@@ -120,47 +111,14 @@ const TasksList = ({ overdue }) => {
           }
         />
       )}
-
       {filteredTasks.length > 0 && (
         <>
-          <Box
-            sx={{
-              mx: { xs: 1, sm: 2, md: 10 },
-              mt: { xs: 3, md: 2 },
-              mb: { xs: 0, md: 2 },
-            }}
-          >
-            <ResponsiveMasonry
-              columnsCountBreakPoints={{ 0: 1, 900: 2, 1200: 3 }}
-            >
-              <Masonry>
-                {paginate(
-                  filteredTasks.map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      handleCheckTask={handleCheck}
-                      priorities={priorities}
-                    />
-                  )),
-                  page
-                )}
-              </Masonry>
-            </ResponsiveMasonry>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              my: { xs: 2, md: 4 },
-            }}
-          >
-            <Pagination
-              count={Math.ceil(filteredTasks.length / 9)}
-              page={page}
-              onChange={handleChangePage}
-            />
-          </Box>
+          <TasksListMasonry tasks={filteredTasks} page={page} />
+          <TasksListPagination
+            tasks={filteredTasks}
+            page={page}
+            handleChangePage={handleChangePage}
+          />
         </>
       )}
       {(!tasks || tasks.length === 0 || filteredTasks.length === 0) && (
