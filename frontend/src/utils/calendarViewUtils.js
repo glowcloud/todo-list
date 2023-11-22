@@ -54,6 +54,7 @@ const getStyles = (mode) => {
       },
       ".rbc-time-slot": {
         borderColor: "#aaa",
+        border: "none",
       },
       ".rbc-show-more": {
         color: mode === "dark" ? "#ddd" : "",
