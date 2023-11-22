@@ -90,20 +90,19 @@ const TasksList = ({ overdue }) => {
           setPriorityFilters={setPriorityFilters}
         />
         {!overdue && (
-          <Box
-            mb={3}
-            mx={3}
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-          >
+          // <Box
+          //   mx={3}
+          //   display="flex"
+          //   justifyContent="center"
+          //   alignItems="center"
+          // >
             <TimeFrameSelect
               timeFrame={timeFrame}
               setTimeFrame={setTimeFrame}
               chosenTime={chosenTime}
               setChosenTime={setChosenTime}
             />
-          </Box>
+          // </Box>
         )}
       </Box>
       {(filteredTasks.length > 0 || filteredFinishedTasks.length > 0) && (

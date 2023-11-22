@@ -37,7 +37,7 @@ const Layout = ({ currentView, setCurrentView, children }) => {
                 fontSize: 22,
                 width: "100%",
                 textAlign: "center",
-                pr: 4,
+                pr: 5,
                 "&:hover": {
                   cursor: "pointer",
                 },

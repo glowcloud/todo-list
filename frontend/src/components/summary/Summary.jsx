@@ -37,7 +37,7 @@ const Summary = () => {
           mx={{ xs: 1, md: 2, lg: 5, xl: 40 }}
           mt={3}
         >
-          <Divider flexItem sx={{ my: 3, mx: { xs: 1, md: 10 } }} />
+          <Divider flexItem sx={{ my: 2, mx: { xs: 1, md: 10 } }} />
           <Typography variant="h5" mt={2}>
             Number of tasks per task status
           </Typography>

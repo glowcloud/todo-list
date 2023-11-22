@@ -18,7 +18,7 @@ const SortFilterSearch = ({
       alignItems="center"
       justifyContent="center"
       sx={{ mb: 2 }}
-      flexDirection={{ xs: "column-reverse", md: "row" }}
+      flexDirection={{ xs: "column", sm: "row" }}
     >
       <Box display="flex" alignItems="center" justifyContent="center">
         <SortPopover sortType={sortType} setSortType={setSortType} />
@@ -27,8 +27,8 @@ const SortFilterSearch = ({
           priorityFilters={priorityFilters}
           setPriorityFilters={setPriorityFilters}
         />
-        <Search search={search} setSearch={setSearch} />
       </Box>
+      <Search search={search} setSearch={setSearch} />
     </Box>
   );
 };

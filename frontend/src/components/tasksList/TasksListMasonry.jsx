@@ -11,7 +11,7 @@ const TasksListMasonry = ({ tasks, page }) => {
     <Box
       sx={{
         mx: { xs: 1, sm: 2, md: 10 },
-        mt: { xs: 3, md: 2 },
+        mt: 2,
         mb: { xs: 0, md: 2 },
       }}
     >

@@ -7,7 +7,7 @@ const TasksProgress = ({ value }) => {
       alignItems="center"
       sx={{
         mx: { xs: 2, sm: 3, md: 11 },
-        mt: { xs: 1, md: 2 },
+        mt: 2 ,
       }}
     >
       <Box sx={{ width: "100%", mr: 1 }}>

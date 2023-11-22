@@ -22,8 +22,17 @@ const TimeFrameSelect = ({
   };
 
   return (
-    <Box textAlign="center">
-      <FormControl sx={{ width: 150, mx: 2, my: 1 }}>
+    <Box
+      textAlign="center"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      flexDirection={{
+        xs: "column",
+        sm: timeFrame === "week" ? "column" : "row",
+      }}
+    >
+      <FormControl sx={{ width: 150, mx: 1, my: 1 }}>
         <InputLabel>Timeframe</InputLabel>
         <Select
           label="Timeframe"
@@ -67,14 +76,14 @@ const TimeFrameSelect = ({
             }
             value={chosenTime}
             onChange={handleChosenTimeChange}
-            sx={{ mt: { xs: 2, sm: 1 }, mx: 1 }}
+            sx={{ mx: 1, mt: { xs: 1, sm: timeFrame === "week" ? 1 : 0 } }}
           />
           {timeFrame === "week" && (
             <DatePicker
               id="time-end"
               label="End"
               value={dayjs(chosenTime).endOf("w")}
-              sx={{ mt: { xs: 2, sm: 1 } }}
+              sx={{ mt: 1 }}
               onChange={handleChosenTimeChange}
             />
           )}
