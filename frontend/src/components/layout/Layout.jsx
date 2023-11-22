@@ -1,4 +1,4 @@
-import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import { useAuth } from "../../context/AuthContext";
 import { Menu } from "@mui/icons-material";
 import Sidebar from "./Sidebar";
@@ -19,13 +19,20 @@ const Layout = ({ currentView, setCurrentView, children }) => {
         <AppBar
           sx={{
             display: { xs: "block", md: "none" },
-            zIndex: (theme) => theme.zIndex.drawer + 1,
+            zIndex: (theme) => theme.zIndex.drawer + 2,
           }}
         >
           <Toolbar>
             <IconButton onClick={handleMenuClick}>
               <Menu sx={{ color: "white" }} />
             </IconButton>
+            <Typography
+              variant="h6"
+              sx={{ mx: 3, fontWeight: "500", fontSize: 22 }}
+              onClick={() => setCurrentView("list")}
+            >
+              Verdo
+            </Typography>
           </Toolbar>
         </AppBar>
       )}

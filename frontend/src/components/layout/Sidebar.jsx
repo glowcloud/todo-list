@@ -1,5 +1,6 @@
-import { Drawer, Toolbar } from "@mui/material";
+import { Drawer, Toolbar, Box } from "@mui/material";
 import SidebarList from "./SidebarList";
+import logo from "../../assets/logo.png";
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, setCurrentView }) => {
   return (
@@ -14,9 +15,23 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, setCurrentView }) => {
           "& .MuiDrawer-paper": {
             width: "200px",
           },
+          alignItems: "center",
         }}
       >
-        <Toolbar />
+        <Box display="flex" alignItems="center" justifyContent="center" my={2}>
+          <Box
+            component="img"
+            src={logo}
+            alt="Logo"
+            width={180}
+            sx={{
+              "&:hover": {
+                cursor: "pointer",
+              },
+            }}
+            onClick={() => setCurrentView("list")}
+          />
+        </Box>
         <SidebarList setCurrentView={setCurrentView} />
       </Drawer>
       <Drawer
@@ -30,10 +45,25 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, setCurrentView }) => {
           width: "200px",
           "& .MuiDrawer-paper": {
             width: "200px",
+            backgroundImage: "none",
           },
         }}
       >
         <Toolbar />
+        <Box display="flex" alignItems="center" justifyContent="center" my={2}>
+          <Box
+            component="img"
+            src={logo}
+            alt="Logo"
+            width={180}
+            sx={{
+              "&:hover": {
+                cursor: "pointer",
+              },
+            }}
+            onClick={() => setCurrentView("list")}
+          />
+        </Box>
         <SidebarList setCurrentView={setCurrentView} />
       </Drawer>
     </>
