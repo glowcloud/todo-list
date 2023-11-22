@@ -70,7 +70,6 @@ public class MainController {
             try {
                 task.setUser(userData.get());
                 Task newTask = taskRepository.save(task);
-//                scheduleTask(newTask, userData.get().getEmail());
                 scheduleUtil.scheduleTask(newTask, userData.get().getEmail());
                 return new ResponseEntity<>(newTask, HttpStatus.CREATED);
             } catch(Exception e) {
@@ -97,7 +96,6 @@ public class MainController {
                         task.setAllDay(newTask.getAllDay());
 
                         scheduler.deleteJob(new JobKey(id.toString(), "email-jobs"));
-//                        scheduleTask(task, task.getUser().getEmail());
                         scheduleUtil.scheduleTask(task, task.getUser().getEmail());
                         return new ResponseEntity<>(taskRepository.save(task), HttpStatus.OK);
                     }

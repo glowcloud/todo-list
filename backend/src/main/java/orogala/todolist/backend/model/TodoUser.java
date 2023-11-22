@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 
 @Entity
@@ -12,10 +13,11 @@ public class TodoUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @NotEmpty
     @Column(unique = true)
     private String email;
+    @NotEmpty
     private String password;
-
 
     public TodoUser() {
         super();

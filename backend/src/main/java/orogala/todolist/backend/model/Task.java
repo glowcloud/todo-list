@@ -1,23 +1,24 @@
 package orogala.todolist.backend.model;
 
-import java.time.LocalDate;
 import java.util.Date;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.apache.catalina.User;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+    @NotEmpty
     private String title;
     private String description;
+    @NotNull
     private Date startDate;
+    @NotNull
     private Date endDate;
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
