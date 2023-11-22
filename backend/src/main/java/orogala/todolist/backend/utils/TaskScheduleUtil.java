@@ -57,9 +57,9 @@ public class TaskScheduleUtil {
                     .format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
         }
         else {
-            start = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")
+            start = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a")
                     .format(task.getStartDate().toInstant().atZone(ZoneId.systemDefault()));
-            end = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm")
+            end = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a")
                     .format(task.getEndDate().toInstant().atZone(ZoneId.systemDefault()));
         }
 
