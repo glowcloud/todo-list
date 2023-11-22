@@ -25,6 +25,10 @@ const getStyles = (mode) => {
       mx: { xs: 1, sm: 2, md: 5, lg: 10, xl: 25 },
       my: 2,
       mt: { xs: 5, md: 0 },
+      ".rbc-current-time-indicator": {
+        backgroundColor: "red",
+        height: 2
+      },
       ".rbc-event-label": {
         color: "white",
       },

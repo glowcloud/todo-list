@@ -5,7 +5,7 @@ const AddFab = ({ handleAddOpen }) => {
   return (
     <Box
       position="fixed"
-      bottom={30}
+      bottom={{ xs: 0, md: 30 }}
       right={{ xs: 0, md: 25 }}
       textAlign="right"
       mr={5}
