@@ -37,7 +37,8 @@ const getFilteredTasks = (
           task.description.toLowerCase().includes(search.toLowerCase())) &&
         (priorityFilters.length === 0 ||
           priorityFilters.includes(task.priority.id)) &&
-        (!finished || task.finished)
+        (finished ? task.finished : !task.finished)
+      // (!finished || task.finished)
     )
     .sort((x, y) => {
       if (sortType === "none") {
