@@ -38,7 +38,6 @@ const getFilteredTasks = (
         (priorityFilters.length === 0 ||
           priorityFilters.includes(task.priority.id)) &&
         (finished ? task.finished : !task.finished)
-      // (!finished || task.finished)
     )
     .sort((x, y) => {
       if (sortType === "none") {
@@ -56,28 +55,33 @@ const getFilteredTasks = (
 const getColor = (text) => {
   switch (text) {
     case "To Do":
+      // return "#6eb272";
       return "#66bb6a";
-    // return "success.main";
     case "Overdue":
+      // return "#e15349";
       return "#f44336";
-    // return "error.main";
     case "Finished":
-      // return "primary.main";
+      // return "#9ac9ee";
       return "#90caf9";
     case "Lowest":
     case "Lowest priority":
+      // return "#1ba0dc";
       return "rgb(3, 169, 244)";
     case "Low":
     case "Low priority":
+      // return "#0f877c";
       return "rgb(0, 150, 136)";
     case "Moderate":
     case "Moderate priority":
+      // return "#56a559";
       return "rgb(76, 175, 80)";
     case "High":
     case "High priority":
+      // return "#e69a19";
       return "rgb(255, 160, 0)";
     case "Highest":
     case "Highest priority":
+      // return "#e96238";
       return "rgb(255, 87, 34)";
     default:
       return "";

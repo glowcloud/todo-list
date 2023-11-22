@@ -26,6 +26,7 @@ const TimeFrameSelect = ({
       <FormControl sx={{ width: 150, mx: 2, my: 1 }}>
         <InputLabel>Timeframe</InputLabel>
         <Select
+          label="Timeframe"
           id="timeframe"
           value={timeFrame}
           onChange={handleTimeFrameChange}
