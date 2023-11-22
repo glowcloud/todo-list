@@ -1,15 +1,9 @@
 import { Close } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Checkbox,
-  CircularProgress,
-  FormControl,
   FormControlLabel,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from "@mui/material";
@@ -17,19 +11,15 @@ import { useState, useEffect } from "react";
 import CustomModal from "../shared/CustomModal";
 import dayjs from "dayjs";
 import { useDataContext } from "../../context/DataContext";
-import CustomDatePicker from "./CustomDatePicker";
-import CustomDateTimePicker from "./CustomDateTimePicker";
-import {
-  defaultState,
-  isFormValid,
-  isDateError,
-} from "../../utils/addEditUtils";
+import { defaultState, isFormValid } from "../../utils/addEditUtils";
+import PriorityPicker from "./PriorityPicker";
+import AddEditConfirmButton from "./AddEditConfirmButton";
+import AddEditDates from "./AddEditDates";
 
 const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
   const [formState, setFormState] = useState(task ? task : defaultState);
   const [error, setError] = useState(false);
-  const { priorities, loading, handleAddTask, handleEditTask } =
-    useDataContext();
+  const { loading, handleAddTask, handleEditTask } = useDataContext();
 
   useEffect(() => {
     if (task && isEdit) {
@@ -124,61 +114,16 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
             }
           />
         </Box>
-        {formState.allDay ? (
-          <>
-            <CustomDatePicker
-              label="Start"
-              value={formState.startDate}
-              handleChange={handleStartChange}
-              error={isDateError(error, formState)}
-            />
-
-            <CustomDatePicker
-              label="End"
-              value={formState.endDate}
-              handleChange={handleEndChange}
-              error={isDateError(error, formState)}
-              minDate={{ minDate: formState.startDate }}
-            />
-          </>
-        ) : (
-          <>
-            <CustomDateTimePicker
-              label="Start"
-              value={formState.startDate}
-              handleChange={handleStartChange}
-              error={isDateError(error, formState)}
-            />
-            <CustomDateTimePicker
-              label="End"
-              value={formState.endDate}
-              handleChange={handleEndChange}
-              error={isDateError(error, formState)}
-              minDateTime={{
-                minDateTime: dayjs(formState.startDate).add(5, "minutes"),
-              }}
-            />
-          </>
-        )}
-        <FormControl fullWidth sx={{ mt: 1 }}>
-          <InputLabel>Priority</InputLabel>
-          <Select
-            value={formState.priority}
-            label="Priority"
-            disabled={loading}
-            onChange={(e) =>
-              setFormState((prevState) => {
-                return { ...prevState, priority: e.target.value };
-              })
-            }
-          >
-            {priorities.map((priority) => (
-              <MenuItem key={priority.id} value={priority.id}>
-                {priority.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <AddEditDates
+          formState={formState}
+          handleStartChange={handleStartChange}
+          handleEndChange={handleEndChange}
+          error={error}
+        />
+        <PriorityPicker
+          priority={formState.priority}
+          setFormState={setFormState}
+        />
         <TextField
           label="Description"
           value={formState.description}
@@ -194,24 +139,7 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
           disabled={loading}
           inputProps={{ maxLength: 255 }}
         />
-        <Box sx={{ mt: 3, textAlign: "center", position: "relative" }}>
-          <Button variant="outlined" disabled={loading} onClick={handleClick}>
-            {isEdit ? "Save changes" : "Add"}
-          </Button>
-          {loading && (
-            <CircularProgress
-              size={24}
-              sx={{
-                color: "primary",
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                marginTop: "-12px",
-                marginLeft: "-12px",
-              }}
-            />
-          )}
-        </Box>
+        <AddEditConfirmButton handleClick={handleClick} isEdit={isEdit} />
       </Box>
     </CustomModal>
   );
