@@ -1,6 +1,7 @@
 import { Drawer, Toolbar, Box } from "@mui/material";
 import SidebarList from "./SidebarList";
 import logo from "../../assets/logo.png";
+import Logo from "../shared/Logo";
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, setCurrentView }) => {
   return (
@@ -18,20 +19,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen, setCurrentView }) => {
           alignItems: "center",
         }}
       >
-        <Box display="flex" alignItems="center" justifyContent="center" my={2}>
-          <Box
-            component="img"
-            src={logo}
-            alt="Logo"
-            width={180}
-            sx={{
-              "&:hover": {
-                cursor: "pointer",
-              },
-            }}
-            onClick={() => setCurrentView("list")}
-          />
-        </Box>
+        <Logo />
         <SidebarList setCurrentView={setCurrentView} />
       </Drawer>
       <Drawer

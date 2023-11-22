@@ -88,4 +88,9 @@ const getColor = (text) => {
   }
 };
 
-export { isOverdue, getFilteredTasks, getColor };
+const isEmail = (email) => {
+  const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return pattern.test(email);
+};
+
+export { isOverdue, getFilteredTasks, getColor, isEmail };

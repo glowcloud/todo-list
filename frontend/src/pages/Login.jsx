@@ -1,11 +1,8 @@
 import { Box, Button, TextField, Typography, Link } from "@mui/material";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-
-const isEmail = (email) => {
-  const pattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  return pattern.test(email);
-};
+import { isEmail } from "../utils/generalUtils";
+import Logo from "../components/shared/Logo";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -41,6 +38,7 @@ const Login = () => {
         width: { xs: "90%", sm: "80%", md: "50%", lg: "35%", xl: "25%" },
       }}
     >
+      <Logo />
       <TextField
         label="Email"
         value={email}
@@ -49,11 +47,11 @@ const Login = () => {
         margin="normal"
         fullWidth
         required
-        error={error && (!email || !isEmail())}
+        error={error && (!email || !isEmail(email))}
         helperText={
           error && !email
             ? "Email is required."
-            : error && !isEmail()
+            : error && !isEmail(email)
             ? "Incorrect email."
             : ""
         }
