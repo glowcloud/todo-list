@@ -25,7 +25,11 @@ const TimeFrameSelect = ({
     <Box textAlign="center">
       <FormControl sx={{ width: 150, mx: 2, my: 1 }}>
         <InputLabel>Timeframe</InputLabel>
-        <Select value={timeFrame} onChange={handleTimeFrameChange}>
+        <Select
+          id="timeframe"
+          value={timeFrame}
+          onChange={handleTimeFrameChange}
+        >
           <MenuItem value="overall">Overall</MenuItem>
           <MenuItem value="year">Year</MenuItem>
           <MenuItem value="month">Month</MenuItem>
@@ -36,6 +40,7 @@ const TimeFrameSelect = ({
       {timeFrame !== "overall" && (
         <Box>
           <DatePicker
+            id="time-start"
             label={
               timeFrame === "week"
                 ? "Start"
@@ -65,6 +70,7 @@ const TimeFrameSelect = ({
           />
           {timeFrame === "week" && (
             <DatePicker
+              id="time-end"
               label="End"
               value={dayjs(chosenTime).endOf("w")}
               sx={{ mt: { xs: 2, sm: 1 } }}

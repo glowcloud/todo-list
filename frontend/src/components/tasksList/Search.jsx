@@ -5,6 +5,7 @@ const Search = ({ search, setSearch }) => {
   return (
     <Box>
       <TextField
+        id="search"
         label="Search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}

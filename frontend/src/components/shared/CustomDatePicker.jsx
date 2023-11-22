@@ -6,6 +6,7 @@ const CustomDatePicker = ({ label, value, handleChange, error, minDate }) => {
 
   return (
     <DatePicker
+      id={label.toLowerCase()}
       label={label}
       orientation="portrait"
       value={value}

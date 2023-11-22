@@ -84,6 +84,7 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
       <Typography variant="h5">Add a new task</Typography>
       <Box component="form" pt={1} pr={1}>
         <TextField
+          id="title"
           label="Title"
           value={formState.title}
           onChange={(e) =>
@@ -96,6 +97,7 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
           required
           disabled={loading}
           error={error && !formState.title}
+          helperText={error && !formState.title ? "Title is required." : ""}
         />
         <Box>
           <FormControlLabel
@@ -104,6 +106,7 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
             disabled={loading}
             control={
               <Checkbox
+                id="all-day"
                 value={formState.allDay}
                 onChange={(e) =>
                   setFormState((prevState) => {
@@ -125,6 +128,7 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
           setFormState={setFormState}
         />
         <TextField
+          id="description"
           label="Description"
           value={formState.description}
           onChange={(e) =>

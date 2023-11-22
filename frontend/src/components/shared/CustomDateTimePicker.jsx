@@ -12,6 +12,7 @@ const CustomDateTimePicker = ({
 
   return (
     <DateTimePicker
+      id={label.toLowerCase()}
       label={label}
       orientation="portrait"
       value={value}

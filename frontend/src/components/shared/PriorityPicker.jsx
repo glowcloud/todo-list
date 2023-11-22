@@ -8,6 +8,7 @@ const PriorityPicker = ({ priority, setFormState }) => {
     <FormControl fullWidth sx={{ mt: 1 }}>
       <InputLabel>Priority</InputLabel>
       <Select
+        id="priority"
         value={priority}
         label="Priority"
         disabled={loading}

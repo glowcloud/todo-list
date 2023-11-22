@@ -50,7 +50,10 @@ const FiltersPopover = ({
             <FormControlLabel
               key={priority.id}
               control={
-                <Checkbox checked={priorityFilters.includes(priority.id)} />
+                <Checkbox
+                  id={priority.name.toLowerCase()}
+                  checked={priorityFilters.includes(priority.id)}
+                />
               }
               label={priority.name}
               sx={{
