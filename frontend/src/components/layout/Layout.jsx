@@ -4,9 +4,11 @@ import { Menu } from "@mui/icons-material";
 import Sidebar from "./Sidebar";
 import CustomSnackbar from "./CustomSnackbar";
 import { useState } from "react";
+import { useTheme } from "../../context/ThemeContext";
 
 const Layout = ({ currentView, setCurrentView, children }) => {
   const { token } = useAuth();
+  const { mode } = useTheme();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleMenuClick = () => {
@@ -20,6 +22,7 @@ const Layout = ({ currentView, setCurrentView, children }) => {
           sx={{
             display: { xs: "block", md: "none" },
             zIndex: (theme) => theme.zIndex.drawer + 2,
+            backgroundColor: mode === "light" ? "#282828" : "",
           }}
         >
           <Toolbar>
@@ -28,7 +31,17 @@ const Layout = ({ currentView, setCurrentView, children }) => {
             </IconButton>
             <Typography
               variant="h6"
-              sx={{ mx: 3, fontWeight: "500", fontSize: 22 }}
+              sx={{
+                mx: 3,
+                fontWeight: "500",
+                fontSize: 22,
+                width: "100%",
+                textAlign: "center",
+                pr: 4,
+                "&:hover": {
+                  cursor: "pointer",
+                },
+              }}
               onClick={() => setCurrentView("list")}
             >
               Verdo
