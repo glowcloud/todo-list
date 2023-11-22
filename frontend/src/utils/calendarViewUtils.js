@@ -28,6 +28,9 @@ const getStyles = (mode) => {
       ".rbc-event-label": {
         color: "white",
       },
+      ".rbc-event": {
+        filter: "grayscale(20%)",
+      },
       ".rbc-event-content": {
         color: "white",
       },

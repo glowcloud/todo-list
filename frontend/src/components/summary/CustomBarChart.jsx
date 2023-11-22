@@ -51,6 +51,14 @@ const CustomBarChart = ({ data }) => {
         },
       ]}
       margin={{ top: 75 }}
+      sx={{
+        ".MuiBarElement-root": {
+          filter: "grayscale(20%)",
+        },
+        ".MuiChartsLegend-mark": {
+          filter: "grayscale(20%)",
+        },
+      }}
       {...getSettings(matches, matchesSM, matchesMD)}
     />
   );

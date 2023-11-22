@@ -5,7 +5,7 @@ const TaskChip = ({ text }) => {
   return (
     <Chip
       label={text}
-      sx={{ backgroundColor: getColor(text), color: "white" }}
+      sx={{ backgroundColor: getColor(text), color: "white", filter: "grayscale(20%)", fontWeight: "500" }}
     />
   );
 };

@@ -20,6 +20,14 @@ const CustomPieChart = ({ data }) => {
       ]}
       width={matchesXS ? 375 : 500}
       height={matchesXS ? 300 : 400}
+      sx={{
+        ".MuiPieArc-root": {
+          filter: "grayscale(20%)",
+        },
+        ".MuiChartsLegend-mark": {
+          filter: "grayscale(20%)",
+        },
+      }}
     />
   );
 };
