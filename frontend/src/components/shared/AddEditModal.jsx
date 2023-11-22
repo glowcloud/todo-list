@@ -19,39 +19,14 @@ import dayjs from "dayjs";
 import { useDataContext } from "../../context/DataContext";
 import CustomDatePicker from "./CustomDatePicker";
 import CustomDateTimePicker from "./CustomDateTimePicker";
-
-const defaultState = {
-  title: "",
-  description: "",
-  startDate: dayjs(),
-  endDate: dayjs().add(5, "minutes"),
-  priority: 3,
-  allDay: true,
-};
-
-const isFormValid = (formState) => {
-  return (
-    formState.title !== "" &&
-    formState.startDate !== null &&
-    formState.endDate !== null &&
-    formState.description.length < 255 &&
-    (dayjs(formState.endDate).isAfter(dayjs(formState.startDate)) ||
-      dayjs(formState.endDate).isSame(dayjs(formState.startDate))) &&
-    formState.priority > 0
-  );
-};
-
-const isDateError = (error, formState) => {
-  return (
-    error &&
-    (dayjs(formState.endDate).isBefore(dayjs(formState.startDate)) ||
-      dayjs(formState.endDate).isSame(dayjs(formState.startDate)))
-  );
-};
+import {
+  defaultState,
+  isFormValid,
+  isDateError,
+} from "../../utils/addEditUtils";
 
 const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
   const [formState, setFormState] = useState(task ? task : defaultState);
-  //   const [isAllDay, setIsAllDay] = useState(true);
   const [error, setError] = useState(false);
   const { priorities, loading, handleAddTask, handleEditTask } =
     useDataContext();
@@ -64,7 +39,6 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
         endDate: dayjs(task.endDate),
         priority: task.priority.id,
       });
-      //   setIsAllDay(task.allDay !== null ? task.allDay : false);
     } else {
       setFormState(defaultState);
     }
@@ -81,9 +55,9 @@ const AddEditModal = ({ task, isOpen, handleModalClose, isEdit }) => {
   const handleClick = async () => {
     if (isFormValid(formState)) {
       if (isEdit) {
-        await handleEditTask({ ...formState }); //, allDay: isAllDay });
+        await handleEditTask({ ...formState });
       } else {
-        await handleAddTask({ ...formState }); //, allDay: isAllDay });
+        await handleAddTask({ ...formState });
       }
       handleClose();
     } else {
