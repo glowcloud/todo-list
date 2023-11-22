@@ -9,10 +9,10 @@ import ConfirmDialog from "../shared/ConfirmDialog";
 import ResendingBackdrop from "../shared/ResendingBackdrop";
 import { useTheme } from "../../context/ThemeContext";
 import { useDataContext } from "../../context/DataContext";
-import EditModal from "../shared/EditModal";
 import TaskModal from "./TaskModal";
 import DownloadButton from "./DownloadButton";
 import { createEvents, getStyles } from "../../utils/calendarViewUtils";
+import AddEditModal from "../shared/AddEditModal";
 
 const localizer = dayjsLocalizer(dayjs);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -121,10 +121,11 @@ const CalendarView = () => {
         handleModalClose={handleTaskClose}
         handleEditOpen={handleEditOpen}
       />
-      <EditModal
+      <AddEditModal
         task={tasks.find((task) => task.id === taskOpen)}
         isOpen={isEditOpen}
         handleModalClose={handleEditClose}
+        isEdit
       />
       <ConfirmDialog
         open={isConfirmOpen}

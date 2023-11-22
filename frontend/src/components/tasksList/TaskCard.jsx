@@ -1,10 +1,10 @@
 import { Card } from "@mui/material";
 import { useDataContext } from "../../context/DataContext";
 import { useState } from "react";
-import EditModal from "../shared/EditModal";
 import TaskCardContent from "./TaskCardContent";
 import TaskCardActions from "./TaskCardActions";
 import TaskCardDescription from "./TaskCardDescription";
+import AddEditModal from "../shared/AddEditModal";
 
 const TaskCard = ({ task }) => {
   const [expanded, setExpanded] = useState(false);
@@ -48,10 +48,11 @@ const TaskCard = ({ task }) => {
           />
         )}
       </Card>
-      <EditModal
+      <AddEditModal
         task={task}
         isOpen={isEditOpen}
         handleModalClose={handleEditClose}
+        isEdit
       />
     </>
   );

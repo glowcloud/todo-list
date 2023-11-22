@@ -1,4 +1,3 @@
-import AddModal from "../components/home/AddModal";
 import { useState } from "react";
 import TasksList from "../components/tasksList/TasksList";
 import AddFab from "../components/home/AddFab";
@@ -7,6 +6,7 @@ import Summary from "../components/summary/Summary";
 import { useDataContext } from "../context/DataContext";
 import LoadingProgress from "../components/home/LoadingProgress";
 import { Box } from "@mui/material";
+import AddEditModal from "../components/shared/AddEditModal";
 
 const Home = ({ currentView }) => {
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -31,7 +31,7 @@ const Home = ({ currentView }) => {
       {(currentView === "list" || currentView === "calendar") && (
         <AddFab handleAddOpen={handleAddOpen} />
       )}
-      <AddModal isOpen={isAddOpen} handleModalClose={handleAddClose} />
+      <AddEditModal isOpen={isAddOpen} handleModalClose={handleAddClose} />
     </Box>
   ) : (
     <LoadingProgress />
