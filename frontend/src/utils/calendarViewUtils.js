@@ -21,8 +21,8 @@ const createEvents = (tasks) => {
 const getStyles = (mode) => {
   return {
     sx: {
-      height: { xs: 625, sm: 625, md: 675, lg: 700, xl: 750 },
-      mx: { xs: 1, sm: 2, md: 5, lg: 10, xl: 25 },
+      height: { xs: 675, sm: 650, md: 675, lg: 700, xl: 775 },
+      mx: { xs: 1, sm: 2, md: 5, lg: 10, xl: 20 },
       my: 2,
       mt: { xs: 5, md: 0 },
       ".rbc-current-time-indicator": {

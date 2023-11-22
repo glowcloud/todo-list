@@ -112,6 +112,7 @@ const CalendarView = () => {
         dayPropGetter={dayPropGetter}
         eventPropGetter={eventPropGetter}
         views={["month", "week", "day"]}
+        scrollToTime={dayjs()}
         {...getStyles(mode)}
       />
       <DownloadButton tasks={tasks} />

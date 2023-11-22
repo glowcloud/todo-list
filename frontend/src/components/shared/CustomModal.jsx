@@ -12,7 +12,7 @@ const CustomModal = ({ children, isOpen, handleClose }) => {
           bgcolor: "background.paper",
           border: "2px solid #aaa",
           width: { xs: 350, sm: 550, md: 700, lg: 800 },
-          px: 5,
+          px: { xs: 2, sm: 5 },
           pb: 5,
         }}
       >
