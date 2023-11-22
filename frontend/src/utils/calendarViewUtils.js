@@ -27,13 +27,13 @@ const getStyles = (mode) => {
       mt: { xs: 5, md: 0 },
       ".rbc-current-time-indicator": {
         backgroundColor: "red",
-        height: 2
+        height: 2,
       },
       ".rbc-event-label": {
         color: "white",
       },
       ".rbc-event": {
-        filter: "grayscale(20%)",
+        filter: "grayscale(30%)",
       },
       ".rbc-event-content": {
         color: "white",

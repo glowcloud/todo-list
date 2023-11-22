@@ -34,7 +34,7 @@ const Summary = () => {
           display="flex"
           flexDirection="column"
           alignItems="center"
-          mx={{ xs: 1, md: 2, lg: 5, xl: 40 }}
+          mx={{ xs: 1, md: 2, lg: 5, xl: 30 }}
           mt={3}
         >
           <Divider flexItem sx={{ my: 2, mx: { xs: 1, md: 10 } }} />
