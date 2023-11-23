@@ -40,7 +40,7 @@ const getFilteredTasks = (
         (finished ? task.finished : !task.finished)
     )
     .sort((x, y) => {
-      if (sortType === "none") {
+      if (sortType === "" || sortType === "none") {
         return x.finished - y.finished;
       }
       if (sortType === "priority") {
