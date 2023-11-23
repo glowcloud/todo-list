@@ -14,7 +14,7 @@ const isFormValid = (formState) => {
     formState.title !== "" &&
     formState.startDate !== null &&
     formState.endDate !== null &&
-    formState.description.length < 255 &&
+    (!formState.description || formState.description.length < 255) &&
     (dayjs(formState.endDate).isAfter(dayjs(formState.startDate)) ||
       dayjs(formState.endDate).isSame(dayjs(formState.startDate))) &&
     formState.priority > 0
