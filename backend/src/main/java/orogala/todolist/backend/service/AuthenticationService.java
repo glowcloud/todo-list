@@ -17,6 +17,7 @@ import orogala.todolist.backend.model.Task;
 import orogala.todolist.backend.model.TodoUser;
 import orogala.todolist.backend.repository.UserRepository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -64,7 +65,10 @@ public class AuthenticationService {
         JwtAuthenticationToken token = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
         Jwt jwt = (Jwt) token.getCredentials();
         String email = jwt.getClaims().get("sub").toString();
+        if (jwt.getExpiresAt() != null && jwt.getExpiresAt().isAfter(Instant.now()) ) {
+            return userRepository.findByEmail(email);
+        }
+        return Optional.empty();
 
-        return userRepository.findByEmail(email);
     }
 }
