@@ -47,6 +47,9 @@ export const DataContextProvider = ({ children }) => {
     if (token) {
       getPriorities();
       getTasks();
+    } else {
+      setPriorities([]);
+      setTasks([]);
     }
   }, [token]);
 
