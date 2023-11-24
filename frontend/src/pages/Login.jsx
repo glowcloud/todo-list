@@ -42,6 +42,12 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  const handleIsLoginChange = () => {
+    setError(false);
+    setResError(false);
+    setIsLogin((prevState) => !prevState);
+  };
+
   return (
     <Box
       component="form"
@@ -66,7 +72,9 @@ const Login = () => {
         error={resError || (error && (!email || !isEmail(email)))}
         helperText={
           resError
-            ? "Incorrect credentials."
+            ? isLogin
+              ? "Incorrect credentials."
+              : "User with this email already exists."
             : error && !email
             ? "Email is required."
             : error && !isEmail(email)
@@ -85,7 +93,9 @@ const Login = () => {
         error={resError || (error && !password)}
         helperText={
           resError
-            ? "Incorrect credentials."
+            ? isLogin
+              ? "Incorrect credentials."
+              : "User with this email already exists."
             : error && !password
             ? "Password is required."
             : ""
@@ -104,7 +114,7 @@ const Login = () => {
         <Typography
           component={Link}
           align="center"
-          onClick={() => setIsLogin((prevIsLogin) => !prevIsLogin)}
+          onClick={handleIsLoginChange}
           sx={{
             "&:hover": { cursor: "pointer" },
           }}
