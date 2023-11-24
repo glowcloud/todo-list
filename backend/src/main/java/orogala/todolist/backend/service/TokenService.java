@@ -20,16 +20,16 @@ public class TokenService {
     public String generateJwt(Authentication auth) {
         Instant now = Instant.now();
         Instant expires = Instant.now().plusSeconds(86400);
-        String scope = auth.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+//        String scope = auth.getAuthorities().stream()
+//                .map(GrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(" "));
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(expires)
                 .subject(auth.getName())
-                .claim("roles", scope)
+//                .claim("roles", scope)
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }

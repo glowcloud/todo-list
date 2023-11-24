@@ -35,9 +35,13 @@ public class AuthenticationService {
     private TokenService tokenService;
 
     public LoginResponse registerUser(String email, String password) {
-        String encodedPassword = passwordEncoder.encode(password);
-        userRepository.save(new TodoUser(0, email, encodedPassword));
-        return loginUser(email, password);
+        Optional<TodoUser> userData = userRepository.findByEmail(email);
+        if (userData.isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(password);
+            userRepository.save(new TodoUser(0, email, encodedPassword));
+            return loginUser(email, password);
+        }
+        return new LoginResponse("");
     }
 
     public LoginResponse loginUser(String email, String password) {
