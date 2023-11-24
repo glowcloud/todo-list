@@ -8,22 +8,38 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
+  const [resError, setResError] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const { handleSignIn, handleSignUp } = useAuth();
 
   const handleClick = async () => {
     if (email && password && isEmail(email)) {
+      let res;
       if (isLogin) {
-        await handleSignIn(email, password);
+        res = await handleSignIn(email, password);
       } else {
-        await handleSignUp(email, password);
+        res = await handleSignUp(email, password);
       }
+      setResError(!res);
       setEmail("");
       setPassword("");
-      setError(false);
     } else {
       setError(true);
     }
+  };
+
+  const handleChangeEmail = (e) => {
+    if (resError) {
+      setResError(false);
+    }
+    setEmail(e.target.value);
+  };
+
+  const handleChangePassword = (e) => {
+    if (resError) {
+      setResError(false);
+    }
+    setPassword(e.target.value);
   };
 
   return (
@@ -43,13 +59,15 @@ const Login = () => {
         label="Email"
         value={email}
         type="email"
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={handleChangeEmail}
         margin="normal"
         fullWidth
         required
-        error={error && (!email || !isEmail(email))}
+        error={resError || (error && (!email || !isEmail(email)))}
         helperText={
-          error && !email
+          resError
+            ? "Incorrect credentials."
+            : error && !email
             ? "Email is required."
             : error && !isEmail(email)
             ? "Incorrect email."
@@ -60,14 +78,19 @@ const Login = () => {
         label="Password"
         value={password}
         type="password"
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={handleChangePassword}
         margin="normal"
         fullWidth
         required
-        error={error && !password}
-        helperText={error && !password ? "Password is required." : ""}
+        error={resError || (error && !password)}
+        helperText={
+          resError
+            ? "Incorrect credentials."
+            : error && !password
+            ? "Password is required."
+            : ""
+        }
       />
-
       <Button
         variant="outlined"
         sx={{

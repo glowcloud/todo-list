@@ -39,7 +39,9 @@ export const AuthContextProvider = ({ children }) => {
     if (json.jwt) {
       localStorage.setItem("todo-token", json.jwt);
       setToken(json.jwt);
+      return true;
     }
+    return false;
   };
 
   const handleSignUp = async (email, password) => {
@@ -52,7 +54,9 @@ export const AuthContextProvider = ({ children }) => {
     if (json.jwt) {
       localStorage.setItem("todo-token", json.jwt);
       setToken(json.jwt);
+      return true;
     }
+    return false;
   };
 
   const handleSignOut = () => {
