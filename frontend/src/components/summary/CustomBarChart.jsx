@@ -6,12 +6,14 @@ const getSettings = (matches, matchesSM, matchesMD) => {
   if (matches)
     return {
       yAxis: [{ scaleType: "band", dataKey: "time" }],
+      xAxis: [{ tickMinStep: 1, tickMaxStep: 1 }],
       layout: "horizontal",
       width: matchesSM ? 550 : 400,
       height: 750,
     };
   return {
-    xAxis: [{ scaleType: "band", dataKey: "time" }],
+    xAxis: [{ scaleType: "band", dataKey: "time", tickInterval: 1 }],
+    yAxis: [{ tickMinStep: 1, tickMaxStep: 1 }],
     layout: "vertical",
     width: matchesMD ? 650 : 900,
     height: matchesMD ? 500 : 600,
