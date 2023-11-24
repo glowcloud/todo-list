@@ -58,7 +58,7 @@ public class ReminderJob extends QuartzJobBean {
                         body += ")\n";
                     }
                     mailService.sendEmail(user.getEmail(),
-                            "You have unfinished tasks!",
+                            "You have " + tasks.size() + " unfinished tasks!",
                             body);
                 }
             }
