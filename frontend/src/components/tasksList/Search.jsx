@@ -2,8 +2,12 @@ import { Box, TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 const Search = ({ search, setSearch }) => {
+  const handleSubmt = (e) => {
+    e.preventDefault();
+  };
+
   return (
-    <Box>
+    <Box component="form" autoComplete="off" onSubmit={handleSubmt}>
       <TextField
         id="search"
         label="Search"

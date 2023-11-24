@@ -52,6 +52,7 @@ const Login = () => {
     <Box
       component="form"
       textAlign="center"
+      autoComplete="off"
       sx={{
         position: "absolute",
         top: "50%",
